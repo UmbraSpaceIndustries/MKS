@@ -8,8 +8,11 @@ Repo for the MKS mod for KSP.  This is a WIP, so at this point I can pretty much
 DEPENDENCIES!
 
 MKS REQUIRES the following mods to work:
+
 TAC Life Support
+
 Kethane
+
 
 RECOMMENDATIONS:
 
