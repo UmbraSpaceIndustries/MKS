@@ -17,8 +17,8 @@ Kethane
 RECOMMENDATIONS:
 
 The following mods will make working with MKS a bit easier:
-KAS (for linking up stations)
 
+KAS (for linking up stations)
 
 See the WIKI for documentation, and the KSP Dev Thread to report issues, etc:
 
@@ -27,3 +27,7 @@ http://forum.kerbalspaceprogram.com/threads/72706-WIP-Introducing-the-Modular-Ko
 DropBox Link
 
 https://www.dropbox.com/s/y9nk8n4331f8py5/MKS.zip
+
+**************************************
+FAQ IS AT https://github.com/BobPalmer/MKS/wiki/FAQ
+**************************************
