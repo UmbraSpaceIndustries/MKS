@@ -20,7 +20,7 @@ namespace KolonyTools
         public bool SurfaceOnly = true;
         [KSPField]
         public string RequiredParentCategory = "";
-        
+
         public override void OnFixedUpdate()
         {
             if(!HasParentPart())
@@ -28,7 +28,6 @@ namespace KolonyTools
                 converterStatus = String.Format("Not attached to {0}", RequiredParentCategory);
                 return;
             }
-
 
             if (SurfaceOnly && !vessel.Landed)
             {
@@ -42,7 +41,6 @@ namespace KolonyTools
                 converterStatus = "Missing " + missingResources;
                 return;
             }
-             
             base.OnFixedUpdate();
         }
 
