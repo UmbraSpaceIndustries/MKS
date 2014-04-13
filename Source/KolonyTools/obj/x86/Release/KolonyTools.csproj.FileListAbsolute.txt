@@ -1,3 +1,0 @@
-d:\users\rbpal_000\documents\visual studio 2013\Projects\KolonyTools\Output\Plugins\KolonyTools.dll
-d:\users\rbpal_000\documents\visual studio 2013\Projects\KolonyTools\KolonyTools\obj\x86\Release\KolonyTools.dll
-d:\Users\rbpal_000\Documents\Visual Studio 2013\Projects\KolonyTools\KolonyTools\obj\x86\Release\KolonyTools.csprojResolveAssemblyReference.cache
