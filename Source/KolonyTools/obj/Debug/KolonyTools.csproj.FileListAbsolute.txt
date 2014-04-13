@@ -21,3 +21,13 @@ D:\Users\rbpal_000\Documents\Visual Studio 2013\Projects\GreenMesaIndustries\MKS
 D:\Users\rbpal_000\Documents\Visual Studio 2013\Projects\GreenMesaIndustries\MKS\KolonyTools\KolonyTools\bin\Debug\TDx.TDxInput.dll
 D:\Users\rbpal_000\Documents\Visual Studio 2013\Projects\GreenMesaIndustries\MKS\KolonyTools\KolonyTools\bin\Debug\Mono.Security.dll
 D:\Users\rbpal_000\Documents\Visual Studio 2013\Projects\GreenMesaIndustries\MKS\KolonyTools\KolonyTools\obj\Debug\KolonyTools.csprojResolveAssemblyReference.cache
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\KolonyTools.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\KolonyTools.pdb
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\Assembly-CSharp.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\UnityEngine.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\Mono.Cecil.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\Assembly-CSharp-firstpass.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\TDx.TDxInput.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\bin\Debug\Mono.Security.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\obj\Debug\KolonyTools.dll
+D:\Users\rbpal_000\Documents\GitHub\MKS\Source\KolonyTools\obj\Debug\KolonyTools.pdb
