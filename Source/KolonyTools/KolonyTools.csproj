@@ -77,8 +77,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TacLifeSupport">
-      <HintPath>..\..\ThunderAerospace\TacLifeSupport\TacLifeSupport.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\..\KSP_DEV\GameData\ThunderAerospace\TacLifeSupport\TacLifeSupport.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
