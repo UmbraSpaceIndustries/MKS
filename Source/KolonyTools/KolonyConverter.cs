@@ -9,13 +9,10 @@ namespace KolonyTools
     public class KolonyConverter : TacGenericConverter
     {
         [KSPField]
-        public string RequiredResources = "";
+        public string requiredResources = "";
         
         [KSPField]
         public bool SurfaceOnly = true;
-
-        [KSPField]
-        public bool AllowsEfficiency = true;
 
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
@@ -40,10 +37,8 @@ namespace KolonyTools
                     _numConverters = curConverters;
                     EfficiencySetup();
                 }
-                if(AllowsEfficiency)
-                {
-                    conversionRate = conversionRate * EfficiencyRate;
-                }
+
+                conversionRate = conversionRate * EfficiencyRate;
 
                 if (SurfaceOnly && !vessel.Landed)
                 {
@@ -73,6 +68,7 @@ namespace KolonyTools
 
         public override void OnAwake()
         {
+            print("[MKS] Awake!");
             ResourceSetup();
             base.OnAwake();
         }
@@ -206,7 +202,7 @@ namespace KolonyTools
             {
                 var missingResources = new List<string>();
 
-                string[] tokens = RequiredResources.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+                string[] tokens = requiredResources.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 
                 for (int i = 0; i < (tokens.Length - 1); i += 2)
                 {
