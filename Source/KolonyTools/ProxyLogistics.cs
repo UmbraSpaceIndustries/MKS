@@ -13,7 +13,7 @@ namespace KolonyTools
     public class ProxyLogistics : PartModule
     {
         [KSPField]
-        public int LogisticsRange = 100; 
+        public int LogisticsRange = 200; 
 
         [KSPField]
         public string LogisticsResources = "";
@@ -22,20 +22,38 @@ namespace KolonyTools
         public bool IsLogisticsDistributor = false;
 
         private List<LogisticsGoal> ResourceList;
-        private List<string> PrecisionResources = new List<string> { "EnrichedSoil","ConstructionParts"};
         private static char[] delimiters = { ' ', ',', '\t', ';' };
-        private int DistributionRange;
 
         public override void OnLoad(ConfigNode node)
         {
-            ResourceList = SetupResourceList(LogisticsResources);
-            base.OnLoad(node);
+            try
+            {
+                if (vessel.Landed)
+                {
+                    ResourceList = SetupResourceList(LogisticsResources);
+                }
+                base.OnLoad(node);
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnLoad - {0}", ex.Message));
+            }
         }
-
+        
         public override void OnAwake()
         {
-            ResourceList = SetupResourceList(LogisticsResources);
-            base.OnAwake();
+            try
+            {
+                if (vessel.Landed)
+                {
+                    ResourceList = SetupResourceList(LogisticsResources);
+                }
+                base.OnAwake();
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnAwake - {0}", ex.Message));
+            }        
         }
 
         private List<LogisticsGoal> SetupResourceList(string resString)
@@ -59,80 +77,40 @@ namespace KolonyTools
                         print("[MKS] Cannot parse \"" + resString + "\", something went wrong.");
                     }
                 }
-                //Crew Resources
-                if(part.CrewCapacity > 0)
-                {
-                    PartResourceDefinition food = PartResourceLibrary.Instance.GetDefinition("Food");
-                    PartResourceDefinition water = PartResourceLibrary.Instance.GetDefinition("Water");
-                    PartResourceDefinition oxygen = PartResourceLibrary.Instance.GetDefinition("Oxygen");
-
-                    PrecisionResources.Add("Food");
-                    PrecisionResources.Add("Water");
-                    PrecisionResources.Add("Oxygen");
-
-                    if (!resources.Where(r => r.Resource.name == "Food").Any())
-                        resources.Add(new LogisticsGoal { Resource = food, Goal = part.CrewCapacity });
-                    if(!resources.Where(r=>r.Resource.name == "Water").Any())
-                        resources.Add(new LogisticsGoal { Resource = water, Goal = part.CrewCapacity });
-                    if (!resources.Where(r => r.Resource.name == "Oxygen").Any())
-                        resources.Add(new LogisticsGoal { Resource = oxygen, Goal = part.CrewCapacity });
-                }
-                //ElectricCharge
-                if(part.Resources.Contains("ElectricCharge"))
-                {
-                    PartResourceDefinition electricCharge = PartResourceLibrary.Instance.GetDefinition("ElectricCharge");
-                    var ec = part.Resources["ElectricCharge"];
-                    if (!resources.Where(r => r.Resource.name == "ElectricCharge").Any())
-                        resources.Add(new LogisticsGoal { Resource = electricCharge, Goal = ec.maxAmount });
-                }
                 return resources;
             }
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in UpdateResourceList - {0}", ex.Message));
-                throw;
+                return new List<LogisticsGoal>();
             }
         }
         public override void OnFixedUpdate()
         {
-            GetLogisticsRange();
-            if (DistributionRange > 0)
+            try
             {
-                CheckResources();
-            }
-            base.OnFixedUpdate();
-        }
-
-        private void GetLogisticsRange()
-        {
-            var vlist = GetNearbyVessels(LogisticsRange);
-            foreach(var v in vlist)
-            {
-                var partList = v.Parts.Where(
-                    p => p.Modules.Contains("ProxyLogistics")
-                    && p != part);
-                foreach (var p in partList)
+                if (vessel.Landed)
                 {
-                    var mod = (ProxyLogistics)p.Modules["ProxyLogistics"];
-                    if (mod.IsLogisticsDistributor && mod.LogisticsRange > DistributionRange)
-                    {
-                        DistributionRange = mod.LogisticsRange;
-                        print("[MKS] Setting DistributionRange to " + DistributionRange);
-                    }
+                    CheckResources();
                 }
+                base.OnFixedUpdate();
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}", ex.Message));
             }
         }
 
-        private List<Vessel> GetNearbyVessels(int range)
+        private List<Vessel> GetNearbyVessels(int range, bool includeSelf)
         {
             try
             {
                 var vessels = new List<Vessel>();
                 foreach (var v in FlightGlobals.Vessels.Where(
                     x => x.mainBody == vessel.mainBody
-                    && x.Landed
-                    && x != vessel))
+                    && x.Landed ))
                 {
+                    if (v == vessel && !includeSelf) continue;
                     var posCur = vessel.GetWorldPos3D();
                     var posNext = v.GetWorldPos3D();
                     var distance = Vector3d.Distance(posCur, posNext);
@@ -146,7 +124,7 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
-                throw;
+                return new List<Vessel>();
             }
         }
 
@@ -154,32 +132,31 @@ namespace KolonyTools
         {
             try
             {
-                print("***Starting Loop...");
                 foreach(var r in ResourceList)
                 {
-                    print("Getting Part " + r.Resource.name + " for " + part.name);
                     if (part.Resources.Contains(r.Resource.name))
                     {
                         var pr = part.Resources[r.Resource.name];
-                        var threshold = Math.Round(pr.maxAmount * .1);
-                        if (threshold < 1) threshold = 1;
-                        var transferAmount = threshold;
-                        print("Checking Precision Resources");
-                        if (PrecisionResources.Contains(r.Resource.name)) threshold = 0; //Odds are this is for constructionParts or soil
+                        var transferAmount = Math.Round(pr.maxAmount * .01, 0);
+                        if (transferAmount < 1) transferAmount = 1;
+                        if(!IsLogisticsDistributor) //This is for containers
+                        {
+                            transferAmount = pr.amount;
+                            //They always try to empty themselves
+                            TransferResources(r.Resource, transferAmount, TransferType.StoreResources);
+                        }
                         //  CAP     GOAL    THRESH  AMOUNT
                         //  100     50      10      35  TAKE 10
                         //  100     50      10      45  NO ACTION
                         //  100     50      10      65  GIVE 10
-                        if ((pr.amount + threshold) < r.Goal) //Take
+                        else if (pr.amount < r.Goal) //Take
                         {
                             if (transferAmount > (pr.maxAmount - pr.amount)) transferAmount = pr.maxAmount - pr.amount;
-                            print("Transferring In " + transferAmount + " " + r.Resource.name);
                             TransferResources(r.Resource, transferAmount, TransferType.TakeResources);
                         }
-                        else if ((pr.amount - threshold) > r.Goal) //Give
+                        else if ((pr.amount - transferAmount) >= pr.maxAmount) //Give
                         {
                             if (transferAmount > pr.amount) transferAmount = pr.amount;
-                            print("Transferring Out " + transferAmount + " " + r.Resource.name);
                             TransferResources(r.Resource, transferAmount, TransferType.StoreResources);
                         }
                     }
@@ -188,7 +165,6 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in CheckResources - {0}", ex.StackTrace));
-                throw;
             }
         }
 
@@ -197,14 +173,15 @@ namespace KolonyTools
             try
             {
                 var transferAmount = amount;
-                var nearVessels = GetNearbyVessels(DistributionRange);
+                var nearVessels = GetNearbyVessels(LogisticsRange,false);
                 foreach (var v in nearVessels)
                 {
                     if (transferAmount == 0) break;
                     //Can we find what we're looking for?
                     var partList = v.Parts.Where(
                         p => p.Resources.Contains(resource.name)
-                        && p != part);
+                        && p != part
+                        && p.Modules.Contains("ProxyLogistics"));
                     foreach (var p in partList)
                     {
                         var pr = p.Resources[resource.name];
@@ -232,29 +209,34 @@ namespace KolonyTools
                                 pr.amount = 0;
                             }
                         }
-                        else
+                        else 
                         {
-                            var storageSpace = pr.maxAmount - pr.amount;
-                            if (storageSpace >= transferAmount)
+                            var plMods = p.Modules.OfType<ProxyLogistics>().Where(m => m.IsLogisticsDistributor);
+
+                            if (plMods.Any())
                             {
-                                // SS: 100
-                                // RemotePartAmount:        400/500 -> 450/500
-                                // LocalPartAmount:         100     -> 50
-                                // TransferAmount:          50      -> 0
-                                pr.amount += transferAmount;
-                                part.Resources[resource.name].amount -= transferAmount;
-                                transferAmount = 0;
-                                break;
-                            }
-                            else
-                            {
-                                // SS:10
-                                // RemotePartAmount:        490/500 -> 500/500
-                                // LocalPartAmount:         100     -> 90
-                                // TransferAmount:          50      -> 40
-                                transferAmount -= storageSpace;
-                                part.Resources[resource.name].amount -= storageSpace;
-                                pr.amount = pr.maxAmount;
+                                var storageSpace = pr.maxAmount - pr.amount;
+                                if (storageSpace >= transferAmount)
+                                {
+                                    // SS: 100
+                                    // RemotePartAmount:        400/500 -> 450/500
+                                    // LocalPartAmount:         100     -> 50
+                                    // TransferAmount:          50      -> 0
+                                    pr.amount += transferAmount;
+                                    part.Resources[resource.name].amount -= transferAmount;
+                                    transferAmount = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    // SS:10
+                                    // RemotePartAmount:        490/500 -> 500/500
+                                    // LocalPartAmount:         100     -> 90
+                                    // TransferAmount:          50      -> 40
+                                    transferAmount -= storageSpace;
+                                    part.Resources[resource.name].amount -= storageSpace;
+                                    pr.amount = pr.maxAmount;
+                                }
                             }
                         }
                     }
@@ -263,7 +245,6 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in TransferResources - {0}", ex.StackTrace));
-                throw;
             }
         }
 

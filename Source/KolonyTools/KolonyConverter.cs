@@ -58,7 +58,6 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}",ex.Message));
-                throw;
             }
         }
 
@@ -68,21 +67,42 @@ namespace KolonyTools
 
         public override void OnAwake()
         {
-            print("[MKS] Awake!");
-            ResourceSetup();
-            base.OnAwake();
+            try
+            {
+                print("[MKS] Awake!");
+                ResourceSetup();
+                base.OnAwake();
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnAwake - {0}", ex.Message));
+            }
         }
 
         public override void OnLoad(ConfigNode node)
         {
-            ResourceSetup(); 
-            base.OnLoad(node);
+            try
+            {
+                ResourceSetup();
+                base.OnLoad(node);
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnLoad - {0}", ex.Message));
+            }
         }
 
         private void ResourceSetup()
         {
-            inputResourceList = UpdateResourceList(inputResources);
-            outputResourceList = UpdateResourceList(outputResources);
+            try
+            {
+                inputResourceList = UpdateResourceList(inputResources);
+                outputResourceList = UpdateResourceList(outputResources);
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in ResourceSetup - {0}", ex.Message));
+            }
         }
 
         private void EfficiencySetup()
@@ -119,7 +139,7 @@ namespace KolonyTools
                 float numKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
             
                 //Worst case, 25%
-                float eff = .1f;
+                float eff = .25f;
 
                 if (numKerbals > 0)
                 {
@@ -128,7 +148,7 @@ namespace KolonyTools
 
                     float WorkUnits = WorkSpaceKerbalRatio * numKerbals;
                     eff = WorkUnits / numModules;
-                    if (eff > 2) eff = 2;
+                    if (eff > 2.5) eff = 2.5f;
                     if (eff < .25) eff = .1f;
                 }
                 efficiency = String.Format("{0}% [{1}k/{2}s/{3}m", Math.Round((eff * 100),1),Math.Round(numKerbals,1), numWorkspaces, numModules);
@@ -137,7 +157,7 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in GetEfficiency - {0}", ex.Message));
-                throw;
+                return 1f;
             }
         }
 
@@ -161,7 +181,7 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in GetActiveKolonyModules - {0}", ex.Message));
-                throw;
+                return 0;
             }
         }
 
@@ -193,7 +213,7 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in UpdateResourceList - {0}", ex.Message));
-                throw;
+                return new List<ResourceRatio>();
             }
         }
         private string GetMissingFixedResources()
@@ -219,7 +239,7 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in GetMissingFixedResources - {0}", ex.Message));
-                throw;
+                return "";
             }
         }
     }
