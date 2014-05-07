@@ -14,6 +14,9 @@ namespace KolonyTools
         [KSPField]
         public bool SurfaceOnly = true;
 
+        [KSPField]
+        public bool CalculateEfficiency = true;
+
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
@@ -113,7 +116,8 @@ namespace KolonyTools
         private float GetEfficiency()
         {
             try
-            { 
+            {
+                if (!CalculateEfficiency) return 1f;
                 //Efficiency is a function of:
                 //  - Crew Capacity (any module will work for this)
                 //  - Crew Count

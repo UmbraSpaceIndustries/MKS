@@ -24,14 +24,14 @@ namespace KolonyTools
         private List<LogisticsGoal> ResourceList;
         private static char[] delimiters = { ' ', ',', '\t', ';' };
 
+        [KSPField(guiActive = true, guiName = "Logistics")]
+        public string logState = "Unknown";
+
         public override void OnLoad(ConfigNode node)
         {
             try
             {
-                if (vessel.Landed)
-                {
-                    ResourceList = SetupResourceList(LogisticsResources);
-                }
+                ResourceList = SetupResourceList(LogisticsResources);
                 base.OnLoad(node);
             }
             catch (Exception ex)
@@ -44,10 +44,7 @@ namespace KolonyTools
         {
             try
             {
-                if (vessel.Landed)
-                {
-                    ResourceList = SetupResourceList(LogisticsResources);
-                }
+                ResourceList = SetupResourceList(LogisticsResources);
                 base.OnAwake();
             }
             catch (Exception ex)
@@ -77,6 +74,7 @@ namespace KolonyTools
                         print("[MKS] Cannot parse \"" + resString + "\", something went wrong.");
                     }
                 }
+                
                 return resources;
             }
             catch (Exception ex)
@@ -85,20 +83,45 @@ namespace KolonyTools
                 return new List<LogisticsGoal>();
             }
         }
-        public override void OnFixedUpdate()
+
+        public override void OnUpdate()
         {
+            if (ResourceList == null || ResourceList.Count == 0)
+            {
+                ResourceList = SetupResourceList(LogisticsResources);
+            }
             try
             {
                 if (vessel.Landed)
                 {
+                    CheckLogisticsRange();
+                    logState = "Active - " + LogisticsRange + "m";
                     CheckResources();
                 }
-                base.OnFixedUpdate();
+                else
+                {
+                    logState = "Not Landed";
+                }
             }
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}", ex.Message));
             }
+            base.OnFixedUpdate();
+        }
+
+        private void CheckLogisticsRange()
+        {
+            double range = 100;
+            double cv = 0;
+            foreach(var c in part.protoModuleCrew)
+            {
+                var b = c.courage;
+                var s = 1 - c.stupidity;
+                cv += (b * 10f) + s;
+            }
+            range += Math.Pow(cv, 2);
+            LogisticsRange = Convert.ToInt32(Math.Round(range,0));
         }
 
         private List<Vessel> GetNearbyVessels(int range, bool includeSelf)
