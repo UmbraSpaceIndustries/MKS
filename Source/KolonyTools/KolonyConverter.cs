@@ -117,7 +117,6 @@ namespace KolonyTools
         {
             try
             {
-                if (!CalculateEfficiency) return 1f;
                 //Efficiency is a function of:
                 //  - Crew Capacity (any module will work for this)
                 //  - Crew Count
@@ -155,6 +154,7 @@ namespace KolonyTools
                     if (eff > 2.5) eff = 2.5f;
                     if (eff < .25) eff = .1f;
                 }
+                if (!CalculateEfficiency) eff = 1f;
                 efficiency = String.Format("{0}% [{1}k/{2}s/{3}m", Math.Round((eff * 100),1),Math.Round(numKerbals,1), numWorkspaces, numModules);
                 return eff;
             }
