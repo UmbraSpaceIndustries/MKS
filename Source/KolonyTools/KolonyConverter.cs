@@ -20,12 +20,21 @@ namespace KolonyTools
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
+        [KSPEvent(guiActive = true, guiName = "Governor", active = true)]
+        public void ToggleGovernor()
+        {
+            _governorActive = !_governorActive;
+            EfficiencySetup();
+        }
+
+
         private List<ResourceRatio> inputResourceList;
         private List<ResourceRatio> outputResourceList;
         private static List<string> LSResources = new List<string> { "Food", "Water", "Oxygen" };
         private int _numConverters;
         private float baseConversionRate;
-        private float EfficiencyRate; 
+        private float EfficiencyRate;
+        private bool _governorActive;
 
         private static char[] delimiters = { ' ', ',', '\t', ';' };
 
@@ -154,8 +163,20 @@ namespace KolonyTools
                     if (eff > 2.5) eff = 2.5f;
                     if (eff < .25) eff = .1f;
                 }
-                if (!CalculateEfficiency) eff = 1f;
-                efficiency = String.Format("{0}% [{1}k/{2}s/{3}m", Math.Round((eff * 100),1),Math.Round(numKerbals,1), numWorkspaces, numModules);
+                if (!CalculateEfficiency)
+                {
+                    eff = 1f;
+                    efficiency = String.Format("100% [Fixed]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
+                else if (_governorActive)
+                {
+                    if (eff > 1f) eff = 1f;
+                    efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
+                else
+                {
+                    efficiency = String.Format("{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
                 return eff;
             }
             catch (Exception ex)
