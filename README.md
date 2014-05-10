@@ -3,21 +3,36 @@ Modular Kolonization System (MKS)
 
 This is the repository for the MKS mod for [Kerbal Space Program](http://kerbalspaceprogram.com)
 
-Bear in mind that this is still in the development stage, so breaking changes are more than likely.
-
-In addition, **DO NOT USE THIS ON A SAVE YOU HAVE NOT BACKED UP**, and **DO NOT USE THIS ON A SAVE YOU DO NOT MIND HAVING TO TRASH LATER**.
+We are currently preparing for release, so anticipate no breaking changes going forward.  However, as with all mods, we do recommend backing up your save prior to installation.
 
 
-### Requirements
+### Required mods
 
-* [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667-0-23-WIP-TAC-Life-Support-0-8-22Dec)
-* [Kethane](http://forum.kerbalspaceprogram.com/threads/23979-Kethane-Pack-0-8-4-Find-it-mine-it-burn-it!-Now-w-Toolbar-Critical-bug-fixed)
+* [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667-0-23)
+* [Kethane](http://forum.kerbalspaceprogram.com/threads/23979)
+* [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
 
 
 ### Recommended mods
 
-* [KAS](http://forum.kerbalspaceprogram.com/threads/53134-Kerbal-Attachment-System) (for linking up stations)
+* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules)
+* [Cargo Transportation Solutions](http://forum.kerbalspaceprogram.com/threads/77505) (great parts for transporting MKS modules)
+* [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/37707) (for assembling bases)
+* [Procedural Fairings](http://forum.kerbalspaceprogram.com/threads/39512) (for enclosing groups of MKS modules)
+* [Crew Manifest](http://forum.kerbalspaceprogram.com/threads/60936) (for getting around your base)
+* [RealChute Parachute Systems](http://forum.kerbalspaceprogram.com/threads/57988) (to avoid crashing a 20 ton station into Duna)
 
+### Compatible with
+
+* [Extraplanetary Laucnhpads](http://forum.kerbalspaceprogram.com/threads/59545) (resource compatability)
+* [KSP Interstellar](http://forum.kerbalspaceprogram.com/threads/43839) (reactors)
+* [BioMass](http://forum.kerbalspaceprogram.com/threads/53009) (resource compatibility)
+* [Bahamut Drills](http://forum.kerbalspaceprogram.com/threads/70325) (MM extension)
+
+### Planned/future integration
+
+* [Open Resource System](http://forum.kerbalspaceprogram.com/threads/64595) (alternate to Kethane)
+* [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/70161) (efficiency extensions)
 
 ### FAQ, Documentation and issues
 
@@ -29,4 +44,4 @@ You can also use Github issues to report bugs and provide suggestions.s, etc:
 
 ### Download Link
 
-You can download the current alpha of the mod from [Dropbox](https://www.dropbox.com/s/y9nk8n4331f8py5/MKS.zip)
+You can download the current version of the mod from [Dropbox](https://www.dropbox.com/s/y9nk8n4331f8py5/MKS.zip)
