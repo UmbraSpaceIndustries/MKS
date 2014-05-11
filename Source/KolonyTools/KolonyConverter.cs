@@ -150,18 +150,19 @@ namespace KolonyTools
             
                 float numKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
             
-                //Worst case, 25%
+                //Worst case, 50% crewed, 25% uncrewed
                 float eff = .25f;
 
                 if (numKerbals > 0)
                 {
+                    //Switch this to three workspaces max per Kerbal so that WS makes sense
                     float WorkSpaceKerbalRatio = numWorkspaces / numKerbals;
-                    if (WorkSpaceKerbalRatio > 2) WorkSpaceKerbalRatio = 2;
+                    if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
 
                     float WorkUnits = WorkSpaceKerbalRatio * numKerbals;
                     eff = WorkUnits / numModules;
                     if (eff > 2.5) eff = 2.5f;
-                    if (eff < .25) eff = .1f;
+                    if (eff < .5) eff = .5f;
                 }
                 if (!CalculateEfficiency)
                 {
