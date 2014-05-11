@@ -7,21 +7,27 @@ ModelImporter:
     100002: Module
     100004: //RootNode
     100006: Hatch
+    100008: COLL
     400000: Mesh
     400002: Module
     400004: //RootNode
     400006: Hatch
+    400008: COLL
     2300000: Mesh
     2300002: Module
     2300004: Hatch
+    2300006: COLL
     3300000: Mesh
     3300002: Module
     3300004: Hatch
+    3300006: COLL
     4300000: Mesh
     4300002: Module
     4300004: Hatch
+    4300006: COLL
     7400000: Default Take
     9500000: //RootNode
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -72,6 +78,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   additionalBone: 1
   userData: 
