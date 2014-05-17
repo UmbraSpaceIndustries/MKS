@@ -45,3 +45,14 @@ You can also use Github issues to report bugs and provide suggestions.s, etc:
 ### Download Link
 
 You can download the current version of the mod from [Dropbox](https://www.dropbox.com/s/y9nk8n4331f8py5/MKS.zip)
+
+### License
+
+MKS is released under a Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license, which in layman's terms means:
+* You are permitted to use, copy, redistribute my work as-is
+* You may remix your own derivatives (new models, alternative textures), and release them under your own name
+* You must credit the following people when publishing your derivatives in the download and forum posts: Taranis Elsu (TAC Life Support), RoverDude (MKS parts, KolonyTools dll), Garibaldi2257 (Inline Resource Tank)
+
+### Other Contributors and Thanks!
+* Stage (ORS Maps)
+* Vim Razz (Mission Flags)

@@ -74,7 +74,28 @@ namespace KolonyTools
         }
 
 
+        public override string GetInfo()
+        {
+            var sb = new StringBuilder();
+            sb.Append("\Generator: ");
+            sb.Append(converterName);
+            sb.AppendLine();
+            getRateGroupInfo(sb, "Inputs", inputResourceList);
+            getRateGroupInfo(sb, "Outputs", outputResourceList);
+            return sb.ToString();
+        }
 
+        private static void getRateGroupInfo(StringBuilder sb, String heading, IEnumerable<ResourceRatio> rates)
+        {
+            sb.Append("<b><color=#99ff00ff>");
+            sb.Append(heading);
+            sb.AppendLine(":</color></b>");
+            foreach (var rate in rates)
+            {
+                sb.AppendFormat("- <b>{0}</b>: {1:N2}/s", rate.resource.name, rate.ratio);
+                sb.AppendLine();
+            }
+        }
 
 
         public override void OnAwake()
