@@ -44,7 +44,7 @@ You can also use Github issues to report bugs and provide suggestions.s, etc:
 
 ### Download Link
 
-You can download the current version of the mod from [Dropbox](https://www.dropbox.com/s/y9nk8n4331f8py5/MKS.zip)
+You can download the current version of the mod from [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AABWj-h6pk3Ixoiif170Flcla/MKS_0.16.6.zip)
 
 ### License
 
