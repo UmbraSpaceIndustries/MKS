@@ -43,6 +43,7 @@ namespace KolonyTools
             try
             { 
                 baseConversionRate = conversionRate;
+                var newMessage = "";
                 var curConverters = GetActiveKolonyModules(vessel);
                 if(curConverters != _numConverters)
                 {
@@ -54,18 +55,19 @@ namespace KolonyTools
 
                 if (SurfaceOnly && !vessel.Landed)
                 {
-                    converterStatus = "Cannot operate while in flight";
-                    return;
+                    newMessage = "Cannot operate while in flight";
+                    conversionRate = 0.0001f;
                 }
 
                 var missingFixedResources = GetMissingFixedResources();
                 if (!String.IsNullOrEmpty(missingFixedResources))
                 {
-                    converterStatus = "Missing " + missingFixedResources;
-                    return;
+                    newMessage = "Missing " + missingFixedResources;
+                    conversionRate = 0.0001f;
                 }
                 base.OnFixedUpdate();
                 conversionRate = baseConversionRate;
+                if (!String.IsNullOrEmpty(newMessage)) converterStatus = newMessage;
             }
             catch (Exception ex)
             {
@@ -77,7 +79,7 @@ namespace KolonyTools
         public override string GetInfo()
         {
             var sb = new StringBuilder();
-            sb.Append("\Generator: ");
+            sb.Append("Generator: ");
             sb.Append(converterName);
             sb.AppendLine();
             getRateGroupInfo(sb, "Inputs", inputResourceList);
