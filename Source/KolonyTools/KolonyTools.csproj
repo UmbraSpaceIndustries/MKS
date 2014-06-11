@@ -80,17 +80,14 @@
     <Reference Include="TacLifeSupport">
       <HintPath>..\..\..\..\Visual Studio 2013\Projects\GreenMesaIndustries\MKS\ThunderAerospace\TacLifeSupport\TacLifeSupport.dll</HintPath>
     </Reference>
-    <Reference Include="Toolbar">
-      <HintPath>..\..\..\..\..\..\..\KSP_DEV\GameData\000_Toolbar\Toolbar.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InflatableStorage.cs" />
     <Compile Include="KolonyConverter.cs" />
-    <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyLogistics.cs" />
   </ItemGroup>
