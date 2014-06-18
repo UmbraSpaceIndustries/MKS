@@ -15,11 +15,27 @@ namespace KolonyTools
         public float resourceCapacityInflated = 50000f;
         [KSPField] 
         public float resourceCapacityDeflated = 100f;
+
+        [KSPField(isPersistant = true)] 
+        public bool IsDeployed;
+        
+        
+        
         Animation anim;
 
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+        }
+
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+        }
+
+        public override void OnAwake()
+        {
+            base.OnAwake();
         }
 
         public void Start()
@@ -50,10 +66,10 @@ namespace KolonyTools
 
         private bool CheckForResources()
         {
-            if (part.Resources.Count <= 0) return false;
+            if (part.Resources.Count == 0) return false;
             for (var i = 0; i < part.Resources.Count; i++)
             {
-                if (part.Resources[i].amount >= resourceCapacityDeflated) return true;
+                if (part.Resources[i].amount > resourceCapacityDeflated) return true;
             }
             return false;
         }
@@ -72,14 +88,13 @@ namespace KolonyTools
                 {
                     DeflateModule();
                 }
-
-                if (anim[animationName].normalizedTime == 1f)
+                else
                 {
                     InflateModule();
                 }
 
 
-                ModuleAnimateGeneric animateModule = (ModuleAnimateGeneric)this.part.GetComponent("ModuleAnimateGeneric");
+                var animateModule = (ModuleAnimateGeneric)this.part.GetComponent("ModuleAnimateGeneric");
 
                 bool hasResources = CheckForResources();
                 bool hasCrew = CheckForCrew();
