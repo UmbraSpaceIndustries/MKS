@@ -17,12 +17,12 @@ namespace KolonyTools
         private static GUIStyle windowStyle, labelStyle, redlabelStyle, textFieldStyle, buttonStyle;
 
         //GUI Main
-        private static Rect windowPosGUIMain = new Rect(200, 200, 150, 450);
+        private static Rect windowPosGUIMain = new Rect(200, 200, 175, 450);
         private Vector2 scrollPositionGUICurrentTransfers;
         private Vector2 scrollPositionGUIPreviousTransfers;
 
         //GUI Edit
-        private static Rect windowPosGUIEdit = new Rect(250, 250, 350, 450);
+        private static Rect windowPosGUIEdit = new Rect(250, 250, 400, 450);
         private Vector2 scrollPositionEditGUIResources;
 
         //private bool newedit = false;
@@ -39,7 +39,7 @@ namespace KolonyTools
 
         //GUI View
         private bool viewCurrent = false;
-        private static Rect windowPosGUIView = new Rect(270, 370, 150, 200);
+        private static Rect windowPosGUIView = new Rect(270, 370, 175, 200);
         private MKSLtransfer viewGUITransfer = new MKSLtransfer();
 
         //string with the resources for which the partmodule must function
@@ -233,7 +233,7 @@ namespace KolonyTools
                 editGUITransfer.vesselFrom = bodyVesselList[vesselFrom];
             }
             GUILayout.Label("From:", labelStyle, GUILayout.Width(60));
-            GUILayout.Label(editGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(60));
+            GUILayout.Label(editGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(160));
             if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(40)))
             {
                 nextBodyVesselList(ref vesselFrom);
@@ -248,7 +248,7 @@ namespace KolonyTools
                 editGUITransfer.vesselTo = bodyVesselList[vesselTo];
             }
             GUILayout.Label("To:", labelStyle, GUILayout.Width(60));
-            GUILayout.Label(editGUITransfer.vesselTo.vesselName, labelStyle, GUILayout.Width(60));
+            GUILayout.Label(editGUITransfer.vesselTo.vesselName, labelStyle, GUILayout.Width(160));
             if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(40)))
             {
                 nextBodyVesselList(ref vesselTo);
@@ -261,7 +261,7 @@ namespace KolonyTools
             GUILayout.BeginHorizontal();
             
             GUILayout.BeginVertical();
-            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(150), GUILayout.Height(150));
+            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(200), GUILayout.Height(150));
             foreach (MKSLresource res in editGUITransfer.transferList)
             {
                 GUILayout.BeginHorizontal();
@@ -419,12 +419,12 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("From:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(100));
+            GUILayout.Label(viewGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(150));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("To:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.vesselTo.vesselName, labelStyle, GUILayout.Width(100));
+            GUILayout.Label(viewGUITransfer.vesselTo.vesselName, labelStyle, GUILayout.Width(150));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -438,12 +438,12 @@ namespace KolonyTools
                 if (res.amount > 0)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(res.resourceName, labelStyle, GUILayout.Width(100));
+                    GUILayout.Label(res.resourceName, labelStyle, GUILayout.Width(150));
                     GUILayout.Label(Math.Round(res.amount, 2).ToString(), labelStyle, GUILayout.Width(50));
                     GUILayout.EndHorizontal();
                 }
             }
-            GUILayout.Label("Tranfer Mass: " + Math.Round(viewGUITransfer.totalMass(), 2).ToString(), labelStyle, GUILayout.Width(150));
+            GUILayout.Label("Transfer Mass: " + Math.Round(viewGUITransfer.totalMass(), 2).ToString(), labelStyle, GUILayout.Width(150));
             GUILayout.Label("");
  
             GUILayout.Label("Cost", labelStyle, GUILayout.Width(100));
@@ -797,6 +797,11 @@ namespace KolonyTools
                         (trans.vesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
             {
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
+            }
+            else //More working code
+            {
+                double distance = GetDistanceBetweenPoints(trans.vesselFrom.protoVessel.latitude, trans.vesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
+                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
             }
 
         }
