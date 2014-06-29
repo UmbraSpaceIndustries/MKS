@@ -6,16 +6,10 @@ using Tac;
 
 namespace KolonyTools
 {
-    public class KolonyConverter : TacGenericConverter
+    public class MKSModule : PartModule
     {
         [KSPField]
-        public string requiredResources = "";
-        
-        [KSPField]
-        public bool SurfaceOnly = true;
-
-        [KSPField]
-        public bool CalculateEfficiency = true;
+        public bool calculateEfficiency = true;
 
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
@@ -27,31 +21,138 @@ namespace KolonyTools
             EfficiencySetup();
         }
 
+        private bool _governorActive;
+        private int _numConverters;
+        private float _efficiencyRate;
+        private void EfficiencySetup()
+        {
+            _efficiencyRate = GetEfficiency();
+        }
+
+        private float GetEfficiency()
+        {
+            try
+            {
+                //Efficiency is a function of:
+                //  - Crew Capacity (any module will work for this)
+                //  - Crew Count
+                //  - Active MKS Module count
+
+                var numWorkspaces = vessel.GetCrewCapacity();
+                var numModules = GetActiveKolonyModules(vessel);
+
+                //  Part (x1.5):   0   2   1   
+                //  Ship (x0.5):   2   0   1
+                //  Total:         1   3   2
+
+                float modKerbalFactor = 0;
+                foreach (var k in part.protoModuleCrew)
+                {
+                    //A range from 1 to 2, average should be 1.5
+                    modKerbalFactor += 2;
+                    modKerbalFactor -= k.stupidity;
+                }
+                var numModuleKerbals = part.protoModuleCrew.Count();
+                var numShipKerbals = vessel.GetCrewCount() - numModuleKerbals;
+
+                float numKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
+
+                //Worst case, 50% crewed, 25% uncrewed
+                float eff = .25f;
+
+                if (numKerbals > 0)
+                {
+                    //Switch this to three workspaces max per Kerbal so that WS makes sense
+                    float WorkSpaceKerbalRatio = numWorkspaces / numKerbals;
+                    if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
+
+                    float WorkUnits = WorkSpaceKerbalRatio * numKerbals;
+                    eff = WorkUnits / numModules;
+                    if (eff > 2.5) eff = 2.5f;
+                    if (eff < .5) eff = .5f;
+                }
+                if (!calculateEfficiency)
+                {
+                    eff = 1f;
+                    efficiency = String.Format("100% [Fixed]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
+                else if (_governorActive)
+                {
+                    if (eff > 1f) eff = 1f;
+                    efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
+                else
+                {
+                    efficiency = String.Format("{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                }
+                return eff;
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in GetEfficiency - {0}", ex.Message));
+                return 1f;
+            }
+        }
+
+        private int GetActiveKolonyModules(Vessel v)
+        {
+            try
+            {
+                var numMods = 0;
+                var pList = v.parts.Where(p => p.Modules.Contains("KolonyConverter"));
+                foreach (var p in pList)
+                {
+                    var mods = p.Modules.OfType<KolonyConverter>();
+                    foreach (var pm in mods)
+                    {
+                        if (pm.converterEnabled)
+                            numMods++;
+                    }
+                }
+                return numMods;
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in GetActiveKolonyModules - {0}", ex.Message));
+                return 0;
+            }
+        }
+
+        public float GetEfficiencyRate()
+        {
+            var curConverters = GetActiveKolonyModules(vessel);
+            if (curConverters != _numConverters)
+            {
+                _numConverters = curConverters;
+                EfficiencySetup();
+            }
+            return _efficiencyRate;
+        }
+    }
+    
+    public class KolonyConverter : TacGenericConverter
+    {
+        [KSPField]
+        public string requiredResources = "";
+        
+        [KSPField]
+        public bool SurfaceOnly = true;
 
         private List<ResourceRatio> inputResourceList;
         private List<ResourceRatio> outputResourceList;
-        private static List<string> LSResources = new List<string> { "Food", "Water", "Oxygen" };
-        private int _numConverters;
-        private float baseConversionRate;
-        private float EfficiencyRate;
-        private bool _governorActive;
+        private float _baseConversionRate;
+        private MKSModule _mks;
 
         private static char[] delimiters = { ' ', ',', '\t', ';' };
 
         public override void OnFixedUpdate()
         {
             try
-            { 
-                baseConversionRate = conversionRate;
+            {
+                _baseConversionRate = conversionRate;
                 var newMessage = "";
-                var curConverters = GetActiveKolonyModules(vessel);
-                if(curConverters != _numConverters)
-                {
-                    _numConverters = curConverters;
-                    EfficiencySetup();
-                }
-
-                conversionRate = conversionRate * EfficiencyRate;
+                var eff = _mks.GetEfficiencyRate();
+                conversionRate = conversionRate * eff;
 
                 if (SurfaceOnly && !vessel.Landed)
                 {
@@ -66,7 +167,7 @@ namespace KolonyTools
                     conversionRate = 0.0001f;
                 }
                 base.OnFixedUpdate();
-                conversionRate = baseConversionRate;
+                conversionRate = _baseConversionRate;
                 if (!String.IsNullOrEmpty(newMessage)) converterStatus = newMessage;
             }
             catch (Exception ex)
@@ -74,7 +175,6 @@ namespace KolonyTools
                 print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}",ex.Message));
             }
         }
-
 
         public override string GetInfo()
         {
@@ -98,7 +198,6 @@ namespace KolonyTools
                 sb.AppendLine();
             }
         }
-
 
         public override void OnAwake()
         {
@@ -133,104 +232,13 @@ namespace KolonyTools
             {
                 inputResourceList = UpdateResourceList(inputResources);
                 outputResourceList = UpdateResourceList(outputResources);
+                _mks = part.Modules.OfType<MKSModule>().Any() 
+                    ? part.Modules.OfType<MKSModule>().First() 
+                    : new MKSModule();
             }
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in ResourceSetup - {0}", ex.Message));
-            }
-        }
-
-        private void EfficiencySetup()
-        {
-            EfficiencyRate = GetEfficiency();
-        }
-
-        private float GetEfficiency()
-        {
-            try
-            {
-                //Efficiency is a function of:
-                //  - Crew Capacity (any module will work for this)
-                //  - Crew Count
-                //  - Active MKS Module count
-
-                var numWorkspaces = vessel.GetCrewCapacity();
-                var numModules = GetActiveKolonyModules(vessel);
-
-                //  Part (x1.5):   0   2   1   
-                //  Ship (x0.5):   2   0   1
-                //  Total:         1   3   2
-
-                float modKerbalFactor = 0;
-                foreach(var k in part.protoModuleCrew)
-                {
-                    //A range from 1 to 2, average should be 1.5
-                    modKerbalFactor += 2;
-                    modKerbalFactor -= k.stupidity;
-                }
-                var numModuleKerbals = part.protoModuleCrew.Count();
-                var numShipKerbals = vessel.GetCrewCount() - numModuleKerbals;
-            
-                float numKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
-            
-                //Worst case, 50% crewed, 25% uncrewed
-                float eff = .25f;
-
-                if (numKerbals > 0)
-                {
-                    //Switch this to three workspaces max per Kerbal so that WS makes sense
-                    float WorkSpaceKerbalRatio = numWorkspaces / numKerbals;
-                    if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
-
-                    float WorkUnits = WorkSpaceKerbalRatio * numKerbals;
-                    eff = WorkUnits / numModules;
-                    if (eff > 2.5) eff = 2.5f;
-                    if (eff < .5) eff = .5f;
-                }
-                if (!CalculateEfficiency)
-                {
-                    eff = 1f;
-                    efficiency = String.Format("100% [Fixed]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
-                }
-                else if (_governorActive)
-                {
-                    if (eff > 1f) eff = 1f;
-                    efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
-                }
-                else
-                {
-                    efficiency = String.Format("{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
-                }
-                return eff;
-            }
-            catch (Exception ex)
-            {
-                print(String.Format("[MKS] - ERROR in GetEfficiency - {0}", ex.Message));
-                return 1f;
-            }
-        }
-
-        private int GetActiveKolonyModules(Vessel v)
-        {
-            try 
-            { 
-                var numMods = 0;
-                var pList = v.parts.Where(p => p.Modules.Contains("KolonyConverter"));
-                foreach(var p in pList)
-                {
-                    var mods = p.Modules.OfType<KolonyConverter>();
-                    foreach(var pm in mods)
-                    {
-                        if (pm.converterEnabled) 
-                            numMods++;
-                    }
-                }
-                return numMods;
-            }
-            catch (Exception ex)
-            {
-                print(String.Format("[MKS] - ERROR in GetActiveKolonyModules - {0}", ex.Message));
-                return 0;
             }
         }
 
