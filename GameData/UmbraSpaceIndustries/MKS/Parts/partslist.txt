@@ -1,0 +1,36 @@
+ Volume in drive D is New Volume
+ Volume Serial Number is DEF3-24E7
+
+ Directory of D:\Users\rbpal_000\Documents\GitHub\MKS\GameData\UmbraSpaceIndustries\MKS\Parts
+
+07/01/2014  06:35 PM             4,038 MKS_AssemblyPlant.cfg
+07/01/2014  06:35 PM             2,724 MKS_BioLab.cfg
+07/01/2014  06:35 PM             2,933 MKS_ColonyHub.cfg
+05/10/2014  10:01 PM             1,000 MKS_DockingHub.cfg
+06/29/2014  12:20 PM             1,227 MKS_DockingPort.cfg
+05/10/2014  12:55 AM               764 MKS_DockingTube.cfg
+06/29/2014  10:33 AM             1,580 MKS_ExpandoTube.cfg
+06/29/2014  10:33 AM             1,590 MKS_ExpandoTube2.cfg
+06/29/2014  10:33 AM             1,586 MKS_ExpandoTube8.cfg
+07/01/2014  06:35 PM             3,003 MKS_Fabricator.cfg
+07/01/2014  06:35 PM             3,029 MKS_Factory.cfg
+06/29/2014  10:33 AM             1,394 MKS_FlexOTube.cfg
+07/01/2014  06:35 PM             2,230 MKS_Greenhouse.cfg
+07/01/2014  06:35 PM             2,912 MKS_Harvester.cfg
+06/29/2014  10:33 AM             1,071 MKS_HubAntenna.cfg
+07/01/2014  06:35 PM             2,641 MKS_Kerbitat.cfg
+06/29/2014  10:33 AM             2,528 MKS_LogHub.cfg
+07/01/2014  06:35 PM             3,235 MKS_MachineryPlant.cfg
+06/30/2014  10:16 PM             1,045 MKS_ModuleBase.cfg
+07/01/2014  06:35 PM             1,948 MKS_PDU.cfg
+06/29/2014  10:33 AM               758 MKS_RadialPort.cfg
+07/01/2014  06:35 PM             2,801 MKS_Refinery.cfg
+07/01/2014  06:35 PM             3,599 MKS_RepairShop.cfg
+06/29/2014  10:33 AM             1,583 MKS_ScanOMatic.cfg
+07/01/2014  06:35 PM             3,040 MKS_Storage_Pancake.cfg
+07/01/2014  06:35 PM             2,824 MKS_Storage_Tank.cfg
+07/01/2014  06:35 PM             3,356 MKS_Terraformer.cfg
+06/29/2014  10:33 AM               966 MKS_TubeHub.cfg
+05/11/2014  03:02 PM               952 MKS_Workspace.cfg
+              29 File(s)         62,357 bytes
+               0 Dir(s)  136,894,013,440 bytes free
