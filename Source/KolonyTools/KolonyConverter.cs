@@ -11,6 +11,9 @@ namespace KolonyTools
         [KSPField]
         public bool calculateEfficiency = true;
 
+        [KSPField] 
+        public string efficiencyPart = "";
+
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
@@ -37,6 +40,10 @@ namespace KolonyTools
                 //  - Crew Capacity (any module will work for this)
                 //  - Crew Count
                 //  - Active MKS Module count
+                //  - module bonuses
+
+                //  - efficiency parts
+                //          Bonus equal to 100 * number of units - 1
 
                 var numWorkspaces = vessel.GetCrewCapacity();
                 var numModules = GetActiveKolonyModules(vessel);
@@ -71,6 +78,19 @@ namespace KolonyTools
                     if (eff > 2.5) eff = 2.5f;
                     if (eff < .5) eff = .5f;
                 }
+
+                //Add in efficiencyParts 
+                if (efficiencyPart != "")
+                {
+                    var genParts = vessel.Parts.Count(p => p.name == part.name);
+                    var effParts = vessel.Parts.Count(p => p.name == efficiencyPart);
+
+                    effParts = (effParts - genParts) / genParts;
+                    eff += effParts;
+                    if (eff < 0.25)  
+                        eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
+                }
+
                 if (!calculateEfficiency)
                 {
                     eff = 1f;
@@ -140,6 +160,7 @@ namespace KolonyTools
 
         private List<ResourceRatio> inputResourceList;
         private List<ResourceRatio> outputResourceList;
+        private List<ResourceRatio> requiredResourceList;
         private float _baseConversionRate;
         private MKSModule _mks;
 
@@ -184,6 +205,7 @@ namespace KolonyTools
             sb.AppendLine();
             getRateGroupInfo(sb, "Inputs", inputResourceList);
             getRateGroupInfo(sb, "Outputs", outputResourceList);
+            getReqInfo(sb, "Required", requiredResourceList);
             return sb.ToString();
         }
 
@@ -192,12 +214,41 @@ namespace KolonyTools
             sb.Append("<b><color=#99ff00ff>");
             sb.Append(heading);
             sb.AppendLine(":</color></b>");
+            sb.Append("<color=#99ff00ff>");
+            sb.Append("(kerbin days - 6h)");
+            sb.AppendLine(":</color>");
             foreach (var rate in rates)
             {
-                sb.AppendFormat("- <b>{0}</b>: {1:N2}/s", rate.resource.name, rate.ratio);
+                var rstr = (rate.ratio * 4).ToString();
+                if (rate.ratio >= 2500)
+                {
+                    rstr = Math.Round(rate.ratio/250, 0) + "k";
+                }
+                sb.AppendFormat("- <b>{0}</b>: {1:N2}/d", rate.resource.name, rstr);
                 sb.AppendLine();
             }
         }
+
+        private static void getReqInfo(StringBuilder sb, String heading, IEnumerable<ResourceRatio> rates)
+        {
+            sb.Append("<b><color=#99ff00ff>");
+            sb.Append(heading);
+            sb.AppendLine(":</color></b>");
+            sb.Append("<color=#99ff00ff>");
+            sb.Append("(Fixed - not consumed)");
+            sb.AppendLine(":</color>");
+            foreach (var rate in rates)
+            {
+                var rstr = (rate.ratio).ToString();
+                if (rate.ratio >= 10000)
+                {
+                    rstr = Math.Round(rate.ratio / 1000, 0) + "k";
+                }
+                sb.AppendFormat("- <b>{0}</b>: {1:N2}", rate.resource.name, rstr);
+                sb.AppendLine();
+            }
+        }
+
 
         public override void OnAwake()
         {
@@ -230,8 +281,9 @@ namespace KolonyTools
         {
             try
             {
-                inputResourceList = UpdateResourceList(inputResources);
-                outputResourceList = UpdateResourceList(outputResources);
+                inputResourceList = UpdateResourceList(inputResources,2);
+                outputResourceList = UpdateResourceList(outputResources,3);
+                requiredResourceList = UpdateResourceList(requiredResources,2);
                 _mks = part.Modules.OfType<MKSModule>().Any() 
                     ? part.Modules.OfType<MKSModule>().First() 
                     : new MKSModule();
@@ -242,14 +294,14 @@ namespace KolonyTools
             }
         }
 
-        private List<ResourceRatio> UpdateResourceList(string resString)
+        private List<ResourceRatio> UpdateResourceList(string resString, int skip)
         {
             try
             {
                 var resources = new List<ResourceRatio>();
                 string[] tokens = resString.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 
-                for (int i = 0; i < (tokens.Length - 1); i += 2)
+                for (int i = 0; i < (tokens.Length - 1); i += skip)
                 {
                     PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(tokens[i]);
                     double ratio;
@@ -259,7 +311,7 @@ namespace KolonyTools
                     }
                     else
                     {
-                        this.Log("Cannot parse \"" + inputResources + "\", something went wrong.");
+                        this.Log("Cannot parse \"" + resString + "\", something went wrong.");
                     }
                 }
 
