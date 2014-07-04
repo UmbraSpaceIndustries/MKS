@@ -86,12 +86,6 @@ namespace KolonyTools
         }
 
 
-
-        public override void OnAwake()
-        {
-            CheckAnimationState();
-        }
-
         public override void OnLoad(ConfigNode node)
         {
             CheckAnimationState();
@@ -103,13 +97,13 @@ namespace KolonyTools
             {
                 ToggleEvent("DeployModule", false);
                 ToggleEvent("RetractModule", true);
-                PlayDeployAnimation(10);
+                PlayDeployAnimation(100);
             }
             else
             {
                 ToggleEvent("DeployModule", true);
                 ToggleEvent("RetractModule", false); 
-                ReverseDeployAnimation(-10);
+                ReverseDeployAnimation(-100);
             }
         }
     }
