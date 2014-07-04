@@ -3,19 +3,25 @@ Modular Kolonization System (MKS)
 
 This is the repository for the MKS mod for [Kerbal Space Program](http://kerbalspaceprogram.com)
 
-We are currently preparing for release, so anticipate no breaking changes going forward.  However, as with all mods, we do recommend backing up your save prior to installation.
-
+NOTE:  With 0.24 around the corner, we're taking the opportunity to perform a major upgrade, which will cause breaking changes with 0.17 (the current release version).  The documentation is being updated to reflect 0.18.
 
 ### Required mods
 
 * [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667-0-23)
-* [Kethane](http://forum.kerbalspaceprogram.com/threads/23979)
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
 
+### STRONGLY recommended plugins
+(These are not technically required, but might as well be because without them, the mod is significantly less playable)
+* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules and anchoring to the surface)
+* [SCANSat](http://forum.kerbalspaceprogram.com/threads/55832) (for finding resources)
+
+### Included Plugins
+* [Open Resource System](http://forum.kerbalspaceprogram.com/threads/64595) (alternate to Kethane)
+* FireSpitter (7.x)
+* TweakScale
 
 ### Recommended mods
 
-* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules)
 * [Cargo Transportation Solutions](http://forum.kerbalspaceprogram.com/threads/77505) (great parts for transporting MKS modules)
 * [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/37707) (for assembling bases)
 * [Procedural Fairings](http://forum.kerbalspaceprogram.com/threads/39512) (for enclosing groups of MKS modules)
@@ -24,6 +30,7 @@ We are currently preparing for release, so anticipate no breaking changes going 
 
 ### Compatible with
 
+* [Kethane](http://forum.kerbalspaceprogram.com/threads/23979)
 * [Extraplanetary Laucnhpads](http://forum.kerbalspaceprogram.com/threads/59545) (resource compatability)
 * [KSP Interstellar](http://forum.kerbalspaceprogram.com/threads/43839) (reactors)
 * [BioMass](http://forum.kerbalspaceprogram.com/threads/53009) (resource compatibility)
@@ -31,7 +38,6 @@ We are currently preparing for release, so anticipate no breaking changes going 
 
 ### Planned/future integration
 
-* [Open Resource System](http://forum.kerbalspaceprogram.com/threads/64595) (alternate to Kethane)
 * [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/70161) (efficiency extensions)
 
 ### FAQ, Documentation and issues
