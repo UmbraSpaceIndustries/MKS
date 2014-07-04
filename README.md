@@ -10,7 +10,7 @@ NOTE:  With 0.24 around the corner, we're taking the opportunity to perform a ma
 * [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667-0-23)
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
 
-### STRONGLY recommended plugins
+### STRONGLY recommended mods
 (These are not technically required, but might as well be because without them, the mod is significantly less playable)
 * [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules and anchoring to the surface)
 * [SCANSat](http://forum.kerbalspaceprogram.com/threads/55832) (for finding resources)
