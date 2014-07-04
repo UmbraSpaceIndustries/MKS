@@ -13,7 +13,7 @@ namespace KolonyTools
     public class ProxyLogistics : PartModule
     {
         [KSPField]
-        public int LogisticsRange = 200; 
+        public int LogisticsRange = 2000; 
 
         [KSPField]
         public string LogisticsResources = "";
@@ -112,16 +112,16 @@ namespace KolonyTools
 
         private void CheckLogisticsRange()
         {
-            double range = 100;
-            double cv = 0;
-            foreach(var c in part.protoModuleCrew)
-            {
-                var b = c.courage;
-                var s = 1 - c.stupidity;
-                cv += (b * 10f) + s;
-            }
-            range += Math.Pow(cv, 2);
-            LogisticsRange = Convert.ToInt32(Math.Round(range,0));
+            LogisticsRange = 2000; //Overriding this for legacy support
+            //double cv = 0;
+            //foreach(var c in part.protoModuleCrew)
+            //{
+            //    var b = c.courage;
+            //    var s = 1 - c.stupidity;
+            //    cv += (b * 10f) + s;
+            //}
+            //range += Math.Pow(cv, 2);
+            //LogisticsRange = Convert.ToInt32(Math.Round(range,0));
         }
 
         private List<Vessel> GetNearbyVessels(int range, bool includeSelf)
