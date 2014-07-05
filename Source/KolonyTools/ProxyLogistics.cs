@@ -59,27 +59,42 @@ namespace KolonyTools
             {
                 //Configured Resources
                 var resources = new List<LogisticsGoal>();
-                string[] tokens = resString.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 
-                for (int i = 0; i < (tokens.Length - 1); i += 2)
+                if (!String.IsNullOrEmpty(resString))
                 {
-                    PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(tokens[i]);
-                    double goal;
-                    if (resource != null && double.TryParse(tokens[i + 1], out goal))
+                    string[] tokens = resString.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (int i = 0; i < (tokens.Length - 1); i += 2)
                     {
-                        resources.Add(new LogisticsGoal {Resource= resource, Goal = goal});
-                    }
-                    else
-                    {
-                        print("[MKS] Cannot parse \"" + resString + "\", something went wrong.");
+                        PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(tokens[i]);
+                        double goal;
+                        if (resource != null && double.TryParse(tokens[i + 1], out goal))
+                        {
+                            resources.Add(new LogisticsGoal {Resource = resource, Goal = goal});
+                        }
+                        else
+                        {
+                            print("[MKS] Cannot parse \"" + resString + "\", something went wrong.");
+                        }
                     }
                 }
-                
+                else
+                {
+                    for(int r = 0; r < part.Resources.Count; r++)
+                    {
+                        var res = part.Resources[r];
+                        var resDef = PartResourceLibrary.Instance.GetDefinition(res.resourceName);
+                        var goal = Convert.ToInt32(Math.Round(res.maxAmount * .01, 0));
+                        if (goal < 1) goal = 1;
+                        resources.Add(new LogisticsGoal {Resource = resDef, Goal = goal});
+                    }
+                }
+
                 return resources;
             }
             catch (Exception ex)
             {
-                print(String.Format("[MKS] - ERROR in UpdateResourceList - {0}", ex.Message));
+                print(String.Format("[MKS] - ERROR in SetupResourceList - {0}", ex.Message));
                 return new List<LogisticsGoal>();
             }
         }
@@ -153,6 +168,7 @@ namespace KolonyTools
 
         private void CheckResources()
         {
+            if (ResourceList.Any(r => r.Resource == null)) SetupResourceList("");
             try
             {
                 foreach(var r in ResourceList)
@@ -187,7 +203,7 @@ namespace KolonyTools
             }
             catch (Exception ex)
             {
-                print(String.Format("[MKS] - ERROR in CheckResources - {0}", ex.StackTrace));
+                print(String.Format("[MKS] - ERROR in CheckResources - {0}", ex.Message));
             }
         }
 
