@@ -86,6 +86,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InertialDampener.cs" />
     <Compile Include="InflatableStorage.cs" />
     <Compile Include="KolonyConverter.cs" />
     <Compile Include="OrbitalLogistics.cs" />
