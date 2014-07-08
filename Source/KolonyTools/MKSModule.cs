@@ -13,6 +13,15 @@ namespace KolonyTools
         [KSPField] 
         public string efficiencyPart = "";
 
+        [KSPField] 
+        public int workSpace = 0;
+
+        [KSPField] 
+        public int livingSpace = 0;
+
+        [KSPField] 
+        public bool hasGenerators = true;
+
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
@@ -37,6 +46,7 @@ namespace KolonyTools
             {
                 //Efficiency is a function of:
                 //  - Crew Capacity (any module will work for this)
+                //  - Workspaces
                 //  - Crew Count
                 //  - Active MKS Module count
                 //  - module bonuses
@@ -44,8 +54,13 @@ namespace KolonyTools
                 //  - efficiency parts
                 //          Bonus equal to 100 * number of units - 1
 
-                var numWorkspaces = vessel.GetCrewCapacity();
+                float numWorkspaces = GetKolonyWorkspaces(vessel);
+                print("NumWorkspaces: " + numWorkspaces);
+                //Plus 25% of Crew Cap as low efficiency workspaces
+                numWorkspaces += vessel.GetCrewCapacity()*.25f;
+                print("AdjNumWorkspaces: " + numWorkspaces);
                 var numModules = GetActiveKolonyModules(vessel);
+                print("numModules: " + numWorkspaces);
 
                 //  Part (x1.5):   0   2   1   
                 //  Ship (x0.5):   2   0   1
@@ -57,23 +72,37 @@ namespace KolonyTools
                     //A range from 1 to 2, average should be 1.5
                     modKerbalFactor += 2;
                     modKerbalFactor -= k.stupidity;
+                    //modKerbalFactor -= .5f;
                 }
-                var numModuleKerbals = part.protoModuleCrew.Count();
-                var numShipKerbals = vessel.GetCrewCount() - numModuleKerbals;
+                print("modKerbalFactor: " + modKerbalFactor);
 
-                float numKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
+                var numModuleKerbals = part.protoModuleCrew.Count();
+                print("NumModuleKerbals: " + numModuleKerbals);
+
+                var numShipKerbals = vessel.GetCrewCount() - numModuleKerbals;
+                print("ShipKerbals: " + numShipKerbals);
+
+                float numWeightedKerbals = (numShipKerbals * 0.5f) + modKerbalFactor;
+                print("ShipKerbals: " + numShipKerbals);
+
+                print("numWeightedKerbals: " + numWeightedKerbals);
+                numWeightedKerbals *= GetCrewHappiness();
+                print("numWeightedKerbals: " + numWeightedKerbals);
 
                 //Worst case, 50% crewed, 25% uncrewed
                 float eff = .25f;
 
-                if (numKerbals > 0)
+                if (vessel.GetCrewCount() > 0)
                 {
                     //Switch this to three workspaces max per Kerbal so that WS makes sense
-                    float WorkSpaceKerbalRatio = numWorkspaces / numKerbals;
+                    float WorkSpaceKerbalRatio = numWorkspaces / vessel.GetCrewCount();
                     if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
+                    print("WorkSpaceKerbalRatio: " + WorkSpaceKerbalRatio);
 
-                    float WorkUnits = WorkSpaceKerbalRatio * numKerbals;
+                    float WorkUnits = WorkSpaceKerbalRatio * numWeightedKerbals;
+                    print("WorkUnits: " + WorkUnits);
                     eff = WorkUnits / numModules;
+                    print("eff: " + eff);
                     if (eff > 2.5) eff = 2.5f;
                     if (eff < .5) eff = .5f;
                 }
@@ -85,7 +114,9 @@ namespace KolonyTools
                     var effParts = vessel.Parts.Count(p => p.name == efficiencyPart);
 
                     effParts = (effParts - genParts) / genParts;
+                    print("effParts: " + eff);
                     eff += effParts;
+                    print("eff: " + eff); 
                     if (eff < 0.25)  
                         eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
                 }
@@ -93,16 +124,16 @@ namespace KolonyTools
                 if (!calculateEfficiency)
                 {
                     eff = 1f;
-                    efficiency = String.Format("100% [Fixed]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                    efficiency = String.Format("100% [Fixed]");
                 }
                 else if (_governorActive)
                 {
                     if (eff > 1f) eff = 1f;
-                    efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                    efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), numShipKerbals,numWorkspaces, numModules,Math.Round(numWeightedKerbals,1));
                 }
                 else
                 {
-                    efficiency = String.Format("{0}% [{1}k/{2}s/{3}m]", Math.Round((eff * 100), 1), Math.Round(numKerbals, 1), numWorkspaces, numModules);
+                    efficiency = String.Format("{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), numShipKerbals, numWorkspaces, numModules, Math.Round(numWeightedKerbals, 1));
                 }
                 return eff;
             }
@@ -113,6 +144,20 @@ namespace KolonyTools
             }
         }
 
+
+        private float GetCrewHappiness()
+        {
+            //Prototype.  Crew Happiness is a function of the ratio of living space to Kerbals.
+            float ls = GetKolonyLivingSpace(vessel);
+            //We can add in a limited number for crew capacity - 10%
+            ls += vessel.GetCrewCapacity()*.1f;
+
+            var hap = ls/vessel.GetCrewCount();
+            //Range is 50% - 150%
+            if (hap < .5f) hap = .5f;
+            if (hap > 1.5f) hap = 1.5f;
+            return hap;
+        }
         private int GetActiveKolonyModules(Vessel v)
         {
             try
@@ -137,6 +182,66 @@ namespace KolonyTools
             }
         }
 
+
+        private int GetKolonyWorkspaces(Vessel v)
+        {
+            try
+            {
+                var numWS = 0;
+                var pList = v.parts.Where(p => p.Modules.Contains("MKSModule"));
+                foreach (var p in pList)
+                {
+                    var mods = p.Modules.OfType<MKSModule>();
+                    foreach (var pm in mods)
+                    {
+                        numWS += pm.workSpace;
+                    }
+                }
+                return numWS;
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in GetKolonyWorkspaces - {0}", ex.Message));
+                return 0;
+            }
+        }
+
+
+        private int GetKolonyLivingSpace(Vessel v)
+        {
+            try
+            {
+                var numLS = 0;
+                var pList = v.parts.Where(p => p.Modules.Contains("MKSModule"));
+                foreach (var p in pList)
+                {
+                    var mods = p.Modules.OfType<MKSModule>();
+                    foreach (var pm in mods)
+                    {
+                        if (p.Modules.Contains("USIAnimation"))
+                        {
+                            var am = p.Modules.OfType<USIAnimation>().First();
+                            if (am.isDeployed)
+                            {
+                                numLS += pm.livingSpace;
+                            }
+                        }
+                        else
+                        {
+                            numLS += pm.livingSpace;
+                        }
+                    }
+                }
+                return numLS;
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in GetKolonyWorkspaces - {0}", ex.Message));
+                return 0;
+            }
+        }
+        
+
         public float GetEfficiencyRate()
         {
             var curConverters = GetActiveKolonyModules(vessel);
@@ -148,5 +253,13 @@ namespace KolonyTools
             return _efficiencyRate;
         }
 
+        public override void OnLoad(ConfigNode node)
+        {
+            if (!hasGenerators)
+            {
+                Fields["efficiency"].guiActive = false;
+                Events["ToggleGovernor"].active = false;
+            }
+        }
     }
 }
