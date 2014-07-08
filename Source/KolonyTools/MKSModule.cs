@@ -60,7 +60,7 @@ namespace KolonyTools
                 numWorkspaces += vessel.GetCrewCapacity()*.25f;
                 print("AdjNumWorkspaces: " + numWorkspaces);
                 var numModules = GetActiveKolonyModules(vessel);
-                print("numModules: " + numWorkspaces);
+                print("numModules: " + numModules);
 
                 //  Part (x1.5):   0   2   1   
                 //  Ship (x0.5):   2   0   1
