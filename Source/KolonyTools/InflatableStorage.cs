@@ -12,12 +12,6 @@ namespace KolonyTools
         [KSPField(isPersistant = true)]
         public bool isDeployed = false;
 
-        [KSPField]
-        public bool inflatable = false;
-
-        [KSPField] 
-        public string inflatedResources = "";
-
         public Animation DeployAnimation
         {
             get
@@ -26,7 +20,21 @@ namespace KolonyTools
             }
         }
 
-        [KSPEvent(guiName = "Deploy", guiActive = true, externalToEVAOnly = true, guiActiveEditor = true, active = true, guiActiveUnfocused = true, unfocusedRange = 3.0f)]
+        [KSPEvent(guiName = "Test Deploy", active = true, guiActiveEditor = true, guiActive = false,
+            externalToEVAOnly = false)]
+        public void TestDeploy()
+        {
+            PlayDeployAnimation();
+        }
+
+        [KSPEvent(guiName = "Test Retract", active = true, guiActiveEditor = true, guiActive = false, externalToEVAOnly = false)]
+        public void TestRetract()
+        {
+            ReverseDeployAnimation();
+        }
+
+
+        [KSPEvent(guiName = "Deploy", guiActive = true, externalToEVAOnly = true, guiActiveEditor = false, active = true, guiActiveUnfocused = true, unfocusedRange = 3.0f)]
         public void DeployModule()
         {
             if (!isDeployed)
@@ -35,10 +43,6 @@ namespace KolonyTools
                 isDeployed = true;
                 ToggleEvent("DeployModule", false);
                 ToggleEvent("RetractModule", true);
-                if (inflatable && inflatedResources != "")
-                {
-                    ExpandResourceCapacity();
-                }
             }
         }
 
@@ -51,10 +55,6 @@ namespace KolonyTools
                 isDeployed = false;
                 ToggleEvent("DeployModule", true);
                 ToggleEvent("RetractModule", false);
-                if (inflatable && inflatedResources != "")
-                {
-                    CompressResourceCapacity();
-                }
             }
         }
 
@@ -76,7 +76,6 @@ namespace KolonyTools
             Events[eventName].active = state;
             Events[eventName].externalToEVAOnly = state;
             Events[eventName].guiActive = state;
-            Events[eventName].guiActiveEditor = state;
         }
 
         public override void OnStart(StartState state)
@@ -85,6 +84,7 @@ namespace KolonyTools
             CheckAnimationState();
             base.OnStart(state);
         }
+
 
         public override void OnLoad(ConfigNode node)
         {
@@ -97,60 +97,13 @@ namespace KolonyTools
             {
                 ToggleEvent("DeployModule", false);
                 ToggleEvent("RetractModule", true);
-                PlayDeployAnimation(1000);
+                PlayDeployAnimation(100);
             }
             else
             {
                 ToggleEvent("DeployModule", true);
                 ToggleEvent("RetractModule", false); 
-                ReverseDeployAnimation(-1000);
-            }
-        }
-
-        private void ExpandResourceCapacity()
-        {
-            try
-            {
-                var res = inflatedResources.Split(',');
-                for (int i = 0; i < res.Count(); i += 2)
-                {
-                    var resName = res[i];
-                    var resQty = 0m;
-                    if (Decimal.TryParse(res[i + 1], out resQty))
-                    {
-                        if (part.Resources.Contains(resName))
-                        {
-                            var r = part.Resources[resName];
-                            r.maxAmount = (double) resQty;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                print("Error in ExpandResourceCapacity - " + ex.Message);
-            }
-        }
-
-        private void CompressResourceCapacity()
-        {
-            try
-            {
-                var res = inflatedResources.Split(',');
-                for (int i = 0; i < res.Count(); i += 2)
-                {
-                    var resName = res[i];
-                    if (part.Resources.Contains(resName))
-                    {
-                        var r = part.Resources[resName];
-                        r.maxAmount = 1;
-                        if (r.amount > 1) r.amount = 1;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                print("Error in CompressResourceCapacity - " + ex.Message);
+                ReverseDeployAnimation(-100);
             }
         }
     }
