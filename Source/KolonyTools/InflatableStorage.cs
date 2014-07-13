@@ -18,6 +18,9 @@ namespace KolonyTools
         [KSPField] 
         public string inflatedResources = "";
 
+        [KSPField] 
+        public bool decoupleOnDeploy = false;
+
         public Animation DeployAnimation
         {
             get
@@ -38,6 +41,10 @@ namespace KolonyTools
                 if (inflatable && inflatedResources != "")
                 {
                     ExpandResourceCapacity();
+                }
+                if (decoupleOnDeploy)
+                {
+                    part.decouple();
                 }
             }
         }
