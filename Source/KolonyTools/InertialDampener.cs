@@ -50,35 +50,46 @@ namespace KolonyTools
 
         public override void OnFixedUpdate()
         {
-            if (isActive)
+            try
             {
-                if (part.checkLanded())
+                if (isActive)
                 {
-                    Dampen();
-                }
-                if (part.Landed)
-                {
-                    Dampen();
+                    if (part.checkLanded())
+                    {
+                        Dampen();
+                    }
+                    if (part.Landed)
+                    {
+                        Dampen();
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
+                print("ERROR in Inertial Dampener OnFixedUpdate - " + ex.Message);
             }
         }
 
         public override void OnStart(StartState state)
         {
-            part.force_activate();
-            if (isActive)
+            try
             {
-                ToggleEvent("EngageDampen", false);
-                ToggleEvent("DisengageDampen", true);
-                Dampen();
+                part.force_activate();
+                if (isActive)
+                {
+                    ToggleEvent("EngageDampen", false);
+                    ToggleEvent("DisengageDampen", true);
+                    Dampen();
+                }
+                else
+                {
+                    ToggleEvent("EngageDampen", true);
+                    ToggleEvent("DisengageDampen", false);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ToggleEvent("EngageDampen", true);
-                ToggleEvent("DisengageDampen", false);
+                print("ERROR in Inertial Dampener OnStart - " + ex.Message);
             }
         }
 
