@@ -3,11 +3,11 @@ Modular Kolonization System (MKS)
 
 This is the repository for the MKS mod for [Kerbal Space Program](http://kerbalspaceprogram.com)
 
-NOTE:  With 0.24 around the corner, we're taking the opportunity to perform a major upgrade, which will cause breaking changes with 0.17 (the current release version). The documentation is being updated to reflect 0.18.
+NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are still being updated to reflect the new changes - be patient :)
 
 ### Required mods
 
-* [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667)
+* [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667) [YOU MUST USE THE 0.9 PRE RELEASE!]
 
 ### STRONGLY recommended mods
 (These are not technically required, but might as well be because without them, the mod is significantly less playable)
@@ -17,7 +17,6 @@ NOTE:  With 0.24 around the corner, we're taking the opportunity to perform a ma
 ### Included Plugins
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
 * [Open Resource System](http://forum.kerbalspaceprogram.com/threads/64595) (alternate to Kethane)
-* FireSpitter (7.x)
 * TweakScale
 
 ### Recommended mods
@@ -45,11 +44,11 @@ Feel free to browse the wiki for documentation, along with the [KSP Dev Thread](
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
-Now you can also visit [our site](https://sites.google.com/site/modularkolonizationsystem) made by Olympic1.
+Olympic1 also maintains an unofficial (but very helpful) [info site](https://sites.google.com/site/modularkolonizationsystem) on 
 
 ### Download Link
 
-You can download the current version of the mod from [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AACiDPCa7ZNPhrNIYWCmGXRea/MKS_0.17.0.zip)
+You can download the current version of MKS (as well as the old 0.17 version, and other USI offerings) from  [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a)
 
 ### License
 
@@ -62,4 +61,4 @@ MKS is licensed under a Creative Commons Attribution-ShareAlike 4.0 Internationa
 * PrivateFlip (Orbital Logistics code)
 * Stage (ORS Maps)
 * Vim Razz (Mission Flags)
-* Olympic1 (Website)
+* Olympic1 (Website, Science Logs)
