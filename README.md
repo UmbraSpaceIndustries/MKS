@@ -44,7 +44,7 @@ Feel free to browse the wiki for documentation, along with the [KSP Dev Thread](
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
-Olympic1 also maintains an unofficial (but very helpful) [info site](https://sites.google.com/site/modularkolonizationsystem) on 
+Olympic1 also maintains an unofficial (but very helpful) [info site](https://sites.google.com/site/modularkolonizationsystem)
 
 ### Download Link
 
