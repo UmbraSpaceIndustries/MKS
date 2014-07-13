@@ -81,14 +81,28 @@ namespace KolonyTools
 
         public override void OnStart(StartState state)
         {
-            DeployAnimation[deployAnimationName].layer = 2;
-            CheckAnimationState();
-            base.OnStart(state);
+            try
+            {
+                DeployAnimation[deployAnimationName].layer = 2;
+                CheckAnimationState();
+                base.OnStart(state);
+            }
+            catch (Exception ex)
+            {
+                print("ERROR IN USIAnimationOnStart - " + ex.Message);
+            }
         }
 
         public override void OnLoad(ConfigNode node)
         {
-            CheckAnimationState();
+            try
+            {
+                CheckAnimationState();
+            }
+            catch (Exception ex)
+            {
+                print("ERROR IN USIAnimationOnLoad - " + ex.Message);
+            }
         }
 
         private void CheckAnimationState()

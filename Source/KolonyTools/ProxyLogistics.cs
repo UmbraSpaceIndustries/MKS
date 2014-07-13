@@ -101,12 +101,12 @@ namespace KolonyTools
 
         public override void OnUpdate()
         {
-            if (ResourceList == null || ResourceList.Count == 0)
-            {
-                ResourceList = SetupResourceList(LogisticsResources);
-            }
             try
             {
+                if (ResourceList == null || ResourceList.Count == 0)
+                {
+                    ResourceList = SetupResourceList(LogisticsResources);
+                }
                 if (vessel.Landed)
                 {
                     CheckLogisticsRange();
