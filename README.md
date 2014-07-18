@@ -44,8 +44,6 @@ Feel free to browse the wiki for documentation, along with the [KSP Dev Thread](
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
-Olympic1 also maintains an unofficial (but very helpful) [info site](https://sites.google.com/site/modularkolonizationsystem)
-
 ### Download Link
 
 You can download the current version of MKS (as well as the old 0.17 version, and other USI offerings) from  [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a)
@@ -63,4 +61,4 @@ MKS is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.
 * PrivateFlip (Orbital Logistics code)
 * Stage (ORS Maps)
 * Vim Razz (Mission Flags)
-* Olympic1 (Website, Science Logs)
+* Olympic1 (Science Logs)
