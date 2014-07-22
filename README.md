@@ -6,13 +6,7 @@ This is the repository for the MKS mod for [Kerbal Space Program](http://kerbals
 NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are still being updated to reflect the new changes - be patient :)
 
 ### Required mods
-
 * [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667) [YOU MUST USE THE 0.9 PRE RELEASE!]
-
-### STRONGLY recommended mods
-(These are not technically required, but might as well be because without them, the mod is significantly less playable)
-* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules and anchoring to the surface)
-* [SCANsat](http://forum.kerbalspaceprogram.com/threads/55832) (for finding resources)
 
 ### Included Plugins
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
@@ -20,7 +14,10 @@ NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are 
 * TweakScale
 
 ### Recommended mods
+(These are absolutely not required, but have aspects that make gameplay easier)
 
+* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules and anchoring to the surface)
+* [SCANsat](http://forum.kerbalspaceprogram.com/threads/55832) (for finding resources)
 * [Cargo Transportation Solutions](http://forum.kerbalspaceprogram.com/threads/77505) (great parts for transporting MKS modules)
 * [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/37707) (for assembling bases)
 * [Procedural Fairings](http://forum.kerbalspaceprogram.com/threads/39512) (for enclosing groups of MKS modules)
@@ -40,7 +37,7 @@ NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are 
 
 Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
 
-Feel free to browse the wiki for documentation, along with the [KSP Dev Thread](http://forum.kerbalspaceprogram.com/threads/72706) to report issues and comments.
+There is also a [Walkthrough](https://github.com/BobPalmer/MKS/Tutorial_00)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
