@@ -1,7 +1,12 @@
 Modular Kolonization System (MKS) 
 ===
 
-This is the repository for the MKS mod for [Kerbal Space Program](http://kerbalspaceprogram.com)
+This is the repository for the MKS and OKS mods for [Kerbal Space Program](http://kerbalspaceprogram.com)
+
+MKS and OKS are the original works of RoverDude (GitHub user BobPalmer).  
+
+You can find the official repo for this mod on [Github](http://github.com/BobPalmer/MKS).  Releases, along with other USI products, can be found on [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a). 
+
 
 NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are still being updated to reflect the new changes - be patient :)
 
@@ -43,7 +48,7 @@ You can also use GitHub issues to report bugs and provide suggestions, etc.
 
 ### Download Link
 
-You can download the current version of MKS (as well as the old 0.17 version, and other USI offerings) from  [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a)
+You can download the current version of MKS from  [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a).  Note that for the sake of my own sanity, 0.17 and prior versions are no longer supported.
 
 ### License
 
