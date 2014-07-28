@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KolonyTools", "KolonyTools\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3177433-4A6D-4600-8973-534EB2FDC0CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USITools", "..\..\USITools\USITools\USITools.csproj", "{8699BBCB-15F3-40C6-A001-46E08886360C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USITools", "..\..\UmbraSpaceIndustries\USITools\USITools\USITools.csproj", "{8699BBCB-15F3-40C6-A001-46E08886360C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
