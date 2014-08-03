@@ -1,0 +1,18 @@
+{
+	"NAME":"Modular Kolonization System",
+	"URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/GameData/UmbraSpaceIndustries/MKS.version",
+	"DOWNLOAD":"https://github.com/BobPalmer/MKS/releases",
+	"VERSION":
+	{
+		"MAJOR":0,
+		"MINOR":19,
+		"PATCH":3,
+		"BUILD":0
+	},
+	"KSP_VERSION":
+	{
+		"MAJOR":0,
+		"MINOR":24
+		"PATCH":2
+	}
+}
