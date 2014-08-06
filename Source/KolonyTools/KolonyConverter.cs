@@ -195,7 +195,8 @@ namespace KolonyTools
                     double numRequired;
                     if (resource != null && double.TryParse(tokens[i + 1], out numRequired))
                     {
-                        var amountAvailable = part.IsResourceAvailable(resource, numRequired);
+                        var r = part.Resources["resource"];
+                        var amountAvailable = r.amount;
                         if (amountAvailable < numRequired) missingResources.Add(resource.name); 
                     }
                 }
