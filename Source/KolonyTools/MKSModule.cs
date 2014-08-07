@@ -108,16 +108,18 @@ namespace KolonyTools
                     if (eff < .5) eff = .5f;
                 }
 
+                print("effpartname: " + efficiencyPart);
                 //Add in efficiencyParts 
                 if (efficiencyPart != "")
                 {
                     var genParts = vessel.Parts.Count(p => p.name == part.name);
-                    var effParts = vessel.Parts.Count(p => p.name == efficiencyPart);
+                    var effParts = vessel.Parts.Count(p => p.name == (efficiencyPart.Replace('_','.')));
 
                     effParts = (effParts - genParts) / genParts;
-                    print("effParts: " + eff);
+                    print("effParts: " + effParts);
+                    print("oldEff: " + eff);
                     eff += effParts;
-                    print("eff: " + eff); 
+                    print("newEff: " + eff); 
                     if (eff < 0.25)  
                         eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
                 }
