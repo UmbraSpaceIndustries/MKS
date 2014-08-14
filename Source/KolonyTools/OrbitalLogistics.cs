@@ -1442,7 +1442,7 @@ namespace KolonyTools
             {
                 resources = vessel.protoVessel.protoPartSnapshots.SelectMany(
                     partSnapshot =>
-                        partSnapshot.resources.Select(res => new MKSLresource { resourceName = res.resourceName }))
+                        partSnapshot.resources.Select(res => res.resourceName)).Distinct().Select(resName => new MKSLresource { resourceName = resName })
                     .ToList();
 
             }
@@ -1450,7 +1450,7 @@ namespace KolonyTools
             {
                 resources =
                 vessel.Parts.SelectMany(
-                    part => part.Resources.list.Select(res => new MKSLresource { resourceName = res.resourceName }))
+                    part => part.Resources.list.Select(res => res.resourceName)).Distinct().Select(resName => new MKSLresource { resourceName = resName })
                     .ToList();
             }
             return resources;
