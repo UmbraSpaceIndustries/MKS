@@ -7,6 +7,7 @@ using System.Linq;
 using LibNoise.Unity.Operator;
 using Tac;
 using UnityEngine;
+using Object = System.Object;
 
 namespace KolonyTools
 {
@@ -105,10 +106,9 @@ namespace KolonyTools
         public float maxTransferMass = 1000000f;
 
         //strings in which planned and completed tranfers are saved for persitance
-        public List<MKSLtransfer> currentTransfers = new List<MKSLtransfer>();
+        //public List<MKSLtransfer> currentTransfers = new List<MKSLtransfer>();
         [KSPField(isPersistant = true, guiActive = false)]
         public MKSLTranferList saveCurrentTransfersList = new MKSLTranferList();
-        public List<MKSLtransfer> previousTransfers = new List<MKSLtransfer>();
         [KSPField(isPersistant = true, guiActive = false)]
         public MKSLTranferList savePreviousTransfersList = new MKSLTranferList();
 
@@ -152,7 +152,6 @@ namespace KolonyTools
             {
                 //newedit = true;
                 makeBodyVesselList();
-
                 editGUITransfer = new MKSLtransfer();
                 System.Random rnd = new System.Random();
                 editGUITransfer.transferName = rnd.Next(100000, 999999).ToString();
@@ -170,7 +169,7 @@ namespace KolonyTools
 
             GUILayout.Label("Current transfers", labelStyle, GUILayout.Width(150));
             scrollPositionGUICurrentTransfers = GUILayout.BeginScrollView(scrollPositionGUICurrentTransfers, false,true, GUILayout.Width(160), GUILayout.Height(180));
-            foreach (MKSLtransfer trans in currentTransfers)
+            foreach (MKSLtransfer trans in saveCurrentTransfersList)
             {
                 if (GUILayout.Button(trans.transferName + " (" + deliveryTimeString(trans.arrivaltime, Planetarium.GetUniversalTime()) + ")", buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
                 {
@@ -183,7 +182,7 @@ namespace KolonyTools
 
             GUILayout.Label("Previous tranfers", labelStyle, GUILayout.Width(150));
             scrollPositionGUIPreviousTransfers = GUILayout.BeginScrollView(scrollPositionGUIPreviousTransfers, false, true, GUILayout.Width(160), GUILayout.Height(80));
-            foreach (MKSLtransfer trans in previousTransfers)
+            foreach (MKSLtransfer trans in savePreviousTransfersList)
             {
                 if (GUILayout.Button(trans.transferName + " " + (trans.delivered == true ? "succes" : "failure"), buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
                 {
@@ -213,8 +212,8 @@ namespace KolonyTools
             _log.LogWarning("[MKS] guiMain running");
             initStyle();
             
-            loadTransferList(currentTransfers, saveCurrentTransfersList, true);
-            loadTransferList(previousTransfers, savePreviousTransfersList, false);
+            //loadTransferList(currentTransfers, saveCurrentTransfersList);
+            //loadTransferList(savePreviousTransfersList, savePreviousTransfersList);
             RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
         }
 
@@ -583,33 +582,16 @@ namespace KolonyTools
         /// manipulate save lists
         /// </summary>
         /// <param name="transferlist"></param>
+        /// <param name="savestring"></param>
 
         //converts a save string into a list of MKSLtransfers
-        public void loadTransferList(List<MKSLtransfer> transferlist,MKSLTranferList savestring, bool longsave)
+        public void loadTransferList(List<MKSLtransfer> transferlist, MKSLTranferList savestring)
         {
             _log.LogWarning("[MKS] loading transferlist with "+savestring.Count+" transfers");
             transferlist.Clear();
 
             transferlist.AddRange(savestring);
             _log.LogWarning("[MKS] loaded " + transferlist.Count + " transfers");
-            //if (savestring == "") { return; }
-            //string[] deliveries = savestring.Split('@');
-
-            //if (longsave)
-            //{
-            //    for (int i = deliveries.Length - 1; i >= 0; i--)
-            //    {
-            //        string[] geninfo = deliveries[i].Split('>');
-            //        if (null != geninfo[3]) { deliveries[i] = geninfo[3]; }
-            //    }
-            //}
-
-            //for (int i = deliveries.Length - 1; i >= 0; i--)
-            //{
-            //    MKSLtransfer trans = new MKSLtransfer();
-            //    trans.loadstring(deliveries[i]);
-            //    transferlist.Add(trans);
-            //}
         }
 
         //removes an entry from the current transfers 
@@ -656,8 +638,8 @@ namespace KolonyTools
 
             //saveCurrentTransfers = newSaveCurrentTransfers;
 
-            loadTransferList(currentTransfers, saveCurrentTransfersList, true);
-            loadTransferList(previousTransfers, savePreviousTransfersList, false);
+            //loadTransferList(currentTransfers, saveCurrentTransfersList);
+            //loadTransferList(previousTransfers, savePreviousTransfersList);
         }
 
         /// <summary>
@@ -834,7 +816,7 @@ namespace KolonyTools
 
         public void createTransfer(MKSLtransfer trans)
         {
-            _log.LogWarning("[MKS] creating transfer "+trans.longsavestring());
+            _log.LogWarning("[MKS] creating transfer "+trans.savestring());
             foreach (MKSLresource costRes in trans.costList)
             {
                 double AmountToGather = costRes.amount;
@@ -867,8 +849,7 @@ namespace KolonyTools
             }
 
                 saveCurrentTransfersList.Add(trans);
-            
-            loadTransferList(currentTransfers, saveCurrentTransfersList, true);
+            //loadTransferList(currentTransfers, saveCurrentTransfersList);
             closeGUIEdit();
             _log.LogWarning("[MKS] finished creating transfer");
         }
@@ -994,7 +975,7 @@ namespace KolonyTools
 
     }
 
-    public class MKSLtransfer : PartModule, IConfigNode
+    public class MKSLtransfer : IConfigNode
     {
         public string transferName = "";
         public List<MKSLresource> transferList = new List<MKSLresource>();
@@ -1057,16 +1038,6 @@ namespace KolonyTools
                 res.costPerMass = Convert.ToDouble(component[1].Trim());
                 costList.Add(res);
             }
-        }
-
-        public string longsavestring()
-        {
-            string save = "";
-
-            save = vesselTo.id.ToString() + ">" + vesselTo.vesselName.Trim() + ">" + arrivaltime.ToString() + ">";
-            save = save + savestring();
-
-            return (save);
         }
 
         public string savestring()
@@ -1206,8 +1177,29 @@ namespace KolonyTools
 
         void IConfigNode.Save(ConfigNode node)
         {
-            node.AddValue("key",longsavestring());
+            node.AddValue("key",savestring());
         }
+
+        //public void CheckWTF(MKSLTranferList savestring)
+        //{
+        //    var _log = new KSPLog();
+        //    _log.Log("[MKS] wtf_log.Log");
+        //    if (savestring.Count > 1)
+        //    {
+        //        if (savestring[0].Equals(savestring[1]))
+        //        {
+        //            _log.Log("[MKS] wtf " + savestring[0].transferName + " == " + savestring[1].transferName + " ?");
+        //            if (ReferenceEquals(savestring[0], savestring[1]))
+        //            {
+        //                _log.Log("[MKS] wtf " + savestring[0].transferName + " reference equals too? " + savestring[1].transferName + " ?");
+        //            }
+        //            else
+        //            {
+        //                _log.Log("[MKS] different references");
+        //            }
+        //        }
+        //    }
+        //}
     }
 
 
@@ -1223,11 +1215,6 @@ namespace KolonyTools
             if (savestring == "") { return; }
             string[] deliveries = savestring.Split('@');
             bbla.LogWarning("[MKS] loading node length" + deliveries.Length);
-                for (int i = deliveries.Length - 1; i >= 0; i--)
-                {
-                    string[] geninfo = deliveries[i].Split('>');
-                    if (null != geninfo[3]) { deliveries[i] = geninfo[3]; }
-                }
 
             for (int i = deliveries.Length - 1; i >= 0; i--)
             {
@@ -1239,7 +1226,7 @@ namespace KolonyTools
 
         public void Save(ConfigNode node)
         {
-            node.AddValue("key", this.Aggregate("", (current, transfer) => current + (transfer.longsavestring() + "@")).TrimEnd('@'));
+            node.AddValue("key", this.Aggregate("", (current, transfer) => current + (transfer.savestring() + "@")).TrimEnd('@'));
             
         }
     }
@@ -1289,7 +1276,7 @@ namespace KolonyTools
             {
                 if (FlightGlobals.ActiveVessel.protoVessel.orbitSnapShot.ReferenceBodyIndex !=
                     ves.protoVessel.orbitSnapShot.ReferenceBodyIndex) continue;
-                if (ves.packed && !ves.loaded)
+                if (ves.packed && !ves.loaded) //inactive vessel
                 {
                     foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
                     {
@@ -1299,9 +1286,10 @@ namespace KolonyTools
 
                             var savestring = new MKSLTranferList();
                             savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
-                            var completeddeliveries = new MKSLTranferList();
+                            var completeddeliveries = new MKSLTranferList(); 
+                            
                             _log.Log("[MKS] onDraw with an unloaded vessel");
-                            if (checkDeliveries(ref savestring, ref completeddeliveries))
+                            if (checkDeliveries(savestring, completeddeliveries))
                             {
                                 var currentNode = new ConfigNode();
                                 savestring.Save(currentNode);
@@ -1311,6 +1299,7 @@ namespace KolonyTools
                                 var previouse = new MKSLTranferList();
                                 previouse.Load(previouseList);
                                 previouse.AddRange(completeddeliveries);
+                                _log.Log("[MKS] onDraw prev count" +previouse.Count);
                                 var previousNode = new ConfigNode();
                                 previouse.Save(previousNode);
                                 pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
@@ -1319,7 +1308,7 @@ namespace KolonyTools
                         }
                     }
                 }
-                else
+                else //active vessel
                 {
                     foreach (Part p in ves.parts)
                     {
@@ -1332,11 +1321,12 @@ namespace KolonyTools
                                 var savestring = MKSLc.saveCurrentTransfersList;
                                 var completeddeliveries = new MKSLTranferList();
                                 _log.Log("[MKS] onDraw with a loaded vessel");
-                                if (checkDeliveries(ref savestring,ref completeddeliveries))
+                                if (checkDeliveries(savestring, completeddeliveries))
                                 {
-                                    MKSLc.saveCurrentTransfersList = savestring;
                                     MKSLc.savePreviousTransfersList.AddRange(completeddeliveries);
+                                    savestring.ForEach(x => _log.Log("[MKS] onDraw deliveries left:" + x.transferName));
                                 }
+                                
                             }
                         }
                     }
@@ -1345,44 +1335,37 @@ namespace KolonyTools
             nextchecktime = Planetarium.GetUniversalTime() + 60;
         }
 
-        public bool checkDeliveries(ref MKSLTranferList savestring,ref MKSLTranferList completeddeliveries)
+        public bool checkDeliveries(MKSLTranferList savestring, MKSLTranferList completeddeliveries)
         {
             if (!savestring.Any())
             {
                 return false;
             }
-
             bool action = false;
-            var newsavestring = new MKSLTranferList();
-
-            completeddeliveries = new MKSLTranferList();
 
             foreach (var delivery in savestring)
             {
                 if (FlightGlobals.ActiveVessel.id == delivery.vesselTo.id && Planetarium.GetUniversalTime() > Convert.ToDouble(delivery.arrivaltime))
                 {
-                    _log.Log("[MKS] delivering to " + FlightGlobals.ActiveVessel.id);
-                    action = true;
+                    _log.Log("[MKS] trying to deliver "+delivery.transferName+" to " + delivery.vesselTo.id +" from "+delivery.vesselFrom.id);
+                    
                     //if return is true then add the returned
                     if (attemptDelivery(delivery))
                     {
+                        _log.Log("[MKS] delivering " + delivery.transferName + " to " + delivery.vesselTo.id + " from " + delivery.vesselFrom.id);
                         completeddeliveries.Add(delivery);
-                    }
-                    else
-                    {
-                        newsavestring.Add(delivery);
+                        action = true;
                     }
                 }
                 else
                 {
-                    _log.Log("[MKS] ignoring delivery to " + FlightGlobals.ActiveVessel.id +" from "+delivery.vesselTo.id);
-                    newsavestring.Add(delivery);
+                    _log.Log("[MKS] ignoring delivery " + delivery.transferName + " to " + delivery.vesselTo.id + " from " + delivery.vesselFrom.id);
                 }
             }
 
             if (action)
             {
-                savestring = newsavestring;
+                completeddeliveries.ForEach(x => savestring.Remove(x));
             }
 
             return action;
@@ -1399,24 +1382,21 @@ namespace KolonyTools
                 {
                     delivery.delivered = false;
 
-                    return true;
+                    return false;
                 }
             }
 
             //check if location changed of destination if destination is surface
-            if (delivery.orbit) //todo: bug?
+            if (!delivery.orbit)
             {
                 if (!checkStaticLocation(FlightGlobals.ActiveVessel, delivery.LON, delivery.LAT))
                 {
                     delivery.delivered = false;
-                    return true;
+                    return false;
                 }
             }
 
             makeDelivery(delivery);
-
-            //delivery = transfer.longsavestring();
-            //return false;
 
             return (true);
         }
