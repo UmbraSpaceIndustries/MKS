@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using Object = System.Object;
 
 namespace KolonyTools
 {
@@ -206,10 +207,6 @@ namespace KolonyTools
         public void openGUIMain()
         {
             initStyle();
-            foreach (var res in PartResourceLibrary.ElementalResources)
-            {
-                Debug.Log("[MKS]"+res.name);
-            }
             
             RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
         }
@@ -758,13 +755,13 @@ namespace KolonyTools
             {
                 double AmountToGather = costRes.amount;
                 double AmountGathered = 0;
-                AmountGathered = AmountGathered + takeResources(vessel, costRes.resourceName, AmountToGather - AmountGathered);
-                AmountGathered = AmountGathered + takeResources(trans.VesselFrom, costRes.resourceName, AmountToGather - AmountGathered);
+                AmountGathered += -vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                AmountGathered += -trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
             }
 
             foreach (MKSLresource transRes in trans.transferList)
             {
-                transRes.amount = takeResources(trans.VesselFrom, transRes.resourceName, transRes.amount);
+                transRes.amount = -trans.VesselFrom.ExchangeResources(transRes.resourceName, -transRes.amount);
             }
 
             trans.delivered = false;
@@ -1347,36 +1344,11 @@ namespace KolonyTools
         {
             foreach (MKSLresource res in transfer.transferList)
             {
-                giveResources(FlightGlobals.ActiveVessel, res.resourceName, res.amount);
+                FlightGlobals.ActiveVessel.ExchangeResources(res.resourceName, res.amount);
             }
             transfer.delivered = true;
         }
-
-        public void giveResources(Vessel deliverVessel, string ResourceName, double deliverAmount)
-        {
-            print(deliverVessel.name + " " + ResourceName + " " + deliverAmount);
-            //deliver to parts
-            foreach (Part op in deliverVessel.parts)
-            {
-                foreach (PartResource or in op.Resources)
-                {
-                    if (or.info.name == ResourceName && deliverAmount > 0)
-                    {
-                        if (deliverAmount >= or.maxAmount - or.amount)
-                        {
-                            deliverAmount = deliverAmount - (or.maxAmount - or.amount);
-                            or.amount = or.maxAmount;
-                        }
-                        else
-                        {
-                            or.amount = or.amount + deliverAmount;
-                            deliverAmount = 0;
-                        }
-                    }
-                }
-            }
-        }
-
+        
 
         private bool checkStaticOrbit(Vessel ves, double SMA, double ECC, double INC)
         {
@@ -1501,6 +1473,133 @@ namespace KolonyTools
                 Debug.Log(marker+value.name+" : "+value.value);
             }
         }
+
+
+        public static void Log(this Object obj, string msg)
+        {
+            Debug.Log("[MKS] "+msg);
+        }
+
+        public static double ExchangeResources(this Vessel vessel, int resourceID, double amount)
+        {
+            return vessel.ExchangeResources(PartResourceLibrary.Instance.GetDefinition(resourceID),amount);
+        }
+
+        public static double ExchangeResources(this Vessel vessel, string resourceName, double amount)
+        {
+            return vessel.ExchangeResources(PartResourceLibrary.Instance.GetDefinition(resourceName), amount);
+        }
+        public static double ExchangeResources(this Vessel vessel, PartResourceDefinition resource, double amount)
+        {
+            vessel.Log("ExchangeResource: vessel="+vessel.name+", resource="+resource.name+", amount="+amount);
+            if (Math.Abs(amount) < 0.000001)
+            {
+                return amount;
+            }
+            double amountExchanged = 0;
+            var done = false;
+            
+            if (vessel.packed && !vessel.loaded)
+            {
+                vessel.Log("ExchangeResource:packed");
+                //Thanks to NathanKell for explaining how to access and edit parts of unloaded vessels and pointing me for some example code is NathanKell's own Mission Controller Extended mod!
+                foreach (ProtoPartSnapshot p in vessel.protoVessel.protoPartSnapshots)
+                {
+                    if (done)
+                    {
+                        break;
+                    }
+                    foreach (ProtoPartResourceSnapshot r in p.resources)
+                    {
+                        if (done)
+                        {
+                            break;
+                        }
+                        if (r.resourceRef.info.id != resource.id) continue;
+                        double amountInPart = Convert.ToDouble(r.resourceValues.GetValue("amount"));
+                        if (amount < 0)
+                        {
+                            if (amountInPart < Math.Abs(amount - amountExchanged))
+                            {
+                                amountExchanged -= amountInPart;
+                                r.resourceValues.SetValue("amount", "0");
+                            }
+                            else
+                            {
+                                r.resourceValues.SetValue("amount",
+                                    Convert.ToString(amountInPart + (amount - amountExchanged)));
+                                amountExchanged = amount;
+                                done = true;
+                            }
+                        }
+                        else
+                        {
+                            if (r.resourceRef.maxAmount < amount - amountExchanged)
+                            {
+                                amountExchanged += (r.resourceRef.maxAmount - amountInPart);
+                                r.resourceValues.SetValue("amount",Convert.ToString(r.resourceRef.maxAmount));
+                            }
+                            else
+                            {
+                                r.resourceValues.SetValue("amount",Convert.ToString(amountInPart + (amount - amountExchanged)));
+                                amountExchanged = amount;
+                                done = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                vessel.Log("ExchangeResource:loaded");
+                foreach (Part p in vessel.parts)
+                {
+                    if (done)
+                    {
+                        break;
+                    }
+                    foreach (PartResource r in p.Resources)
+                    {
+                        if (done)
+                        {
+                            break;
+                        }
+                        if (r.info.id != resource.id) continue;
+
+                        if (amount < 0)
+                        {
+                            if (r.amount < Math.Abs(amount - amountExchanged))
+                            {
+                                amountExchanged -= r.amount;
+                                r.amount = 0;
+                            }
+                            else
+                            {
+                                r.amount += (amount - amountExchanged);
+                                amountExchanged = amount;
+                                done = true;
+                            }
+                        }
+                        else
+                        {
+                            if (r.maxAmount < amount - amountExchanged)
+                            {
+                                amountExchanged += (r.maxAmount - r.amount);
+                                r.amount = r.maxAmount;
+                            }
+                            else
+                            {
+                                r.amount += (amount - amountExchanged);
+                                amountExchanged = amount;
+                                done = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return (amountExchanged);
+        }
+
     }
 }
 
