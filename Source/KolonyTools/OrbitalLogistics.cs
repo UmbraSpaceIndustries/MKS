@@ -212,8 +212,6 @@ namespace KolonyTools
             _log.LogWarning("[MKS] guiMain running");
             initStyle();
             
-            //loadTransferList(currentTransfers, saveCurrentTransfersList);
-            //loadTransferList(savePreviousTransfersList, savePreviousTransfersList);
             RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
         }
 
@@ -578,21 +576,6 @@ namespace KolonyTools
         }
 
 
-        /// <summary>
-        /// manipulate save lists
-        /// </summary>
-        /// <param name="transferlist"></param>
-        /// <param name="savestring"></param>
-
-        //converts a save string into a list of MKSLtransfers
-        public void loadTransferList(List<MKSLtransfer> transferlist, MKSLTranferList savestring)
-        {
-            _log.LogWarning("[MKS] loading transferlist with "+savestring.Count+" transfers");
-            transferlist.Clear();
-
-            transferlist.AddRange(savestring);
-            _log.LogWarning("[MKS] loaded " + transferlist.Count + " transfers");
-        }
 
         //removes an entry from the current transfers 
         public void removeCurrentTranfer(MKSLtransfer transRemove)
@@ -600,46 +583,6 @@ namespace KolonyTools
 
             saveCurrentTransfersList.Remove(transRemove);
             savePreviousTransfersList.Add(transRemove);
-            //remove from current transfers save string
-            //string[] deliveries = saveCurrentTransfers.Split('@');
-            //string newSaveCurrentTransfers = "";
-            //foreach (String delivery in deliveries)
-            //{
-            //    string[] geninfo = delivery.Split('>');
-
-            //    MKSLtransfer transfer = new MKSLtransfer();
-            //    transfer.loadstring(geninfo[3]);
-            //    string geninfo3 = geninfo[3];
-            //    //if return is true then add the returned
-            //    if (transfer.transferName != transRemove.transferName)
-            //    {
-            //        if (newSaveCurrentTransfers == "")
-            //        {
-            //            newSaveCurrentTransfers = delivery;
-
-            //        }
-            //        else
-            //        {
-            //            newSaveCurrentTransfers = saveCurrentTransfers + "@" + delivery;
-            //        }
-            //    }
-
-            //}
-
-            ////add to previous transfers save string
-            //if (savePreviousTransfers == "")
-            //{
-            //    savePreviousTransfers = transRemove.savestring();
-            //}
-            //else
-            //{
-            //    savePreviousTransfers = savePreviousTransfers + "@" + transRemove.savestring();
-            //}
-
-            //saveCurrentTransfers = newSaveCurrentTransfers;
-
-            //loadTransferList(currentTransfers, saveCurrentTransfersList);
-            //loadTransferList(previousTransfers, savePreviousTransfersList);
         }
 
         /// <summary>
@@ -849,7 +792,6 @@ namespace KolonyTools
             }
 
                 saveCurrentTransfersList.Add(trans);
-            //loadTransferList(currentTransfers, saveCurrentTransfersList);
             closeGUIEdit();
             _log.LogWarning("[MKS] finished creating transfer");
         }
