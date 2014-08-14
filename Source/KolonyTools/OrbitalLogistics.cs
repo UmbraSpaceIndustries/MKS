@@ -4,10 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LibNoise.Unity.Operator;
-using Tac;
 using UnityEngine;
-using Object = System.Object;
 
 namespace KolonyTools
 {
@@ -1121,12 +1118,9 @@ namespace KolonyTools
         {
             Clear();
             var bbla = new KSPLog();
-            bbla.LogWarning("[MKS] loading node");
-            bbla.LogWarning("[MKS] loading node "+node.GetValue("key"));
             string savestring = node.GetValue("key");
             if (savestring == "") { return; }
             string[] deliveries = savestring.Split('@');
-            bbla.LogWarning("[MKS] loading node length" + deliveries.Length);
 
             for (int i = deliveries.Length - 1; i >= 0; i--)
             {
