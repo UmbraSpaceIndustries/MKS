@@ -111,9 +111,7 @@ namespace KolonyTools
         public MKSLTranferList saveCurrentTransfersList = new MKSLTranferList();
         [KSPField(isPersistant = true, guiActive = false)]
         public MKSLTranferList savePreviousTransfersList = new MKSLTranferList();
-
-        private KSPLog _log = new KSPLog();
-
+        
         /// <summary>
         /// Main window
         /// </summary>
@@ -209,7 +207,6 @@ namespace KolonyTools
         [KSPEvent(name = "Kolony Logistics", isDefault = false, guiActive = true, guiName = "Kolony Logistics")]
         public void openGUIMain()
         {
-            _log.LogWarning("[MKS] guiMain running");
             initStyle();
             
             RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
@@ -652,14 +649,9 @@ namespace KolonyTools
             if (check)
             {
                 validationMess = "";
-                _log.LogWarning("[MKS] valid transfer");
-                return(true);
+                return true;
             }
-            else
-            {
-                _log.LogWarning("[MKS] not a valid transfer");
-                return(false);
-            }
+            return false;
         }
 
 
@@ -759,7 +751,6 @@ namespace KolonyTools
 
         public void createTransfer(MKSLtransfer trans)
         {
-            _log.LogWarning("[MKS] creating transfer "+trans.savestring());
             foreach (MKSLresource costRes in trans.costList)
             {
                 double AmountToGather = costRes.amount;
@@ -793,7 +784,6 @@ namespace KolonyTools
 
                 saveCurrentTransfersList.Add(trans);
             closeGUIEdit();
-            _log.LogWarning("[MKS] finished creating transfer");
         }
 
         /// <summary>
@@ -1122,26 +1112,6 @@ namespace KolonyTools
             node.AddValue("key",savestring());
         }
 
-        //public void CheckWTF(MKSLTranferList savestring)
-        //{
-        //    var _log = new KSPLog();
-        //    _log.Log("[MKS] wtf_log.Log");
-        //    if (savestring.Count > 1)
-        //    {
-        //        if (savestring[0].Equals(savestring[1]))
-        //        {
-        //            _log.Log("[MKS] wtf " + savestring[0].transferName + " == " + savestring[1].transferName + " ?");
-        //            if (ReferenceEquals(savestring[0], savestring[1]))
-        //            {
-        //                _log.Log("[MKS] wtf " + savestring[0].transferName + " reference equals too? " + savestring[1].transferName + " ?");
-        //            }
-        //            else
-        //            {
-        //                _log.Log("[MKS] different references");
-        //            }
-        //        }
-        //    }
-        //}
     }
 
 
@@ -1201,7 +1171,6 @@ namespace KolonyTools
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class MKSLlocal : MonoBehaviour
     {
-        KSPLog _log = new KSPLog();
         double nextchecktime = 0;
 
         private void Awake()
@@ -1213,7 +1182,6 @@ namespace KolonyTools
         private void Ondraw()
         {
             if (!(nextchecktime < Planetarium.GetUniversalTime())) return;
-            _log.Log("[MKS] onDraw");
             foreach (Vessel ves in FlightGlobals.Vessels)
             {
                 if (FlightGlobals.ActiveVessel.protoVessel.orbitSnapShot.ReferenceBodyIndex !=
@@ -1230,7 +1198,6 @@ namespace KolonyTools
                             savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
                             var completeddeliveries = new MKSLTranferList(); 
                             
-                            _log.Log("[MKS] onDraw with an unloaded vessel");
                             if (checkDeliveries(savestring, completeddeliveries))
                             {
                                 var currentNode = new ConfigNode();
@@ -1241,7 +1208,6 @@ namespace KolonyTools
                                 var previouse = new MKSLTranferList();
                                 previouse.Load(previouseList);
                                 previouse.AddRange(completeddeliveries);
-                                _log.Log("[MKS] onDraw prev count" +previouse.Count);
                                 var previousNode = new ConfigNode();
                                 previouse.Save(previousNode);
                                 pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
@@ -1262,11 +1228,9 @@ namespace KolonyTools
 
                                 var savestring = MKSLc.saveCurrentTransfersList;
                                 var completeddeliveries = new MKSLTranferList();
-                                _log.Log("[MKS] onDraw with a loaded vessel");
                                 if (checkDeliveries(savestring, completeddeliveries))
                                 {
                                     MKSLc.savePreviousTransfersList.AddRange(completeddeliveries);
-                                    savestring.ForEach(x => _log.Log("[MKS] onDraw deliveries left:" + x.transferName));
                                 }
                                 
                             }
@@ -1289,19 +1253,12 @@ namespace KolonyTools
             {
                 if (FlightGlobals.ActiveVessel.id == delivery.vesselTo.id && Planetarium.GetUniversalTime() > Convert.ToDouble(delivery.arrivaltime))
                 {
-                    _log.Log("[MKS] trying to deliver "+delivery.transferName+" to " + delivery.vesselTo.id +" from "+delivery.vesselFrom.id);
-                    
                     //if return is true then add the returned
                     if (attemptDelivery(delivery))
                     {
-                        _log.Log("[MKS] delivering " + delivery.transferName + " to " + delivery.vesselTo.id + " from " + delivery.vesselFrom.id);
                         completeddeliveries.Add(delivery);
                         action = true;
                     }
-                }
-                else
-                {
-                    _log.Log("[MKS] ignoring delivery " + delivery.transferName + " to " + delivery.vesselTo.id + " from " + delivery.vesselFrom.id);
                 }
             }
 
