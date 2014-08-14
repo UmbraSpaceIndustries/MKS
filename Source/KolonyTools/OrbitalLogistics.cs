@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace KolonyTools
@@ -152,12 +153,12 @@ namespace KolonyTools
                 editGUITransfer.transferName = rnd.Next(100000, 999999).ToString();
                 editGUITransfer.initTransferList(ManagedResources);
                 editGUITransfer.initCostList(Mix1CostResources);
-                editGUITransfer.vesselFrom = vessel;
+                editGUITransfer.VesselFrom = vessel;
                 editGUITransfer.vesselTo = vessel;
 
                 editGUIResource = editGUITransfer.transferList[0];
                 StrAmount = "0";
-                currentAvailable = readResource(editGUITransfer.vesselFrom, editGUIResource.resourceName);
+                currentAvailable = readResource(editGUITransfer.VesselFrom, editGUIResource.resourceName);
 
                 openGUIEdit();
             }
@@ -205,6 +206,11 @@ namespace KolonyTools
         public void openGUIMain()
         {
             initStyle();
+            foreach (var res in PartResourceLibrary.ElementalResources)
+            {
+                Debug.Log("[MKS]"+res.name);
+                print("[MKS]" + res.name);
+            }
             
             RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
         }
@@ -227,14 +233,14 @@ namespace KolonyTools
             if (GUILayout.Button("<<", buttonStyle, GUILayout.Width(40)))
             {
                 previousBodyVesselList(ref vesselFrom);
-                editGUITransfer.vesselFrom = bodyVesselList[vesselFrom];
+                editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
             }
             GUILayout.Label("From:", labelStyle, GUILayout.Width(60));
-            GUILayout.Label(editGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(160));
+            GUILayout.Label(editGUITransfer.VesselFrom.vesselName, labelStyle, GUILayout.Width(160));
             if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(40)))
             {
                 nextBodyVesselList(ref vesselFrom);
-                editGUITransfer.vesselFrom = bodyVesselList[vesselFrom];
+                editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
             }
             GUILayout.EndHorizontal();
 
@@ -266,7 +272,7 @@ namespace KolonyTools
                 {
                     editGUIResource = res;
                     StrAmount = Math.Round(res.amount, 2).ToString();
-                    currentAvailable = readResource(editGUITransfer.vesselFrom, editGUIResource.resourceName);
+                    currentAvailable = readResource(editGUITransfer.VesselFrom, editGUIResource.resourceName);
                 }
                 GUILayout.EndHorizontal();
             }
@@ -416,7 +422,7 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("From:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.vesselFrom.vesselName, labelStyle, GUILayout.Width(150));
+            GUILayout.Label(viewGUITransfer.VesselFrom.vesselName, labelStyle, GUILayout.Width(150));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -590,14 +596,14 @@ namespace KolonyTools
 
 
             //check if origin is not the same as destination
-            if (trans.vesselFrom.id.ToString() == trans.vesselTo.id.ToString())
+            if (trans.VesselFrom.id.ToString() == trans.vesselTo.id.ToString())
             {
                 validationMess = "origin and destination are equal";
                 return (false);
             }
 
             //check situation origin vessel
-            if (trans.vesselFrom.situation != Vessel.Situations.ORBITING && trans.vesselFrom.situation != Vessel.Situations.SPLASHED && trans.vesselFrom.situation != Vessel.Situations.LANDED)
+            if (trans.VesselFrom.situation != Vessel.Situations.ORBITING && trans.VesselFrom.situation != Vessel.Situations.SPLASHED && trans.VesselFrom.situation != Vessel.Situations.LANDED)
             {
                 validationMess = "origin of transfer is not in a stable situation";
                 return (false);
@@ -613,7 +619,7 @@ namespace KolonyTools
             //check for sufficient transfer resources
             foreach (MKSLresource transRes in trans.transferList)
             {
-                if (readResource(trans.vesselFrom, transRes.resourceName) < transRes.amount)
+                if (readResource(trans.VesselFrom, transRes.resourceName) < transRes.amount)
                 {
                     check = false;
                     validationMess = validationMess + "insufficient " + transRes.resourceName + "    ";
@@ -636,7 +642,7 @@ namespace KolonyTools
                     }
                 }
 
-                if ((readResource(trans.vesselFrom, costRes.resourceName) + readResource(vessel, costRes.resourceName)) < totalResAmount)
+                if ((readResource(trans.VesselFrom, costRes.resourceName) + readResource(vessel, costRes.resourceName)) < totalResAmount)
                 {
                     check = false;
                     validationMess = validationMess + "insufficient " + costRes.resourceName + "    ";
@@ -671,25 +677,25 @@ namespace KolonyTools
                 ///take into account amount
 
                 ///take into account celestialbody
-                if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
                     (trans.vesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
                 {
-                    double distance = GetDistanceBetweenPoints(trans.vesselFrom.protoVessel.latitude, trans.vesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
+                    double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
                     res.amount = res.costPerMass * trans.totalMass() * distance * vessel.mainBody.GeeASL * DistanceModifier * PSSM;
                 }
-                else if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
                          (trans.vesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
                 {
                     res.amount = res.costPerMass * trans.totalMass() * vessel.mainBody.GeeASL * vessel.mainBody.Radius * ATUP * SurfaceOrbitModifier * PSOM;
                 }
-                else if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
+                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
                          (trans.vesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
                 {
                     res.amount = res.costPerMass * trans.totalMass() * vessel.mainBody.GeeASL * vessel.mainBody.Radius * ATDO * OrbitSurfaceModifier * POSM;
                 }
                 else //Working code - going to just use the same calc as surface to surface for orbit to orbit for now
                 {
-                    double distance = GetDistanceBetweenPoints(trans.vesselFrom.protoVessel.latitude, trans.vesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
+                    double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
                     res.amount = res.costPerMass * trans.totalMass() * distance * vessel.mainBody.GeeASL * DistanceModifier * PSSM;
                 }
 
@@ -710,25 +716,25 @@ namespace KolonyTools
                 TtfLO = TimeToFromLO;
             }
 
-            if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+            if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
                 (trans.vesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
             {
-                double distance = GetDistanceBetweenPoints(trans.vesselFrom.protoVessel.latitude, trans.vesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
+                double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
             }
-            else if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
                         (trans.vesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
             {
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
             }
-            else if ((trans.vesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
+            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
                         (trans.vesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.vesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
             {
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
             }
             else //More working code
             {
-                double distance = GetDistanceBetweenPoints(trans.vesselFrom.protoVessel.latitude, trans.vesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
+                double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.vesselTo.protoVessel.latitude, trans.vesselTo.protoVessel.longitude);
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
             }
 
@@ -753,12 +759,12 @@ namespace KolonyTools
                 double AmountToGather = costRes.amount;
                 double AmountGathered = 0;
                 AmountGathered = AmountGathered + takeResources(vessel, costRes.resourceName, AmountToGather - AmountGathered);
-                AmountGathered = AmountGathered + takeResources(trans.vesselFrom, costRes.resourceName, AmountToGather - AmountGathered);
+                AmountGathered = AmountGathered + takeResources(trans.VesselFrom, costRes.resourceName, AmountToGather - AmountGathered);
             }
 
             foreach (MKSLresource transRes in trans.transferList)
             {
-                transRes.amount = takeResources(trans.vesselFrom, transRes.resourceName, transRes.amount);
+                transRes.amount = takeResources(trans.VesselFrom, transRes.resourceName, transRes.amount);
             }
 
             trans.delivered = false;
@@ -912,7 +918,7 @@ namespace KolonyTools
         public double arrivaltime = 0;
         public bool delivered = false;
 
-        public Vessel vesselFrom = new Vessel();
+        private Vessel vesselFrom = new Vessel();
         public Vessel vesselTo = new Vessel();
         public bool orbit = false;
         public double SMA = 0;
@@ -922,6 +928,30 @@ namespace KolonyTools
         public bool surface = false;
         public double LAT = 0;
         public double LON = 0;
+
+        public Vessel VesselFrom
+        {
+            get { return vesselFrom; }
+            set
+            {
+                vesselFrom = value;
+                if (vesselFrom.packed && !vesselFrom.loaded) //inactive vessel
+                {
+                    transferList = vesselFrom.protoVessel.protoPartSnapshots.SelectMany(
+                        partSnapshot =>
+                            partSnapshot.resources.Select(res => new MKSLresource {resourceName = res.resourceName}))
+                        .ToList();
+
+                }
+                else
+                {
+                    transferList =
+                    vesselFrom.Parts.SelectMany(
+                        part => part.Resources.list.Select(res => new MKSLresource { resourceName = res.resourceName }))
+                        .ToList();
+                }
+            }
+        }
 
 
         public double totalMass()
