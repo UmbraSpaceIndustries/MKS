@@ -267,7 +267,7 @@ namespace KolonyTools
             foreach (MKSLresource res in editGUITransfer.transferList)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2).ToString()))
+                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2)))
                 {
                     editGUIResource = res;
                     StrAmount = Math.Round(res.amount, 2).ToString();
@@ -325,7 +325,7 @@ namespace KolonyTools
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Tranfer Mass: " + Math.Round(editGUITransfer.totalMass(),2).ToString() + " (maximum: " + maxTransferMass.ToString() + ")", labelStyle, GUILayout.Width(300));
+            GUILayout.Label("Tranfer Mass: " + Math.Round(editGUITransfer.totalMass(),2) + " (maximum: " + maxTransferMass + ")", labelStyle, GUILayout.Width(300));
 
             GUILayout.Label("");
             GUILayout.BeginHorizontal();
@@ -952,7 +952,7 @@ namespace KolonyTools
             }
         }
 
-        private void calcResources()
+        protected virtual void calcResources()
         {
             transferList = vesselFrom.GetResources();
             if (vesselTo != null)
@@ -1150,6 +1150,16 @@ namespace KolonyTools
 
     }
 
+    public class MKSLGuiTransfer : MKSLtransfer
+    {
+        public List<MKSLresource> resourceAmount = new List<MKSLresource>();
+
+        protected override void calcResources()
+        {
+            base.calcResources();
+            resourceAmount = VesselFrom.GetResourceAmounts();
+        }
+    }
 
     public class MKSLTranferList : List<MKSLtransfer>, IConfigNode
     {
@@ -1444,7 +1454,7 @@ namespace KolonyTools
                     partSnapshot =>
                         partSnapshot.resources.Select(res => res.resourceName)).Distinct().Select(resName => new MKSLresource { resourceName = resName })
                     .ToList();
-
+                vessel.GetResourceAmounts();
             }
             else
             {
@@ -1454,7 +1464,42 @@ namespace KolonyTools
                     .ToList();
             }
             return resources;
-        } 
+        }
+        public static List<MKSLresource> GetResourceAmounts(this Vessel vessel)
+        {
+            List<MKSLresource> resources;
+
+            if (vessel.packed && !vessel.loaded) //inactive vessel
+            {
+                
+                resources = vessel.protoVessel.protoPartSnapshots.SelectMany(
+                    partSnapshot =>
+                        partSnapshot.resources.Select(res => new MKSLresource { resourceName = res.resourceName, amount = Double.Parse(res.resourceValues.GetValue("amount")) }))
+                    .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0 ,(total, res) => total + res.amount)})
+                    .ToList();
+            }
+            else
+            {
+                resources =
+                vessel.Parts.SelectMany(part => part.Resources.list.Select(res => new MKSLresource { resourceName = res.resourceName, amount = res.amount}))
+                    .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0 ,(total, res) => total + res.amount)})
+                    .ToList();
+            }
+            return resources;
+        }
+
+        public static void Log(this ConfigNode node, string marker = "[MKS] ")
+        {
+            Debug.Log(marker+node.name);
+            foreach (ConfigNode node1 in node.nodes)
+            {
+                node1.Log(marker+"  ");
+            }
+            foreach (ConfigNode.Value value in node.values)
+            {
+                Debug.Log(marker+value.name+" : "+value.value);
+            }
+        }
     }
 }
 
