@@ -27,7 +27,7 @@ namespace KolonyTools
         private Vector2 scrollPositionEditGUIResources;
 
         //private bool newedit = false;
-        private MKSLtransfer editGUITransfer = new MKSLtransfer();
+        private MKSLGuiTransfer editGUITransfer = new MKSLGuiTransfer();
         private MKSLresource editGUIResource = new MKSLresource();
 
         private List<Vessel> bodyVesselList = new List<Vessel>();
@@ -148,7 +148,7 @@ namespace KolonyTools
             {
                 //newedit = true;
                 makeBodyVesselList();
-                editGUITransfer = new MKSLtransfer();
+                editGUITransfer = new MKSLGuiTransfer();
                 System.Random rnd = new System.Random();
                 editGUITransfer.transferName = rnd.Next(100000, 999999).ToString();
                 editGUITransfer.initTransferList(ManagedResources);
@@ -225,7 +225,7 @@ namespace KolonyTools
 
         private void WindowGUIEdit(int windowID)
         {
-            GUI.DragWindow(new Rect(0, 0, 400, 30));
+            GUI.DragWindow(new Rect(0, 0, 500, 30));
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
@@ -263,11 +263,12 @@ namespace KolonyTools
             GUILayout.BeginHorizontal();
             
             GUILayout.BeginVertical();
-            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(200), GUILayout.Height(150));
+            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(300), GUILayout.Height(150));
             foreach (MKSLresource res in editGUITransfer.transferList)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2)))
+                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2) +" of "+
+                    Math.Round(editGUITransfer.resourceAmount.Find(x => x.resourceName == res.resourceName).amount)))
                 {
                     editGUIResource = res;
                     StrAmount = Math.Round(res.amount, 2).ToString();
