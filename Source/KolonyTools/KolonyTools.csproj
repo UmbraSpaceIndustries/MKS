@@ -84,6 +84,9 @@
       <HintPath>..\..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="USITools">
+      <HintPath>..\..\..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\USITools.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KolonyConverter.cs" />
@@ -91,12 +94,6 @@
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyLogistics.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\UmbraSpaceIndustries\USITools\USITools\USITools.csproj">
-      <Project>{8699bbcb-15f3-40c6-a001-46e08886360c}</Project>
-      <Name>USITools</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
