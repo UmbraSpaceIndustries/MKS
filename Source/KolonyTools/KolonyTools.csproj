@@ -87,6 +87,8 @@
     <Reference Include="USITools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\USITools.dll</HintPath>
+    <Reference Include="USITools">
+      <HintPath>..\..\..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\USITools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -29,11 +29,13 @@ namespace KolonyTools
         [KSPEvent(guiActive = true, guiName = "Governor", active = true)]
         public void ToggleGovernor()
         {
-            _governorActive = !_governorActive;
+            governorActive = !governorActive;
             EfficiencySetup();
         }
 
-        private bool _governorActive;
+        [KSPField(isPersistant = true)]
+        public bool governorActive;
+
         private int _numConverters;
         private float _efficiencyRate;
         private void EfficiencySetup()
@@ -129,7 +131,7 @@ namespace KolonyTools
                     eff = 1f;
                     efficiency = String.Format("100% [Fixed]");
                 }
-                else if (_governorActive)
+                else if (governorActive)
                 {
                     if (eff > 1f) eff = 1f;
                     efficiency = String.Format("G:{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), numShipKerbals,numWorkspaces, numModules,Math.Round(numWeightedKerbals,1));
