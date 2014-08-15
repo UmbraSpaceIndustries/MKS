@@ -156,7 +156,7 @@ namespace KolonyTools
                 editGUITransfer.initCostList(Mix1CostResources);
                 editGUITransfer.VesselFrom = vessel;
                 editGUITransfer.VesselTo = vessel;
-
+                editGUITransfer.calcResources();
                 editGUIResource = editGUITransfer.transferList[0];
                 StrAmount = "0";
                 currentAvailable = readResource(editGUITransfer.VesselFrom, editGUIResource.resourceName);
@@ -230,6 +230,7 @@ namespace KolonyTools
             {
                 previousBodyVesselList(ref vesselFrom);
                 editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
+                editGUITransfer.calcResources();
             }
             GUILayout.Label("From:", labelStyle, GUILayout.Width(60));
             GUILayout.Label(editGUITransfer.VesselFrom.vesselName, labelStyle, GUILayout.Width(160));
@@ -237,6 +238,7 @@ namespace KolonyTools
             {
                 nextBodyVesselList(ref vesselFrom);
                 editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
+                editGUITransfer.calcResources();
             }
             GUILayout.EndHorizontal();
 
@@ -245,6 +247,7 @@ namespace KolonyTools
             {
                 previousBodyVesselList(ref vesselTo);
                 editGUITransfer.VesselTo = bodyVesselList[vesselTo];
+                editGUITransfer.calcResources();
             }
             GUILayout.Label("To:", labelStyle, GUILayout.Width(60));
             GUILayout.Label(editGUITransfer.VesselTo.vesselName, labelStyle, GUILayout.Width(160));
@@ -252,6 +255,7 @@ namespace KolonyTools
             {
                 nextBodyVesselList(ref vesselTo);
                 editGUITransfer.VesselTo = bodyVesselList[vesselTo];
+                editGUITransfer.calcResources();
             }
             GUILayout.EndHorizontal();
 
@@ -751,6 +755,8 @@ namespace KolonyTools
 
         public void createTransfer(MKSLtransfer trans)
         {
+            trans.costList = trans.costList.Where(x => x.amount > 0).ToList();
+            trans.transferList = trans.transferList.Where(x => x.amount > 0).ToList();
             foreach (MKSLresource costRes in trans.costList)
             {
                 double AmountToGather = costRes.amount;
@@ -936,7 +942,6 @@ namespace KolonyTools
             set
             {
                 vesselFrom = value;
-                calcResources();
             }
         }
 
@@ -946,11 +951,10 @@ namespace KolonyTools
             set
             {
                 vesselTo = value;
-                calcResources();
             }
         }
 
-        protected virtual void calcResources()
+        public virtual void calcResources()
         {
             transferList = vesselFrom.GetResources();
             if (vesselTo != null)
@@ -1073,10 +1077,10 @@ namespace KolonyTools
                         transferName = Line[1];                
                         break;
                     case "transferList":
-                        loadlist(ref transferList,Line[1]);
+                        transferList = loadlist(Line[1]);
                         break;
                     case "costList":
-                        loadlist(ref costList,Line[1]);
+                        costList = loadlist(Line[1]);
                         break;
                     case "arrivaltime":
                         arrivaltime = Convert.ToDouble(Line[1]);
@@ -1115,8 +1119,10 @@ namespace KolonyTools
             }
         }
 
-        private void loadlist(ref List<MKSLresource> resourceList, string load)
+        private List<MKSLresource> loadlist(string load)
         {
+            var resourceList = new List<MKSLresource>();
+            this.Log("loading list "+load);
             string[] SplitArray = load.Split(',');
 
             foreach (String st in SplitArray)
@@ -1125,6 +1131,7 @@ namespace KolonyTools
                 res.loadstring(st);
                 resourceList.Add(res);
             }
+            return resourceList;
         }
 
         private Vessel loadvessel(string load)
@@ -1152,7 +1159,7 @@ namespace KolonyTools
     {
         public List<MKSLresource> resourceAmount = new List<MKSLresource>();
 
-        protected override void calcResources()
+        public override void calcResources()
         {
             base.calcResources();
             resourceAmount = VesselFrom.GetResourceAmounts();
@@ -1236,8 +1243,11 @@ namespace KolonyTools
 
                             var savestring = new MKSLTranferList();
                             savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
-                            var completeddeliveries = new MKSLTranferList(); 
-                            
+                            var completeddeliveries = new MKSLTranferList();
+                            if (savestring.Count > 0)
+                            {
+                                this.Log("delivering from active" + savestring.First().transferName + " with " + savestring.First().transferList.First().resourceName + ":" + savestring.First().transferList.First().amount);
+                            }
                             if (checkDeliveries(savestring, completeddeliveries))
                             {
                                 var currentNode = new ConfigNode();
@@ -1265,8 +1275,13 @@ namespace KolonyTools
                             if (pm.moduleName == "MKSLcentral")
                             {
                                 MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
-
+                                
                                 var savestring = MKSLc.saveCurrentTransfersList;
+                                if (savestring.Count > 0)
+                                {
+                                    this.Log("delivering from active" + savestring.First().transferName + " with "+ savestring.First().transferList.First().resourceName+":"+savestring.First().transferList.First().amount);
+                                }
+                                
                                 var completeddeliveries = new MKSLTranferList();
                                 if (checkDeliveries(savestring, completeddeliveries))
                                 {
@@ -1291,8 +1306,8 @@ namespace KolonyTools
 
             foreach (var delivery in savestring)
             {
-                if (FlightGlobals.ActiveVessel.id == delivery.VesselTo.id && Planetarium.GetUniversalTime() > Convert.ToDouble(delivery.arrivaltime))
-                {
+                if ( Planetarium.GetUniversalTime() > Convert.ToDouble(delivery.arrivaltime))
+                {//FlightGlobals.ActiveVessel.id == delivery.VesselTo.id &&
                     //if return is true then add the returned
                     if (attemptDelivery(delivery))
                     {
@@ -1313,11 +1328,16 @@ namespace KolonyTools
 
         private bool attemptDelivery(MKSLtransfer delivery)
         {
-
+            var target = FlightGlobals.Vessels.Find(x => x.id == delivery.VesselTo.id);
+            if (target == null)
+            {
+                return false;
+            }
+            delivery.VesselTo = target;
             //check if orbit changed of destination if destination is orbital
             if (delivery.orbit)
             {
-                if (!checkStaticOrbit(FlightGlobals.ActiveVessel, delivery.SMA, delivery.ECC, delivery.INC))
+                if (!checkStaticOrbit(delivery.VesselTo, delivery.SMA, delivery.ECC, delivery.INC))
                 {
                     delivery.delivered = false;
 
@@ -1326,14 +1346,14 @@ namespace KolonyTools
             }
 
             //check if location changed of destination if destination is surface
-            if (!delivery.orbit)
-            {
-                if (!checkStaticLocation(FlightGlobals.ActiveVessel, delivery.LON, delivery.LAT))
-                {
-                    delivery.delivered = false;
-                    return false;
-                }
-            }
+            //if (!delivery.orbit)
+            //{
+            //    if (!checkStaticLocation(delivery.VesselTo, delivery.LON, delivery.LAT))
+            //    {
+            //        delivery.delivered = false;
+            //        return false;
+            //    }
+            //} //TODO: fix the checkstaticlocation. it uses activevessel instead of the target
 
             makeDelivery(delivery);
 
@@ -1344,7 +1364,15 @@ namespace KolonyTools
         {
             foreach (MKSLresource res in transfer.transferList)
             {
-                FlightGlobals.ActiveVessel.ExchangeResources(res.resourceName, res.amount);
+
+                try
+                {
+                    transfer.VesselTo.ExchangeResources(res.resourceName, res.amount);
+                }
+                catch (Exception e)
+                {
+                    this.Log(e.StackTrace);
+                }
             }
             transfer.delivered = true;
         }
@@ -1502,7 +1530,6 @@ namespace KolonyTools
             if (vessel.packed && !vessel.loaded)
             {
                 vessel.Log("ExchangeResource:packed");
-                //Thanks to NathanKell for explaining how to access and edit parts of unloaded vessels and pointing me for some example code is NathanKell's own Mission Controller Extended mod!
                 foreach (ProtoPartSnapshot p in vessel.protoVessel.protoPartSnapshots)
                 {
                     if (done)
@@ -1514,9 +1541,10 @@ namespace KolonyTools
                         if (done)
                         {
                             break;
-                        }
-                        if (r.resourceRef.info.id != resource.id) continue;
+                        }   
+                        if (r.resourceName != resource.name) continue;
                         double amountInPart = Convert.ToDouble(r.resourceValues.GetValue("amount"));
+                        vessel.Log("exchange resource in part  " + amountInPart);
                         if (amount < 0)
                         {
                             if (amountInPart < Math.Abs(amount - amountExchanged))
@@ -1534,10 +1562,11 @@ namespace KolonyTools
                         }
                         else
                         {
-                            if (r.resourceRef.maxAmount < amount - amountExchanged)
+                            var max = Convert.ToDouble(r.resourceValues.GetValue("maxAmount"));
+                            if (max < amount - amountExchanged)
                             {
-                                amountExchanged += (r.resourceRef.maxAmount - amountInPart);
-                                r.resourceValues.SetValue("amount",Convert.ToString(r.resourceRef.maxAmount));
+                                amountExchanged += (max - amountInPart);
+                                r.resourceValues.SetValue("amount",max.ToString());
                             }
                             else
                             {
