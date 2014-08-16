@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using Toolbar;
 using UnityEngine;
-using File = KSP.IO.File;
 
 namespace KolonyTools
 {
@@ -12,18 +10,13 @@ namespace KolonyTools
     public class MKSLlocal : MonoBehaviour
     {
         private IButton OrbLogButton;
-        private bool isUiVisible;
 
         double nextchecktime;
 
         [KSPField(isPersistant = true, guiActive = false)] 
         public MKSLTranferList KnownTransfers;
 
-        private Rect mainGuiRect;
-        private Rect transferGuiRect;
-
-        private Vector2 scrollPosition;
-        private MKSLtransfer viewGUITransfer;
+        private MKSLogisticsMasterView _logisticsMasterView;
 
         internal MKSLlocal()
         {
@@ -31,165 +24,23 @@ namespace KolonyTools
             OrbLogButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/OrbLogisticsIcon";
             OrbLogButton.ToolTip = "Orbital Logistics";
             OrbLogButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
-            OrbLogButton.OnClick += (e) => Debug.Log("OrbLogButton clicked");
-            OrbLogButton.OnClick += (e) => ToggleGui();
+            OrbLogButton.OnClick += e => this.Log("OrbLogButton clicked");
+            OrbLogButton.OnClick += e => ToggleGui();
         }
 
         private void ToggleGui()
         {
-            if (isUiVisible) hideMainGui();
-            else showMainGui();
-            isUiVisible = !isUiVisible;
+            if (_logisticsMasterView == null) _logisticsMasterView = new MKSLogisticsMasterView(this);
+            _logisticsMasterView.ToggleVisible();
         }
 
         private void Awake()
         {
             KnownTransfers = new MKSLTranferList();
-            mainGuiRect = new Rect(200, 200, 175, 450);
-            transferGuiRect = new Rect(200, 200, 175, 450);
             RenderingManager.AddToPostDrawQueue(144, Ondraw);
             nextchecktime = Planetarium.GetUniversalTime() + 2;          
         }
 
-        private void drawMainGui()
-        {
-            mainGuiRect = GUILayout.Window(1405, mainGuiRect, mainGui, "Kolony Logistics", MKSGui.windowStyle);
-        }
-
-        private void hideMainGui()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(141, drawMainGui);
-        }
-
-        private void showMainGui()
-        {
-            KnownTransfers = GetTransfers();
-            hideMainGui();
-            RenderingManager.AddToPostDrawQueue(141, drawMainGui);
-        }
-
-        private void mainGui(int id)
-        {
-            GUI.DragWindow(new Rect(0, 0, 145, 30));
-            GUILayout.BeginVertical();
-            GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
-            scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, true, GUILayout.Width(160), GUILayout.Height(300));
-            foreach (MKSLtransfer trans in KnownTransfers)
-            {
-                if (GUILayout.Button(trans.transferName + " (" + deliveryTimeString(trans.arrivaltime, Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
-                {
-                    viewGUITransfer = trans;
-                    openTransferGui();
-                }
-            }
-            GUILayout.EndScrollView();
-
-            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
-            {
-                hideMainGui();
-            }
-            GUILayout.EndVertical();
-        }
-
-        private void drawTransferGui()
-        {
-            transferGuiRect = GUILayout.Window(1406, transferGuiRect, transferGui, "MKS Transfer", MKSGui.windowStyle);
-        }
-
-        private void openTransferGui()
-        {
-            closeTransferGui();
-            RenderingManager.AddToPostDrawQueue(142, drawTransferGui);
-        }
-        private void closeTransferGui()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(142, drawTransferGui);
-        }
-
-        private void transferGui(int id)
-        {
-            GUI.DragWindow(new Rect(0, 0, 150, 30));
-            GUILayout.BeginVertical();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("From:", MKSGui.labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.VesselFrom.vesselName, MKSGui.labelStyle, GUILayout.Width(150));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("To:", MKSGui.labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.VesselTo.vesselName, MKSGui.labelStyle, GUILayout.Width(150));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Arrival:", MKSGui.labelStyle, GUILayout.Width(50));
-            GUILayout.Label(deliveryTimeString(viewGUITransfer.arrivaltime, Planetarium.GetUniversalTime()), MKSGui.labelStyle, GUILayout.Width(100));
-            GUILayout.EndHorizontal();
-            GUILayout.Label("");
-            GUILayout.Label("Transfer", MKSGui.labelStyle, GUILayout.Width(100));
-            foreach (MKSLresource res in viewGUITransfer.transferList)
-            {
-                if (res.amount > 0)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(res.resourceName, MKSGui.labelStyle, GUILayout.Width(150));
-                    GUILayout.Label(Math.Round(res.amount, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(50));
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.Label("Transfer Mass: " + Math.Round(viewGUITransfer.totalMass(), 2), MKSGui.labelStyle, GUILayout.Width(150));
-            GUILayout.Label("");
-
-            GUILayout.Label("Cost", MKSGui.labelStyle, GUILayout.Width(100));
-            foreach (MKSLresource res in viewGUITransfer.costList)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(res.resourceName, MKSGui.labelStyle, GUILayout.Width(100));
-                GUILayout.Label(Math.Round(res.amount, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(50));
-                GUILayout.EndHorizontal();
-            }
-
-
-            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
-            {
-                closeTransferGui();
-            }
-            GUILayout.EndVertical();
-        }
-
-
-        //return a day-hour-minute-seconds-time format for the delivery time
-        public string deliveryTimeString(double deliveryTime, double currentTime)
-        {
-            int days = 0;
-            int hours = 0;
-            int minutes = 0;
-            int seconds = 0;
-
-            double time = 0;
-            if (deliveryTime > currentTime)
-                time = deliveryTime - currentTime;
-            else
-                time = currentTime - deliveryTime;
-
-
-            days = (int)Math.Floor(time / 21600);
-            time = time - (days * 21600);
-
-            hours = (int)Math.Floor(time / 3600);
-            time = time - (hours * 3600);
-
-            minutes = (int)Math.Floor(time / 60);
-            time = time - (minutes * 60);
-
-            seconds = (int)Math.Floor(time);
-
-            if (deliveryTime > currentTime)
-                return (days.ToString() + "d" + hours.ToString() + "h" + minutes.ToString() + "m" + seconds + "s");
-            else
-                return ("-" + days.ToString() + "d" + hours.ToString() + "h" + minutes.ToString() + "m" + seconds + "s");
-
-        }
 
         private MKSLTranferList GetTransfers()
         {
@@ -420,7 +271,7 @@ namespace KolonyTools
         // adapted from: www.consultsarath.com/contents/articles/KB000012-distance-between-two-points-on-globe--calculation-using-cSharp.aspx
         public double GetDistanceBetweenPoints(double lat1, double long1, double lat2, double long2)
         {
-            double distance = 0;
+            double distance;
 
             double dLat = (lat2 - lat1) / 180 * Math.PI;
             double dLong = (long2 - long1) / 180 * Math.PI;
@@ -449,6 +300,136 @@ namespace KolonyTools
         internal void OnDestroy()
         {
             OrbLogButton.Destroy();
+        }
+
+        public void UpdateTransfers()
+        {
+            KnownTransfers = GetTransfers();
+        }
+    }
+
+    public class MKSLogisticsMasterView : Window<MKSLogisticsMasterView>
+    {
+        private readonly MKSLlocal _master;
+        private Vector2 _scrollPosition;
+        private MKSLtransfer _selectedTransfer;
+        private MKSTransferView _transferView;
+
+        public MKSLogisticsMasterView(MKSLlocal master)
+            : base("Logistics Master", 175, 450)
+        {
+            _master = master;
+            SetVisible(true);
+        }
+
+        protected override void DrawWindowContents(int windowId)
+        {
+            GUI.DragWindow(new Rect(0, 0, 145, 30));
+            GUILayout.BeginVertical();
+            GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true, GUILayout.Width(160), GUILayout.Height(300));
+            foreach (MKSLtransfer trans in _master.KnownTransfers)
+            {
+                if (GUILayout.Button(trans.transferName + " (" + Utilities.FormatTime(trans.arrivaltime - Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
+                {
+                    _selectedTransfer = trans;
+                    if (_transferView == null)
+                    {
+                        _transferView = new MKSTransferView(_selectedTransfer);
+                    }
+                    else
+                    {
+                        _transferView.Transfer = _selectedTransfer;
+                    }
+                    
+                }
+            }
+            GUILayout.EndScrollView();
+
+            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
+            {
+                SetVisible(false);
+            }
+            GUILayout.EndVertical();
+        }
+
+        public override void SetVisible(bool newValue)
+        {
+            _master.UpdateTransfers();
+            base.SetVisible(newValue);
+        }
+    }
+
+    public class MKSTransferView : Window<MKSTransferView>
+    {
+        private MKSLtransfer _transfer;
+
+        public MKSTransferView(MKSLtransfer transfer)
+            : base(transfer.transferName, 175, 450)
+        {
+            _transfer = transfer;
+            SetVisible(true);
+        }
+
+        public MKSLtransfer Transfer
+        {
+            get { return _transfer; }
+            set
+            {
+                _transfer = value;
+                WindowTitle = _transfer.transferName;
+            }
+        }
+
+        protected override void DrawWindowContents(int windowId)
+        {
+            GUI.DragWindow(new Rect(0, 0, 150, 30));
+            GUILayout.BeginVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("From:", MKSGui.labelStyle, GUILayout.Width(50));
+            GUILayout.Label(Transfer.VesselFrom.vesselName, MKSGui.labelStyle, GUILayout.Width(150));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("To:", MKSGui.labelStyle, GUILayout.Width(50));
+            GUILayout.Label(Transfer.VesselTo.vesselName, MKSGui.labelStyle, GUILayout.Width(150));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Arrival:", MKSGui.labelStyle, GUILayout.Width(50));
+            GUILayout.Label(Utilities.FormatTime(Transfer.arrivaltime - Planetarium.GetUniversalTime()), MKSGui.labelStyle, GUILayout.Width(100));
+            GUILayout.EndHorizontal();
+            GUILayout.Label("");
+            GUILayout.Label("Transfer", MKSGui.labelStyle, GUILayout.Width(100));
+            foreach (MKSLresource res in Transfer.transferList)
+            {
+                if (res.amount > 0)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(res.resourceName, MKSGui.labelStyle, GUILayout.Width(150));
+                    GUILayout.Label(Math.Round(res.amount, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(50));
+                    GUILayout.EndHorizontal();
+                }
+            }
+            GUILayout.Label("Transfer Mass: " + Math.Round(Transfer.totalMass(), 2), MKSGui.labelStyle, GUILayout.Width(150));
+            GUILayout.Label("");
+
+            GUILayout.Label("Cost", MKSGui.labelStyle, GUILayout.Width(100));
+            foreach (MKSLresource res in Transfer.costList)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(res.resourceName, MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.Label(Math.Round(res.amount, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(50));
+                GUILayout.EndHorizontal();
+            }
+
+
+            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
+            {
+                SetVisible(false);
+            }
+            GUILayout.EndVertical();
         }
     }
 }

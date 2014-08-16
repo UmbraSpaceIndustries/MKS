@@ -36,7 +36,6 @@ namespace KolonyTools
 {
     public abstract class Window<T>
     {
-        private string windowTitle;
         private int windowId;
         private string configNodeName;
         protected Rect windowPos;
@@ -47,12 +46,13 @@ namespace KolonyTools
         private GUIStyle resizeStyle;
         private GUIContent resizeContent;
 
+        public string WindowTitle;
         public bool Resizable { get; set; }
         public bool HideCloseButton { get; set; }
 
         protected Window(string windowTitle, float defaultWidth, float defaultHeight)
         {
-            this.windowTitle = windowTitle;
+            this.WindowTitle = windowTitle;
             this.windowId = windowTitle.GetHashCode() + new System.Random().Next(65536) + System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.GetHashCode();
 
             configNodeName = windowTitle.Replace(" ", "");
@@ -170,7 +170,7 @@ namespace KolonyTools
                     ConfigureStyles();
 
                     windowPos = Utilities.EnsureVisible(windowPos);
-                    windowPos = GUILayout.Window(windowId, windowPos, PreDrawWindowContents, windowTitle, GUILayout.ExpandWidth(true),
+                    windowPos = GUILayout.Window(windowId, windowPos, PreDrawWindowContents, WindowTitle, GUILayout.ExpandWidth(true),
                         GUILayout.ExpandHeight(true), GUILayout.MinWidth(64), GUILayout.MinHeight(64));
                 }
             }

@@ -366,5 +366,37 @@ namespace KolonyTools
             versionStyle.wordWrap = false;
             return versionStyle;
         }
+        //return a day-hour-minute-seconds-time format for the delivery time
+        public static string DeliveryTimeString(double deliveryTime, double currentTime)
+        {
+            int days;
+            int hours;
+            int minutes;
+            int seconds;
+
+            double time;
+            if (deliveryTime > currentTime)
+                time = deliveryTime - currentTime;
+            else
+                time = currentTime - deliveryTime;
+
+
+            days = (int)Math.Floor(time / 21600);
+            time = time - (days * 21600);
+
+            hours = (int)Math.Floor(time / 3600);
+            time = time - (hours * 3600);
+
+            minutes = (int)Math.Floor(time / 60);
+            time = time - (minutes * 60);
+
+            seconds = (int)Math.Floor(time);
+
+            if (deliveryTime > currentTime)
+                return (days + "d" + hours + "h" + minutes + "m" + seconds + "s");
+            else
+                return ("-" + days + "d" + hours + "h" + minutes + "m" + seconds + "s");
+
+        }
     }
 }
