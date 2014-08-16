@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Tac;
+using USI;
 
 namespace KolonyTools
 {
-    public class KolonyConverter : TacGenericConverter
+    public class KolonyConverter : USI_Converter
     {
         [KSPField]
         public string requiredResources = "";
