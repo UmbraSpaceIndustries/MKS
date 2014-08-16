@@ -213,7 +213,6 @@ namespace KolonyTools
         private List<MKSLresource> loadlist(string load)
         {
             var resourceList = new List<MKSLresource>();
-            this.Log("loading list "+load);
             string[] SplitArray = load.Split(',');
 
             foreach (String st in SplitArray)

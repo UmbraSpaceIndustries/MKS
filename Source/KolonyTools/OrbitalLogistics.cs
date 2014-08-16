@@ -39,7 +39,7 @@ namespace KolonyTools
         private string StrValidationMessage = "";
 
         //GUI View
-        private bool viewCurrent = false;
+        private bool viewCurrent;
         private static Rect windowPosGUIView = new Rect(270, 370, 175, 200);
         private MKSLtransfer viewGUITransfer = new MKSLtransfer();
 
@@ -103,8 +103,6 @@ namespace KolonyTools
         [KSPField(isPersistant = false, guiActive = false)]
         public float maxTransferMass = 1000000f;
 
-        //strings in which planned and completed tranfers are saved for persitance
-        //public List<MKSLtransfer> currentTransfers = new List<MKSLtransfer>();
         [KSPField(isPersistant = true, guiActive = false)]
         public MKSLTranferList saveCurrentTransfersList = new MKSLTranferList();
         [KSPField(isPersistant = true, guiActive = false)]
@@ -458,7 +456,7 @@ namespace KolonyTools
                 GUILayout.EndHorizontal();
             }
 
-            if (viewCurrent == true)
+            if (viewCurrent)
             {
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Close", buttonStyle, GUILayout.Width(75)))
@@ -541,6 +539,7 @@ namespace KolonyTools
             foreach (Vessel ves in FlightGlobals.Vessels)
             {
                 if (vessel.mainBody.name == ves.mainBody.name && ves.vesselType != VesselType.Debris && ves.vesselType != VesselType.SpaceObject && ves.vesselType != VesselType.Unknown
+                    && vessel.vesselType != VesselType.Flag
                     && (ves.situation == Vessel.Situations.ORBITING || ves.situation == Vessel.Situations.SPLASHED || ves.situation == Vessel.Situations.LANDED))
                 {
                     bodyVesselList.Add(ves);
