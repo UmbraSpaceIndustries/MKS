@@ -306,36 +306,40 @@ namespace KolonyTools
         {
             KnownTransfers = GetTransfers();
         }
+
+        public void Remove(MKSLtransfer transfer)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    public class MKSLogisticsMasterView : Window<MKSLogisticsMasterView>
+    public class MKSLogisticsMasterView : Window<MKSLogisticsMasterView>, ITransferListViewer
     {
-        private readonly MKSLlocal _master;
+        private readonly MKSLlocal _model;
         private Vector2 _scrollPosition;
         private MKSLtransfer _selectedTransfer;
         private MKSTransferView _transferView;
 
-        public MKSLogisticsMasterView(MKSLlocal master)
-            : base("Logistics Master", 175, 450)
+        public MKSLogisticsMasterView(MKSLlocal model)
+            : base("Logistics Master", 200, 450)
         {
-            _master = master;
+            _model = model;
             SetVisible(true);
         }
 
         protected override void DrawWindowContents(int windowId)
         {
-            GUI.DragWindow(new Rect(0, 0, 145, 30));
             GUILayout.BeginVertical();
             GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true, GUILayout.Width(160), GUILayout.Height(300));
-            foreach (MKSLtransfer trans in _master.KnownTransfers)
+            foreach (MKSLtransfer trans in _model.KnownTransfers)
             {
                 if (GUILayout.Button(trans.transferName + " (" + Utilities.FormatTime(trans.arrivaltime - Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
                 {
                     _selectedTransfer = trans;
                     if (_transferView == null)
                     {
-                        _transferView = new MKSTransferView(_selectedTransfer);
+                        _transferView = new MKSTransferView(_selectedTransfer, this);
                     }
                     else
                     {
@@ -355,19 +359,32 @@ namespace KolonyTools
 
         public override void SetVisible(bool newValue)
         {
-            _master.UpdateTransfers();
+            _model.UpdateTransfers();
             base.SetVisible(newValue);
         }
+
+        public void Remove(MKSLtransfer transfer)
+        {
+            _model.Remove(transfer);
+        }
+    }
+
+    public interface ITransferListViewer
+    {
+        void Remove(MKSLtransfer transfer);
     }
 
     public class MKSTransferView : Window<MKSTransferView>
     {
         private MKSLtransfer _transfer;
+        private ITransferListViewer _parent;
 
-        public MKSTransferView(MKSLtransfer transfer)
+        public MKSTransferView(MKSLtransfer transfer, ITransferListViewer parent)
             : base(transfer.transferName, 175, 450)
         {
+            _parent = parent;
             _transfer = transfer;
+            this.Log(transfer.transferName);
             SetVisible(true);
         }
 
@@ -378,12 +395,12 @@ namespace KolonyTools
             {
                 _transfer = value;
                 WindowTitle = _transfer.transferName;
+                SetVisible(true);
             }
         }
 
         protected override void DrawWindowContents(int windowId)
         {
-            GUI.DragWindow(new Rect(0, 0, 150, 30));
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
@@ -424,11 +441,20 @@ namespace KolonyTools
                 GUILayout.EndHorizontal();
             }
 
-
-            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(75)))
             {
                 SetVisible(false);
             }
+            if (!Transfer.delivered)
+            {
+                if (GUILayout.Button("Remove", MKSGui.buttonStyle, GUILayout.Width(75)))
+                {
+                    _parent.Remove(_transfer);
+                    SetVisible(false);
+                }
+            }
+            GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
     }

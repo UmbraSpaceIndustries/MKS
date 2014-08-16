@@ -19,6 +19,7 @@ namespace KolonyTools
         private Vessel vesselFrom;
         private Vessel vesselTo;
         public bool orbit = false;
+        public bool aborted = false;
         public double SMA = 0;
         public double ECC = 0;
         public double INC = 0;
@@ -243,6 +244,10 @@ namespace KolonyTools
             node.AddValue("key",savestring());
         }
 
+        public void Abort()
+        {
+            aborted = true;
+        }
     }
     public class MKSLGuiTransfer : MKSLtransfer
     {
