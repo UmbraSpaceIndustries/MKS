@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Toolbar;
 using UnityEngine;
@@ -309,16 +310,62 @@ namespace KolonyTools
 
         public void Remove(MKSLtransfer transfer)
         {
-            throw new NotImplementedException();
+            Vessel ves = FlightGlobals.Vessels.Find(x => x.id == transfer.VesselFrom.id);
+            if (ves.packed && !ves.loaded) //inactive vessel
+            {
+                foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
+                {
+                    foreach (ProtoPartModuleSnapshot pm in p.modules)
+                    {
+                        if (pm.moduleName != "MKSLcentral") continue;
+
+
+                        var savestring = new MKSLTranferList();
+                        savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
+                        var currentNode = new ConfigNode();
+                        savestring.Save(currentNode);
+                        pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
+
+                        var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
+                        var previouse = new MKSLTranferList();
+                        previouse.Load(previouseList);
+                        previouse.Add(transfer);
+                        var previousNode = new ConfigNode();
+                        previouse.Save(previousNode);
+                        pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
+
+                    }
+                }
+            }
+            else //active vessel
+            {
+                foreach (Part p in ves.parts)
+                {
+                    foreach (PartModule pm in p.Modules)
+                    {
+                        if (pm.moduleName == "MKSLcentral")
+                        {
+                            MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
+                            MKSLc.saveCurrentTransfersList.RemoveAll(x => x.transferName == transfer.transferName);
+                            MKSLc.savePreviousTransfersList.Add(transfer);
+
+                        }
+                    }
+                }
+            }
+            KnownTransfers.RemoveAll(x => x.transferName == transfer.transferName);
         }
+        
     }
 
     public class MKSLogisticsMasterView : Window<MKSLogisticsMasterView>, ITransferListViewer
     {
         private readonly MKSLlocal _model;
+        private IEnumerable<MKSLtransfer> currenTranferList;
         private Vector2 _scrollPosition;
         private MKSLtransfer _selectedTransfer;
         private MKSTransferView _transferView;
+        private bool _showIncoming;
 
         public MKSLogisticsMasterView(MKSLlocal model)
             : base("Logistics Master", 200, 450)
@@ -329,10 +376,24 @@ namespace KolonyTools
 
         protected override void DrawWindowContents(int windowId)
         {
+            if (_showIncoming)
+            {
+                currenTranferList = _model.KnownTransfers.Where(x=> x.VesselTo.id == FlightGlobals.ActiveVessel.id);    
+            }
+            else
+            {
+                currenTranferList = _model.KnownTransfers;
+            }
+            
             GUILayout.BeginVertical();
+            string incomingButtonText = (_showIncoming) ? "Show All" : "Show Incoming";
+            if (GUILayout.Button(incomingButtonText, MKSGui.buttonStyle, GUILayout.Width(150)))
+            {
+                _showIncoming = !_showIncoming;
+            }
             GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true, GUILayout.Width(160), GUILayout.Height(300));
-            foreach (MKSLtransfer trans in _model.KnownTransfers)
+            foreach (MKSLtransfer trans in currenTranferList)
             {
                 if (GUILayout.Button(trans.transferName + " (" + Utilities.FormatTime(trans.arrivaltime - Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
                 {
@@ -384,7 +445,6 @@ namespace KolonyTools
         {
             _parent = parent;
             _transfer = transfer;
-            this.Log(transfer.transferName);
             SetVisible(true);
         }
 
