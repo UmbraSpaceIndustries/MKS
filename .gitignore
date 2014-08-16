@@ -22,3 +22,5 @@ Models/Kerbitrail_Tube/Temp/UnityLockfile
 Source/KolonyTools/obj/x64/Debug/build.force
 *.force
 *.cache
+*.db
+*.cache
