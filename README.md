@@ -60,7 +60,7 @@ MKS is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.
 * You must credit the following people when publishing your derivatives in the download and forum posts: TaranisElsu (TAC Life Support), RoverDude (MKS parts, KolonyTools dll), Garibaldi2257 (Inline Resource Tank).
 
 ### Other Contributors and Thanks!
-* PrivateFlip (Orbital Logistics code)
+* PrivateFlip/Cyrik (Orbital Logistics code)
 * Stage (ORS Maps)
 * Vim Razz (Mission Flags)
 * Olympic1 (Science Logs)

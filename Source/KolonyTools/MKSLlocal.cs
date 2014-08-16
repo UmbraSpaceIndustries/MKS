@@ -1,14 +1,19 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Toolbar;
 using UnityEngine;
 using File = KSP.IO.File;
 
 namespace KolonyTools
 {
+
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class MKSLlocal : MonoBehaviour
     {
+        private IButton OrbLogButton;
+        private bool isUiVisible;
+
         double nextchecktime;
 
         [KSPField(isPersistant = true, guiActive = false)] 
@@ -20,17 +25,30 @@ namespace KolonyTools
         private Vector2 scrollPosition;
         private MKSLtransfer viewGUITransfer;
 
+        internal MKSLlocal()
+        {
+            OrbLogButton = ToolbarManager.Instance.add("KolonyTools", "OrbLogButton");
+            OrbLogButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/OrbLogisticsIcon";
+            OrbLogButton.ToolTip = "Orbital Logistics";
+            OrbLogButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
+            OrbLogButton.OnClick += (e) => Debug.Log("OrbLogButton clicked");
+            OrbLogButton.OnClick += (e) => ToggleGui();
+        }
+
+        private void ToggleGui()
+        {
+            if (isUiVisible) hideMainGui();
+            else showMainGui();
+            isUiVisible = !isUiVisible;
+        }
+
         private void Awake()
         {
             KnownTransfers = new MKSLTranferList();
             mainGuiRect = new Rect(200, 200, 175, 450);
             transferGuiRect = new Rect(200, 200, 175, 450);
             RenderingManager.AddToPostDrawQueue(144, Ondraw);
-            nextchecktime = Planetarium.GetUniversalTime() + 2;
-            var texture = GameDatabase.Instance.GetTexture("MKS\\Assets\\OrbLogisticsIcon.png", false);
-            ApplicationLauncher.Instance.AddModApplication(showMainGui, hideMainGui, null, null, null, null,
-                ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,texture);
-            
+            nextchecktime = Planetarium.GetUniversalTime() + 2;          
         }
 
         private void drawMainGui()
@@ -426,6 +444,11 @@ namespace KolonyTools
             //Calaculate distance in metres.
             distance = radius * c;
             return distance;
+        }
+
+        internal void OnDestroy()
+        {
+            OrbLogButton.Destroy();
         }
     }
 }
