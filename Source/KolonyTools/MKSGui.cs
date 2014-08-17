@@ -34,5 +34,6 @@ namespace KolonyTools
             buttonStyle.stretchHeight = false;
             buttonStyle.stretchWidth = false;
         }
+
     }
 }
