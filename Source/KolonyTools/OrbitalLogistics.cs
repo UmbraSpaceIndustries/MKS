@@ -17,31 +17,7 @@ namespace KolonyTools
         //GUI
         private static GUIStyle windowStyle, labelStyle, redlabelStyle, textFieldStyle, buttonStyle;
 
-        //GUI Main
-        private static Rect windowPosGUIMain = new Rect(200, 200, 175, 450);
-        private Vector2 scrollPositionGUICurrentTransfers;
-        private Vector2 scrollPositionGUIPreviousTransfers;
-
-        //GUI Edit
-        private static Rect windowPosGUIEdit = new Rect(250, 250, 400, 450);
-        private Vector2 scrollPositionEditGUIResources;
-
-        //private bool newedit = false;
-        private MKSLGuiTransfer editGUITransfer = new MKSLGuiTransfer();
-        private MKSLresource editGUIResource = new MKSLresource();
-
-        private List<Vessel> bodyVesselList = new List<Vessel>();
-        private int vesselFrom = 0;
-        private int vesselTo = 0;
-              
-        private string StrAmount = "0";
-        private double currentAvailable;
-        private string StrValidationMessage = "";
-
-        //GUI View
-        private bool viewCurrent;
-        private static Rect windowPosGUIView = new Rect(270, 370, 175, 200);
-        private MKSLtransfer viewGUITransfer = new MKSLtransfer();
+        public List<Vessel> bodyVesselList = new List<Vessel>();
 
         //string with the resources for which the partmodule must function
         [KSPField(isPersistant = false, guiActive = false)]
@@ -107,7 +83,9 @@ namespace KolonyTools
         public MKSLTranferList saveCurrentTransfersList = new MKSLTranferList();
         [KSPField(isPersistant = true, guiActive = false)]
         public MKSLTranferList savePreviousTransfersList = new MKSLTranferList();
-        
+
+        public MKSMainGui MainGui;
+
         /// <summary>
         /// Main window
         /// </summary>
@@ -137,403 +115,24 @@ namespace KolonyTools
             buttonStyle.stretchWidth = false;
         }
 
-        private void WindowGUIMain(int windowID)
-        {
-            GUI.DragWindow(new Rect(0, 0, 150, 30));
-            GUILayout.BeginVertical();
-
-            if (GUILayout.Button("New Transfer", buttonStyle, GUILayout.Width(150)))
-            {
-                //newedit = true;
-                makeBodyVesselList();
-                editGUITransfer = new MKSLGuiTransfer();
-                System.Random rnd = new System.Random();
-                editGUITransfer.transferName = rnd.Next(100000, 999999).ToString();
-                editGUITransfer.initTransferList(ManagedResources);
-                editGUITransfer.initCostList(Mix1CostResources);
-                editGUITransfer.VesselFrom = vessel;
-                editGUITransfer.VesselTo = vessel;
-                editGUITransfer.calcResources();
-                editGUIResource = editGUITransfer.transferList[0];
-                StrAmount = "0";
-                currentAvailable = readResource(editGUITransfer.VesselFrom, editGUIResource.resourceName);
-
-                openGUIEdit();
-            }
-
-            GUILayout.Label("Current transfers", labelStyle, GUILayout.Width(150));
-            scrollPositionGUICurrentTransfers = GUILayout.BeginScrollView(scrollPositionGUICurrentTransfers, false,true, GUILayout.Width(160), GUILayout.Height(180));
-            foreach (MKSLtransfer trans in saveCurrentTransfersList)
-            {
-                if (GUILayout.Button(trans.transferName + " (" + deliveryTimeString(trans.arrivaltime, Planetarium.GetUniversalTime()) + ")", buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
-                {
-                    viewCurrent = true;
-                    viewGUITransfer = trans;
-                    openGUIView();
-                }
-            }
-            GUILayout.EndScrollView();
-
-            GUILayout.Label("Previous tranfers", labelStyle, GUILayout.Width(150));
-            scrollPositionGUIPreviousTransfers = GUILayout.BeginScrollView(scrollPositionGUIPreviousTransfers, false, true, GUILayout.Width(160), GUILayout.Height(80));
-            foreach (MKSLtransfer trans in savePreviousTransfersList)
-            {
-                if (GUILayout.Button(trans.transferName + " " + (trans.delivered == true ? "succes" : "failure"), buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
-                {
-                    viewCurrent = false;
-                    viewGUITransfer = trans;
-                    openGUIView();
-                }
-            }
-            GUILayout.EndScrollView();
-
-            GUILayout.Label("", labelStyle, GUILayout.Width(150));
-            if (GUILayout.Button("Close", buttonStyle, GUILayout.Width(150)))
-            {
-                closeGUIMain();
-            }
-            GUILayout.EndVertical();
-        }
-
-        private void drawGUIMain()
-        {
-            windowPosGUIMain = GUILayout.Window(1404, windowPosGUIMain, WindowGUIMain, "Kolony Logistics", windowStyle);
-        }
 
         [KSPEvent(name = "Kolony Logistics", isDefault = false, guiActive = true, guiName = "Kolony Logistics")]
         public void openGUIMain()
         {
             initStyle();
-            
-            RenderingManager.AddToPostDrawQueue(140, new Callback(drawGUIMain));
+            if (MainGui == null)
+            {
+                MainGui = new MKSMainGui(this);
+            }
+            MainGui.SetVisible(true);
         }
 
-        public void closeGUIMain()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(140, new Callback(drawGUIMain));
-        }
-
-        /// <summary>
-        /// GUI Edit
-        /// </summary>
-
-        private void WindowGUIEdit(int windowID)
-        {
-            GUI.DragWindow(new Rect(0, 0, 500, 30));
-            GUILayout.BeginVertical();
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("<<", buttonStyle, GUILayout.Width(40)))
-            {
-                previousBodyVesselList(ref vesselFrom);
-                editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
-                editGUITransfer.calcResources();
-            }
-            GUILayout.Label("From:", labelStyle, GUILayout.Width(60));
-            GUILayout.Label(editGUITransfer.VesselFrom.vesselName, labelStyle, GUILayout.Width(160));
-            if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(40)))
-            {
-                nextBodyVesselList(ref vesselFrom);
-                editGUITransfer.VesselFrom = bodyVesselList[vesselFrom];
-                editGUITransfer.calcResources();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("<<", buttonStyle, GUILayout.Width(40)))
-            {
-                previousBodyVesselList(ref vesselTo);
-                editGUITransfer.VesselTo = bodyVesselList[vesselTo];
-                editGUITransfer.calcResources();
-            }
-            GUILayout.Label("To:", labelStyle, GUILayout.Width(60));
-            GUILayout.Label(editGUITransfer.VesselTo.vesselName, labelStyle, GUILayout.Width(160));
-            if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(40)))
-            {
-                nextBodyVesselList(ref vesselTo);
-                editGUITransfer.VesselTo = bodyVesselList[vesselTo];
-                editGUITransfer.calcResources();
-            }
-            GUILayout.EndHorizontal();
-
-
-
-            GUILayout.BeginHorizontal();
-            
-            GUILayout.BeginVertical();
-            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(300), GUILayout.Height(150));
-            foreach (MKSLresource res in editGUITransfer.transferList)
-            {
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2) +" of "+
-                    Math.Round(editGUITransfer.resourceAmount.Find(x => x.resourceName == res.resourceName).amount)))
-                {
-                    editGUIResource = res;
-                    StrAmount = Math.Round(res.amount, 2).ToString();
-                    currentAvailable = readResource(editGUITransfer.VesselFrom, editGUIResource.resourceName);
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndScrollView();
-            GUILayout.EndVertical();
-            
-            GUILayout.BeginVertical();
-
-            if (editGUIResource != null)
-            {
-                   GUILayout.BeginHorizontal();
-                   GUILayout.Label("Resource:", labelStyle, GUILayout.Width(80));
-                   GUILayout.Label(editGUIResource.resourceName, labelStyle, GUILayout.Width(100));
-                   GUILayout.EndHorizontal();
-                   
-                   GUILayout.BeginHorizontal();
-                   GUILayout.Label("Amount:", labelStyle, GUILayout.Width(80));
-                   StrAmount = GUILayout.TextField(StrAmount, 10, textFieldStyle, GUILayout.Width(60));
-                   if (GUILayout.Button("Set", buttonStyle, GUILayout.Width(30)))
-                   {
-                       double number = 0;
-                       if (Double.TryParse(StrAmount, out number))
-                       {
-                           if (number < currentAvailable)
-                               editGUIResource.amount = number;
-                           else
-                               editGUIResource.amount = currentAvailable;
-                           StrAmount = Math.Round(number, 2).ToString();
-                       }
-                       else
-                       {
-                           StrAmount = "0";
-                           editGUIResource.amount = 0;
-                       }
-                       editGUIResource.amount = Convert.ToDouble(StrAmount);
-                       updateCostList(editGUITransfer);
-                       validateTransfer(editGUITransfer,ref StrValidationMessage);
-                   }
-                   GUILayout.EndHorizontal();
-                   
-                   GUILayout.BeginHorizontal();
-                   GUILayout.Label("Mass:", labelStyle, GUILayout.Width(80));
-                   GUILayout.Label(Math.Round(editGUIResource.mass(), 2).ToString(), labelStyle, GUILayout.Width(100));
-                   GUILayout.EndHorizontal();
-                   
-                   GUILayout.BeginHorizontal();
-                   GUILayout.Label("Available:", labelStyle, GUILayout.Width(80));
-                   GUILayout.Label(Math.Round(currentAvailable, 2).ToString(), labelStyle, GUILayout.Width(100));
-                   GUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
-            GUILayout.Label("Tranfer Mass: " + Math.Round(editGUITransfer.totalMass(),2) + " (maximum: " + maxTransferMass + ")", labelStyle, GUILayout.Width(300));
-
-            GUILayout.Label("");
-            GUILayout.BeginHorizontal();
-            if (Mix1CostName != "")
-            {
-                if (GUILayout.Button(Mix1CostName, buttonStyle, GUILayout.Width(170)))
-                {
-                    editGUITransfer.initCostList(Mix1CostResources);
-                    updateCostList(editGUITransfer);
-                }
-            }
-            if (Mix2CostName != "")
-            {
-                if (GUILayout.Button(Mix2CostName, buttonStyle, GUILayout.Width(170)))
-                {
-                    editGUITransfer.initCostList(Mix2CostResources);
-                    updateCostList(editGUITransfer);
-                }
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            if (Mix3CostName != "")
-            {
-                if (GUILayout.Button(Mix3CostName, buttonStyle, GUILayout.Width(170)))
-                {
-                    editGUITransfer.initCostList(Mix3CostResources);
-                    updateCostList(editGUITransfer);
-                }
-            }
-            if (Mix4CostName != "")
-            {
-                if (GUILayout.Button(Mix4CostName, buttonStyle, GUILayout.Width(170)))
-                {
-                    editGUITransfer.initCostList(Mix4CostResources);
-                    updateCostList(editGUITransfer);
-                }
-            }
-            GUILayout.EndHorizontal();
-
-            foreach (MKSLresource resCost in editGUITransfer.costList)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(resCost.resourceName + ":", labelStyle, GUILayout.Width(100));
-                GUILayout.Label(Math.Round(resCost.amount, 2).ToString(), labelStyle, GUILayout.Width(200));
-                GUILayout.EndHorizontal();
-            }
-
-
-            GUILayout.Label(StrValidationMessage, redlabelStyle);
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Initiate Transfer", buttonStyle, GUILayout.Width(200)))
-            {
-                updateCostList(editGUITransfer);
-                if (validateTransfer(editGUITransfer, ref StrValidationMessage))
-                {
-                    createTransfer(editGUITransfer);
-                }
-            }
-            if (GUILayout.Button("Cancel", buttonStyle, GUILayout.Width(100)))
-            {
-                closeGUIEdit();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-        }
-        
-        private void drawGUIEdit()
-        {
-            windowPosGUIEdit = GUILayout.Window(1414, windowPosGUIEdit, WindowGUIEdit, "Transfer " + editGUITransfer.transferName, windowStyle);
-        }
-
-        public void openGUIEdit()
-        {
-            makeBodyVesselList();
-            RenderingManager.AddToPostDrawQueue(141, new Callback(drawGUIEdit));
-        }
-
-        public void closeGUIEdit()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(141, new Callback(drawGUIEdit));
-        }
-
-        /// <summary>
-        /// GUI View
-        /// </summary>
-        private void WindowGUIView(int windowID)
-        {
-            GUI.DragWindow(new Rect(0, 0, 150, 30));
-            GUILayout.BeginVertical();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("From:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.VesselFrom.vesselName, labelStyle, GUILayout.Width(150));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("To:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(viewGUITransfer.VesselTo.vesselName, labelStyle, GUILayout.Width(150));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Arrival:", labelStyle, GUILayout.Width(50));
-            GUILayout.Label(deliveryTimeString(viewGUITransfer.arrivaltime, Planetarium.GetUniversalTime()), labelStyle, GUILayout.Width(100));
-            GUILayout.EndHorizontal();
-            GUILayout.Label("");
-            GUILayout.Label("Transfer", labelStyle, GUILayout.Width(100));
-            foreach (MKSLresource res in viewGUITransfer.transferList)
-            {
-                if (res.amount > 0)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(res.resourceName, labelStyle, GUILayout.Width(150));
-                    GUILayout.Label(Math.Round(res.amount, 2).ToString(), labelStyle, GUILayout.Width(50));
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.Label("Transfer Mass: " + Math.Round(viewGUITransfer.totalMass(), 2).ToString(), labelStyle, GUILayout.Width(150));
-            GUILayout.Label("");
- 
-            GUILayout.Label("Cost", labelStyle, GUILayout.Width(100));
-            foreach (MKSLresource res in viewGUITransfer.costList)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(res.resourceName, labelStyle, GUILayout.Width(100));
-                GUILayout.Label(Math.Round(res.amount, 2).ToString(), labelStyle, GUILayout.Width(50));
-                GUILayout.EndHorizontal();
-            }
-
-            if (viewCurrent)
-            {
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Close", buttonStyle, GUILayout.Width(75)))
-                {
-                    closeGUIView();
-                }
-                if (GUILayout.Button("Remove", buttonStyle, GUILayout.Width(75)))
-                {
-                    removeCurrentTranfer(viewGUITransfer);
-                    closeGUIView();
-                }
-                GUILayout.EndHorizontal();
-            }
-            else
-            {
-                if (GUILayout.Button("Close", buttonStyle, GUILayout.Width(150)))
-                {
-                    closeGUIView();
-                }
-            }
-            GUILayout.EndVertical();
-        }
-
-        private void drawGUIView()
-        {
-            windowPosGUIView = GUILayout.Window(1424, windowPosGUIView, WindowGUIView, "Transfer " + viewGUITransfer.transferName, windowStyle);
-        }
-
-        public void openGUIView()
-        {
-            closeGUIView();
-            RenderingManager.AddToPostDrawQueue(142, new Callback(drawGUIView));
-        }
-
-        public void closeGUIView()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(142, new Callback(drawGUIView));
-        }
-
-        //return a day-hour-minute-seconds-time format for the delivery time
-        public string deliveryTimeString(double deliveryTime, double currentTime)
-        {
-            int days = 0;
-            int hours = 0;
-            int minutes = 0;
-            int seconds = 0;
-
-            double time = 0;
-            if (deliveryTime > currentTime)
-                time = deliveryTime - currentTime;
-            else
-                time = currentTime - deliveryTime;
-
-
-            days = (int)Math.Floor(time / 21600);
-            time = time - (days * 21600);
-
-            hours = (int)Math.Floor(time / 3600);
-            time = time - (hours * 3600);
-
-            minutes = (int)Math.Floor(time / 60);
-            time = time - (minutes * 60);
-
-            seconds = (int)Math.Floor(time);
-
-            if (deliveryTime > currentTime)
-                return (days.ToString() + "d" + hours.ToString() + "h" + minutes.ToString() + "m" + seconds + "s");
-            else
-                return ("-" + days.ToString() + "d" + hours.ToString() + "h" + minutes.ToString() + "m" + seconds + "s");
-            
-        }
 
         /// <summary>
         /// vessel list
         /// </summary>
         //make a list of all valid tranfer vessels on this celestial body.
-        private void makeBodyVesselList()
+        public void makeBodyVesselList()
         {
             bodyVesselList.Clear();
             foreach (Vessel ves in FlightGlobals.Vessels)
@@ -547,35 +146,6 @@ namespace KolonyTools
             }
         }
 
-        //go to previous entry in vessel list for this body
-        public void previousBodyVesselList(ref int ListPosition)
-        {
-            if (ListPosition <= 0)
-            {
-                ListPosition = bodyVesselList.Count - 1;
-                
-            }
-            else
-            {
-                ListPosition = ListPosition - 1;
-            }
-        }
-
-        //go to next entry in vessel list for this body
-        public void nextBodyVesselList(ref int ListPosition)
-        {
-            if (ListPosition >= bodyVesselList.Count - 1)
-            {
-                ListPosition = 0;
-            }
-            else
-            {
-                ListPosition = ListPosition + 1;
-            }
-        }
-
-
-
         //removes an entry from the current transfers 
         public void removeCurrentTranfer(MKSLtransfer transRemove)
         {
@@ -584,10 +154,360 @@ namespace KolonyTools
             savePreviousTransfersList.Add(transRemove);
         }
 
-        /// <summary>
-        /// transfer functions
-        /// </summary>
-        /// <param name="trans"></param>
+        // adapted from: www.consultsarath.com/contents/articles/KB000012-distance-between-two-points-on-globe--calculation-using-cSharp.aspx
+        public double GetDistanceBetweenPoints(double lat1, double long1, double lat2, double long2)
+        {
+            double distance = 0;
+
+            double dLat = (lat2 - lat1) / 180 * Math.PI;
+            double dLong = (long2 - long1) / 180 * Math.PI;
+
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
+                        + Math.Cos(lat2) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            //Calculate radius of planet
+            // For this you can assume any of the two points.
+            double radiusE = FlightGlobals.ActiveVessel.mainBody.Radius; // Equatorial radius, in metres
+            double radiusP = FlightGlobals.ActiveVessel.mainBody.Radius; // Polar Radius
+
+            //Numerator part of function
+            double nr = Math.Pow(radiusE * radiusP * Math.Cos(lat1 / 180 * Math.PI), 2);
+            //Denominator part of the function
+            double dr = Math.Pow(radiusE * Math.Cos(lat1 / 180 * Math.PI), 2)
+                            + Math.Pow(radiusP * Math.Sin(lat1 / 180 * Math.PI), 2);
+            double radius = Math.Sqrt(nr / dr);
+
+            //Calaculate distance in metres.
+            distance = radius * c;
+            return distance;
+        }
+
+    }
+
+    public class MKSMainGui : Window<MKSMainGui>,ITransferListViewer
+    {
+        private readonly MKSLcentral _model;
+        private Vector2 scrollPositionGUICurrentTransfers;
+        private Vector2 scrollPositionGUIPreviousTransfers;
+        private MKSLGuiTransfer editGUITransfer;
+        private MKSTransferView _transferView;
+        private MKSTransferCreateView _transferCreateView;
+
+        public MKSMainGui(MKSLcentral model)
+            : base("Kolony Logistics", 200, 500)
+        {
+            _model = model;
+            SetVisible(true);
+        }
+
+        protected override void DrawWindowContents(int windowId)
+        {
+            GUILayout.BeginVertical();
+
+            if (GUILayout.Button("New Transfer", MKSGui.buttonStyle, GUILayout.Width(150)))
+            {
+                _model.makeBodyVesselList();
+                editGUITransfer = new MKSLGuiTransfer();
+                System.Random rnd = new System.Random();
+                editGUITransfer.transferName = rnd.Next(100000, 999999).ToString();
+                editGUITransfer.initTransferList(_model.ManagedResources);
+                editGUITransfer.initCostList(_model.Mix1CostResources);
+                editGUITransfer.VesselFrom = _model.vessel;
+                editGUITransfer.VesselTo = _model.vessel;
+                editGUITransfer.calcResources();
+
+                _transferCreateView = new MKSTransferCreateView(editGUITransfer, _model);
+            }
+
+            GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
+            scrollPositionGUICurrentTransfers = GUILayout.BeginScrollView(scrollPositionGUICurrentTransfers, false, true, GUILayout.Width(160), GUILayout.Height(180));
+            foreach (MKSLtransfer trans in _model.saveCurrentTransfersList)
+            {
+                if (GUILayout.Button(trans.transferName + " (" + Utilities.DeliveryTimeString(trans.arrivaltime, Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
+                {
+                    if (_transferView == null)
+                    {
+                        _transferView = new MKSTransferView(trans,this);
+                    }
+                    else
+                    {
+                        _transferView.Transfer = trans;
+                    }
+                }
+            }
+            GUILayout.EndScrollView();
+
+            GUILayout.Label("Previous tranfers", MKSGui.labelStyle, GUILayout.Width(150));
+            scrollPositionGUIPreviousTransfers = GUILayout.BeginScrollView(scrollPositionGUIPreviousTransfers, false, true, GUILayout.Width(160), GUILayout.Height(80));
+            foreach (MKSLtransfer trans in _model.savePreviousTransfersList)
+            {
+                if (GUILayout.Button(trans.transferName + " " + (trans.delivered ? "succes" : "failure"), MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
+                {
+                    if (_transferView == null)
+                    {
+                        _transferView = new MKSTransferView(trans,this);
+                    }
+                    else
+                    {
+                        _transferView.Transfer = trans;
+                    }
+                }
+            }
+            GUILayout.EndScrollView();
+
+            GUILayout.Label("", MKSGui.labelStyle, GUILayout.Width(150));
+            if (GUILayout.Button("Close", MKSGui.buttonStyle, GUILayout.Width(150)))
+            {
+                SetVisible(false);
+            }
+            GUILayout.EndVertical();
+        }
+
+        public void Remove(MKSLtransfer transfer)
+        {
+            _model.removeCurrentTranfer(transfer);
+        }
+    }
+
+    public class MKSTransferCreateView : Window<MKSTransferCreateView>
+    {
+        private readonly MKSLGuiTransfer _model;
+        private readonly MKSLcentral _central;
+        private Vector2 scrollPositionEditGUIResources;
+        private MKSLresource editGUIResource;
+        private string StrAmount;
+        private double currentAvailable;
+        private string StrValidationMessage;
+        private int vesselFrom = 0;
+        private int vesselTo = 0;
+        public MKSTransferCreateView(MKSLGuiTransfer model, MKSLcentral central)
+            : base(model.transferName, 400, 450)
+        {
+            _model = model;
+            _central = central;
+            SetVisible(true);
+        }
+
+        protected override void DrawWindowContents(int windowId)
+        {
+            GUILayout.BeginVertical();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("<<", MKSGui.buttonStyle, GUILayout.Width(40)))
+            {
+                previousBodyVesselList(ref vesselFrom);
+                _model.VesselFrom = _central.bodyVesselList[vesselFrom];
+                _model.calcResources();
+            }
+            GUILayout.Label("From:", MKSGui.labelStyle, GUILayout.Width(60));
+            GUILayout.Label(_model.VesselFrom.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
+            if (GUILayout.Button(">>", MKSGui.buttonStyle, GUILayout.Width(40)))
+            {
+                nextBodyVesselList(ref vesselFrom);
+                _model.VesselFrom = _central.bodyVesselList[vesselFrom];
+                _model.calcResources();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("<<", MKSGui.buttonStyle, GUILayout.Width(40)))
+            {
+                previousBodyVesselList(ref vesselTo);
+                _model.VesselTo = _central.bodyVesselList[vesselTo];
+                _model.calcResources();
+            }
+            GUILayout.Label("To:", MKSGui.labelStyle, GUILayout.Width(60));
+            GUILayout.Label(_model.VesselTo.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
+            if (GUILayout.Button(">>", MKSGui.buttonStyle, GUILayout.Width(40)))
+            {
+                nextBodyVesselList(ref vesselTo);
+                _model.VesselTo = _central.bodyVesselList[vesselTo];
+                _model.calcResources();
+            }
+            GUILayout.EndHorizontal();
+
+
+
+            GUILayout.BeginHorizontal();
+
+            GUILayout.BeginVertical();
+            scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(300), GUILayout.Height(150));
+            foreach (MKSLresource res in _model.transferList)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2) + " of " +
+                    Math.Round(_model.resourceAmount.Find(x => x.resourceName == res.resourceName).amount)))
+                {
+                    editGUIResource = res;
+                    StrAmount = Math.Round(res.amount, 2).ToString();
+                    currentAvailable = readResource(_model.VesselFrom, editGUIResource.resourceName);
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical();
+
+            if (editGUIResource != null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Resource:", MKSGui.labelStyle, GUILayout.Width(80));
+                GUILayout.Label(editGUIResource.resourceName, MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Amount:", MKSGui.labelStyle, GUILayout.Width(80));
+                StrAmount = GUILayout.TextField(StrAmount, 10, MKSGui.textFieldStyle, GUILayout.Width(60));
+                if (GUILayout.Button("Set", MKSGui.buttonStyle, GUILayout.Width(30)))
+                {
+                    double number;
+                    if (Double.TryParse(StrAmount, out number))
+                    {
+                        if (number < currentAvailable)
+                            editGUIResource.amount = number;
+                        else
+                            editGUIResource.amount = currentAvailable;
+                        StrAmount = Math.Round(number, 2).ToString();
+                    }
+                    else
+                    {
+                        StrAmount = "0";
+                        editGUIResource.amount = 0;
+                    }
+                    editGUIResource.amount = Convert.ToDouble(StrAmount);
+                    updateCostList(_model);
+                    validateTransfer(_model, ref StrValidationMessage);
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Mass:", MKSGui.labelStyle, GUILayout.Width(80));
+                GUILayout.Label(Math.Round(editGUIResource.mass(), 2).ToString(), MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Available:", MKSGui.labelStyle, GUILayout.Width(80));
+                GUILayout.Label(Math.Round(currentAvailable, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Tranfer Mass: " + Math.Round(_model.totalMass(), 2) + " (maximum: " + _central.maxTransferMass + ")", MKSGui.labelStyle, GUILayout.Width(300));
+
+            GUILayout.Label("");
+            GUILayout.BeginHorizontal();
+            if (_central.Mix1CostName != "")
+            {
+                if (GUILayout.Button(_central.Mix1CostName, MKSGui.buttonStyle, GUILayout.Width(170)))
+                {
+                    _model.initCostList(_central.Mix1CostResources);
+                    updateCostList(_model);
+                }
+            }
+            if (_central.Mix2CostName != "")
+            {
+                if (GUILayout.Button(_central.Mix2CostName, MKSGui.buttonStyle, GUILayout.Width(170)))
+                {
+                    _model.initCostList(_central.Mix2CostResources);
+                    updateCostList(_model);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (_central.Mix3CostName != "")
+            {
+                if (GUILayout.Button(_central.Mix3CostName, MKSGui.buttonStyle, GUILayout.Width(170)))
+                {
+                    _model.initCostList(_central.Mix3CostResources);
+                    updateCostList(_model);
+                }
+            }
+            if (_central.Mix4CostName != "")
+            {
+                if (GUILayout.Button(_central.Mix4CostName, MKSGui.buttonStyle, GUILayout.Width(170)))
+                {
+                    _model.initCostList(_central.Mix4CostResources);
+                    updateCostList(_model);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            foreach (MKSLresource resCost in _model.costList)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(resCost.resourceName + ":", MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.Label(Math.Round(resCost.amount, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(200));
+                GUILayout.EndHorizontal();
+            }
+
+
+            GUILayout.Label(StrValidationMessage, MKSGui.redlabelStyle);
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Initiate Transfer", MKSGui.buttonStyle, GUILayout.Width(200)))
+            {
+                updateCostList(_model);
+                if (validateTransfer(_model, ref StrValidationMessage))
+                {
+                    createTransfer(_model);
+                }
+            }
+            if (GUILayout.Button("Cancel", MKSGui.buttonStyle, GUILayout.Width(100)))
+            {
+                SetVisible(false);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+
+        }
+        public void updateCostList(MKSLtransfer trans)
+        {
+            double PSSM = getValueFromStrPlanet(_central.DistanceModifierPlanet, _central.vessel.mainBody.name);
+            double PSOM = getValueFromStrPlanet(_central.SurfaceOrbitModifierPlanet, _central.vessel.mainBody.name);
+            double POSM = getValueFromStrPlanet(_central.OrbitSurfaceModifierPlanet, _central.vessel.mainBody.name);
+
+            double ATUP = 1;
+            double ATDO = 1;
+            if (_central.vessel.mainBody.atmosphere)
+            {
+                ATUP = (double)_central.AtmosphereUpModifier;
+                ATDO = (double)_central.AtmosphereDownModifier;
+            }
+
+            foreach (MKSLresource res in trans.costList)
+            {
+                ///take into account amount
+
+                ///take into account celestialbody
+                if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                    (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
+                {
+                    double distance = _central.GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
+                    res.amount = res.costPerMass * trans.totalMass() * distance * _central.vessel.mainBody.GeeASL * _central.DistanceModifier * PSSM;
+                }
+                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                         (trans.VesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
+                {
+                    res.amount = res.costPerMass * trans.totalMass() * _central.vessel.mainBody.GeeASL * _central.vessel.mainBody.Radius * ATUP * _central.SurfaceOrbitModifier * PSOM;
+                }
+                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
+                         (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
+                {
+                    res.amount = res.costPerMass * trans.totalMass() * _central.vessel.mainBody.GeeASL * _central.vessel.mainBody.Radius * ATDO * _central.OrbitSurfaceModifier * POSM;
+                }
+                else //Working code - going to just use the same calc as surface to surface for orbit to orbit for now
+                {
+                    double distance = _central.GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
+                    res.amount = res.costPerMass * trans.totalMass() * distance * _central.vessel.mainBody.GeeASL * _central.DistanceModifier * PSSM;
+                }
+
+            }
+        }
         public bool validateTransfer(MKSLtransfer trans, ref string validationMess)
         {
             bool check = true;
@@ -641,114 +561,19 @@ namespace KolonyTools
                     }
                 }
 
-                if ((readResource(trans.VesselFrom, costRes.resourceName) + readResource(vessel, costRes.resourceName)) < totalResAmount)
+                if ((readResource(trans.VesselFrom, costRes.resourceName) + readResource(_central.vessel, costRes.resourceName)) < totalResAmount)
                 {
                     check = false;
                     validationMess = validationMess + "insufficient " + costRes.resourceName + "    ";
                 }
             }
-                        
+
             if (check)
             {
                 validationMess = "";
                 return true;
             }
             return false;
-        }
-
-
-        public void updateCostList(MKSLtransfer trans)
-        {
-            double PSSM = getValueFromStrPlanet(DistanceModifierPlanet, vessel.mainBody.name);
-            double PSOM = getValueFromStrPlanet(SurfaceOrbitModifierPlanet, vessel.mainBody.name);
-            double POSM = getValueFromStrPlanet(OrbitSurfaceModifierPlanet, vessel.mainBody.name); 
-
-            double ATUP = 1;
-            double ATDO = 1;
-            if (vessel.mainBody.atmosphere)
-            {
-                ATUP = (double)AtmosphereUpModifier;
-                ATDO = (double)AtmosphereDownModifier;
-            }
-
-            foreach (MKSLresource res in trans.costList)
-            {
-                ///take into account amount
-
-                ///take into account celestialbody
-                if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
-                    (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
-                {
-                    double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
-                    res.amount = res.costPerMass * trans.totalMass() * distance * vessel.mainBody.GeeASL * DistanceModifier * PSSM;
-                }
-                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
-                         (trans.VesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
-                {
-                    res.amount = res.costPerMass * trans.totalMass() * vessel.mainBody.GeeASL * vessel.mainBody.Radius * ATUP * SurfaceOrbitModifier * PSOM;
-                }
-                else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
-                         (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
-                {
-                    res.amount = res.costPerMass * trans.totalMass() * vessel.mainBody.GeeASL * vessel.mainBody.Radius * ATDO * OrbitSurfaceModifier * POSM;
-                }
-                else //Working code - going to just use the same calc as surface to surface for orbit to orbit for now
-                {
-                    double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
-                    res.amount = res.costPerMass * trans.totalMass() * distance * vessel.mainBody.GeeASL * DistanceModifier * PSSM;
-                }
-
-            }
-        }
-
-        public void updateArrivalTime(MKSLtransfer trans)
-        {
-            double prepT = (double)PrepTime;
-            double TpD = getValueFromStrPlanet(TimePerDistancePlanet, vessel.mainBody.name);
-            if (1 == TpD)
-            {
-                TpD = TimePerDistance;
-            }
-            double TtfLO = getValueFromStrPlanet(TimeToFromLOPlanet, vessel.mainBody.name);
-            if (1 == TtfLO)
-            {
-                TtfLO = TimeToFromLO;
-            }
-
-            if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
-                (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
-            {
-                double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
-                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
-            }
-            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
-                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
-            {
-                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
-            }
-            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
-                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
-            {
-                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
-            }
-            else //More working code
-            {
-                double distance = GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
-                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
-            }
-
-        }
-
-        private double getValueFromStrPlanet(string StrPlanet, string PlanetName)
-        {
-            string[] planets = StrPlanet.Split(',');
-            foreach (String planet in planets)
-            {
-                string[] planetInfo = planet.Split(':');
-                if (planetInfo[0] == PlanetName)
-                    return (Convert.ToDouble(planetInfo[1]));
-            }
-            return (1);
         }
 
         public void createTransfer(MKSLtransfer trans)
@@ -759,7 +584,7 @@ namespace KolonyTools
             {
                 double AmountToGather = costRes.amount;
                 double AmountGathered = 0;
-                AmountGathered += -vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                AmountGathered += -_central.vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
                 AmountGathered += -trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
             }
 
@@ -786,14 +611,10 @@ namespace KolonyTools
                 trans.LAT = trans.VesselTo.protoVessel.latitude;
             }
 
-                saveCurrentTransfersList.Add(trans);
-            closeGUIEdit();
+            _central.saveCurrentTransfersList.Add(trans);
+            SetVisible(false);
         }
-
-        /// <summary>
-        ///  read and take resources
-        /// </summary>
-        public double readResource(Vessel ves ,string ResourceName)
+        public double readResource(Vessel ves, string ResourceName)
         {
             double amountCounted = 0;
             if (ves.packed && !ves.loaded)
@@ -821,94 +642,85 @@ namespace KolonyTools
                             amountCounted = amountCounted + r.amount;
                         }
                     }
-                } 
+                }
             }
             return amountCounted;
         }
-        
-        private double takeResources(Vessel ves, string ResourceName, double AmountToGather)
+        private double getValueFromStrPlanet(string StrPlanet, string PlanetName)
         {
-            double AmountGathered = 0;
-
-            if (ves.packed && !ves.loaded)
+            string[] planets = StrPlanet.Split(',');
+            foreach (String planet in planets)
             {
-                //Thanks to NathanKell for explaining how to access and edit parts of unloaded vessels and pointing me for some example code is NathanKell's own Mission Controller Extended mod!
-                foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
-                {
-                    foreach (ProtoPartResourceSnapshot r in p.resources)
-                    {
-                        if (r.resourceName == ResourceName)
-                        {
-                            double AmountInPart = Convert.ToDouble(r.resourceValues.GetValue("amount"));
+                string[] planetInfo = planet.Split(':');
+                if (planetInfo[0] == PlanetName)
+                    return (Convert.ToDouble(planetInfo[1]));
+            }
+            return (1);
+        }
+        public void updateArrivalTime(MKSLtransfer trans)
+        {
+            double prepT = (double)_central.PrepTime;
+            double TpD = getValueFromStrPlanet(_central.TimePerDistancePlanet, _central.vessel.mainBody.name);
+            if (1 == TpD)
+            {
+                TpD = _central.TimePerDistance;
+            }
+            double TtfLO = getValueFromStrPlanet(_central.TimeToFromLOPlanet, _central.vessel.mainBody.name);
+            if (1 == TtfLO)
+            {
+                TtfLO = _central.TimeToFromLO;
+            }
 
-                            if (AmountInPart <= AmountToGather - AmountGathered)
-                            {
-                                AmountGathered = AmountGathered + AmountInPart;
-                                r.resourceValues.SetValue("amount", "0");
-                            }
-                            else
-                            {
-                                r.resourceValues.SetValue("amount", Convert.ToString(AmountInPart - (AmountToGather - AmountGathered)));
-                                AmountGathered = AmountToGather;
-                            }
-                        }
-                    }
-                } 
+            if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
+            {
+                double distance = _central.GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
+                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
+            }
+            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED) &&
+                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.ORBITING))
+            {
+                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
+            }
+            else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
+                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED))
+            {
+                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
+            }
+            else //More working code
+            {
+                double distance = _central.GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
+                trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
+            }
+
+        }
+
+        //go to previous entry in vessel list for this body
+        public void previousBodyVesselList(ref int ListPosition)
+        {
+            if (ListPosition <= 0)
+            {
+                ListPosition = _central.bodyVesselList.Count - 1;
+
             }
             else
             {
-                foreach (Part p in ves.parts)
-                {
-                    foreach (PartResource r in p.Resources)
-                    {
-                        if (r.resourceName == ResourceName)
-                        {
-                            if (r.amount <= AmountToGather - AmountGathered)
-                            {
-                                AmountGathered = AmountGathered + r.amount;
-                                r.amount = 0;
-                            }
-                            else
-                            {
-                                r.amount = r.amount - (AmountToGather - AmountGathered);
-                                AmountGathered = AmountToGather;
-                            }
-                        }
-                    }
-                }            
+                ListPosition = ListPosition - 1;
             }
-            return (AmountGathered);
         }
 
-        // adapted from: www.consultsarath.com/contents/articles/KB000012-distance-between-two-points-on-globe--calculation-using-cSharp.aspx
-        public double GetDistanceBetweenPoints(double lat1, double long1, double lat2, double long2)
+        //go to next entry in vessel list for this body
+        public void nextBodyVesselList(ref int ListPosition)
         {
-            double distance = 0;
-
-            double dLat = (lat2 - lat1) / 180 * Math.PI;
-            double dLong = (long2 - long1) / 180 * Math.PI;
-
-            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
-                        + Math.Cos(lat2) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-            //Calculate radius of planet
-            // For this you can assume any of the two points.
-            double radiusE = FlightGlobals.ActiveVessel.mainBody.Radius; // Equatorial radius, in metres
-            double radiusP = FlightGlobals.ActiveVessel.mainBody.Radius; // Polar Radius
-
-            //Numerator part of function
-            double nr = Math.Pow(radiusE * radiusP * Math.Cos(lat1 / 180 * Math.PI), 2);
-            //Denominator part of the function
-            double dr = Math.Pow(radiusE * Math.Cos(lat1 / 180 * Math.PI), 2)
-                            + Math.Pow(radiusP * Math.Sin(lat1 / 180 * Math.PI), 2);
-            double radius = Math.Sqrt(nr / dr);
-
-            //Calaculate distance in metres.
-            distance = radius * c;
-            return distance;
+            if (ListPosition >= _central.bodyVesselList.Count - 1)
+            {
+                ListPosition = 0;
+            }
+            else
+            {
+                ListPosition = ListPosition + 1;
+            }
         }
-
     }
 }
 
