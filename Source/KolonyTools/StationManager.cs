@@ -44,7 +44,7 @@ namespace KolonyTools
         private readonly Vessel _model;
         private OpenTab _tab;
 
-        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None}
+        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources}
 
         public StationView(Vessel model) : base(model.vesselName, 500, 400)
         {
@@ -71,10 +71,15 @@ namespace KolonyTools
             {
                 _tab = OpenTab.Balance;
             }
+            if (GUIButton.LayoutButton("Resources"))
+            {
+                _tab = OpenTab.Resources;
+            }
             GUILayout.EndHorizontal();
 
             var prod = _model.GetProduction().ToList();
             var cons = _model.GetProduction(false).ToList();
+            var balance = MKSLExtensions.CalcBalance(cons, prod).ToList();
 
             GUILayout.BeginVertical();
             if (_tab == OpenTab.Parts)
@@ -145,7 +150,6 @@ namespace KolonyTools
 
             if (_tab == OpenTab.Balance)
             {
-                var balance = MKSLExtensions.CalcBalance(cons, prod);
                 GUILayout.BeginVertical();
                 GUILayout.Label("Balance");
                 foreach (var product in balance)
@@ -154,6 +158,44 @@ namespace KolonyTools
                     GUILayout.Label(product.resourceName);
                     GUILayout.Label(product.amount*Utilities.SECONDS_PER_DAY + " per day");
                     GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+            }
+
+            if (_tab == OpenTab.Resources)
+            {
+                GUILayout.BeginVertical();
+                var maxAmounts = _model.GetStorage();
+                var resDistri = _model.GetResourceAmounts()
+                    .Join(maxAmounts, lResource => lResource.resourceName, rResource => rResource.resourceName,
+                        (lResource, rResource) =>
+                            new
+                            {
+                                lResource.resourceName,
+                                lResource.amount,
+                                max = rResource.amount,
+                                full = (Math.Abs(lResource.amount - rResource.amount) < 0.5),
+                                percent = Math.Round((lResource.amount / rResource.amount) *100)
+                            }
+                    ).GroupJoin(balance, outer => outer.resourceName, inner => inner.resourceName,
+                        (outer, innerList) => new {outer.resourceName, outer.amount, outer.max, outer.full, outer.percent, innerList})
+                        .SelectMany(x => x.innerList.DefaultIfEmpty(new MKSLresource()), (x,y) => new {x.amount,x.full,x.max,x.resourceName,x.percent, balance = y.amount})
+                        .OrderByDescending(x => x.percent);
+                foreach (var res in resDistri)
+                {
+                    GUILayout.BeginHorizontal();
+                    var style = new GUIStyle(HighLogic.Skin.label);
+                    if (res.full)
+                    {
+                        style.normal.textColor = Color.green;
+                    }
+                    if (Math.Abs(res.amount) < 0.1)
+                    {
+                        style.normal.textColor = Color.red;
+                    }
+                    GUILayout.Label(res.resourceName+" amount:"+res.amount+" of "+res.max+"("+res.percent+"%)"+" producing "+res.balance*Utilities.SECONDS_PER_DAY, style);
+                    GUILayout.EndHorizontal();
+
                 }
                 GUILayout.EndVertical();
             }

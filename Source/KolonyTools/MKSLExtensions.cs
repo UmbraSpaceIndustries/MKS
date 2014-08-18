@@ -53,6 +53,14 @@ namespace KolonyTools
             return resources;
         }
 
+        public static List<MKSLresource> GetStorage(this Vessel vessel)
+        {
+            return 
+                    vessel.Parts.SelectMany(part => part.Resources.list.Select(res => new MKSLresource { resourceName = res.resourceName, amount = res.maxAmount }))
+                        .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0, (total, res) => total + res.amount) })
+                        .ToList();
+        } 
+
         public static void Log(this ConfigNode node, string marker = "[MKS] ")
         {
             Debug.Log(marker+node.name);
