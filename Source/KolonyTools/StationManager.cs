@@ -105,13 +105,19 @@ namespace KolonyTools
                         GUILayout.BeginVertical();
                         GUILayout.Label(converter.converterName);
                         GUILayout.Label(converter.converterStatus);
-                        if (GUIButton.LayoutButton("activate"))
+                        if (converter.converterEnabled)
                         {
-                            converter.ActivateConverter();
+                            if (GUIButton.LayoutButton("activate"))
+                            {
+                                converter.ActivateConverter();
+                            }
                         }
-                        if (GUIButton.LayoutButton("deactivate"))
+                        else
                         {
-                            converter.DeactivateConverter();
+                            if (GUIButton.LayoutButton("deactivate"))
+                            {
+                                converter.DeactivateConverter();
+                            }
                         }
                         GUILayout.EndVertical();
                     }
@@ -128,7 +134,7 @@ namespace KolonyTools
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(product.resourceName);
-                    GUILayout.Label(product.amount * Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.Label(Math.Round(product.amount * Utilities.SECONDS_PER_DAY,4) + " per day");
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
@@ -142,7 +148,7 @@ namespace KolonyTools
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(product.resourceName);
-                    GUILayout.Label(product.amount*Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.Label(Math.Round(product.amount*Utilities.SECONDS_PER_DAY,4) + " per day");
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
@@ -156,7 +162,7 @@ namespace KolonyTools
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(product.resourceName);
-                    GUILayout.Label(product.amount*Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.Label(Math.Round(product.amount*Utilities.SECONDS_PER_DAY,4) + " per day");
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
@@ -185,15 +191,30 @@ namespace KolonyTools
                 {
                     GUILayout.BeginHorizontal();
                     var style = new GUIStyle(HighLogic.Skin.label);
+                    string fullstring;
+                    double timeTillFull = (res.max - res.amount)/res.balance;
+                    if (timeTillFull > 0)
+                    {
+                        fullstring = " until full: " + Utilities.FormatTime(timeTillFull);
+                    }
+                    else
+                    {
+                        fullstring = " until empty: " + Utilities.FormatTime(Math.Abs(timeTillFull));
+                    }
                     if (res.full)
                     {
                         style.normal.textColor = Color.green;
                     }
-                    if (Math.Abs(res.amount) < 0.1)
+                    if (res.percent < 0.1)
                     {
                         style.normal.textColor = Color.red;
                     }
-                    GUILayout.Label(res.resourceName+" amount:"+res.amount+" of "+res.max+"("+res.percent+"%)"+" producing "+res.balance*Utilities.SECONDS_PER_DAY, style);
+                    if (res.full || res.percent < 0.1 || Math.Abs(res.balance * Utilities.SECONDS_PER_DAY) < 0.0001)
+                    {
+                        fullstring = "";
+                    }
+                    GUILayout.Label(res.resourceName+" amount:"+Math.Round(res.amount,4)+" of "+Math.Round(res.max,2)+"("+res.percent+"%)"+" producing "+Math.Round(res.balance*Utilities.SECONDS_PER_DAY,4)
+                        + fullstring, style);
                     GUILayout.EndHorizontal();
 
                 }

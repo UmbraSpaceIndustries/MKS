@@ -36,6 +36,11 @@ namespace KolonyTools
 {
     public static class Utilities
     {
+        const double SECONDS_PER_MINUTE = 60.0;
+        const double MINUTES_PER_HOUR = 60.0;
+        static double HOURS_PER_DAY = (GameSettings.KERBIN_TIME) ? 6.0 : 24.0;
+        public static double SECONDS_PER_DAY = SECONDS_PER_MINUTE*MINUTES_PER_HOUR*HOURS_PER_DAY;
+
         public static double ToDegrees(double radians)
         {
             return radians * 180.0 / Math.PI;
@@ -252,9 +257,7 @@ namespace KolonyTools
 
         public static string FormatTime(double value, int numDecimals = 0)
         {
-            const double SECONDS_PER_MINUTE = 60.0;
-            const double MINUTES_PER_HOUR = 60.0;
-            double HOURS_PER_DAY = (GameSettings.KERBIN_TIME) ? 6.0 : 24.0;
+
 
             string sign = "";
             if (value < 0.0)
