@@ -190,9 +190,9 @@ namespace KolonyTools
                 foreach (var res in resDistri)
                 {
                     GUILayout.BeginHorizontal();
-                    var style = new GUIStyle(HighLogic.Skin.label);
                     string fullstring;
                     double timeTillFull = (res.max - res.amount)/res.balance;
+                    var barTextStyle = new GUIStyle(MKSGui.barTextStyle);
                     if (timeTillFull > 0)
                     {
                         fullstring = " until full: " + Utilities.FormatTime(timeTillFull);
@@ -201,20 +201,24 @@ namespace KolonyTools
                     {
                         fullstring = " until empty: " + Utilities.FormatTime(Math.Abs(timeTillFull));
                     }
-                    if (res.full)
+                    if (res.balance < 0)
                     {
-                        style.normal.textColor = Color.green;
+                        barTextStyle.normal.textColor = Color.green;
                     }
-                    if (res.percent < 0.1)
+                    if (res.percent > 0)
                     {
-                        style.normal.textColor = Color.red;
+                        barTextStyle.normal.textColor = Color.red;
                     }
                     if (res.full || res.percent < 0.1 || Math.Abs(res.balance * Utilities.SECONDS_PER_DAY) < 0.0001)
                     {
                         fullstring = "";
                     }
-                    GUILayout.Label(res.resourceName+" amount:"+Math.Round(res.amount,4)+" of "+Math.Round(res.max,2)+"("+res.percent+"%)"+" producing "+Math.Round(res.balance*Utilities.SECONDS_PER_DAY,4)
-                        + fullstring, style);
+                    GUILayout.Label("", MKSGui.backgroundLabelStyle);
+                    var backRect = GUILayoutUtility.GetLastRect();
+                    var frontRect = new Rect(backRect) {width = (float) (backRect.width*res.percent/100)};
+                    MKSGui.frontBarStyle.Draw(frontRect,"",false,false,false,false);
+                    GUI.Label(backRect, res.resourceName + " amount:" + Math.Round(res.amount, 4) + " of " + Math.Round(res.max, 2) + "(" + res.percent + "%)" + " producing " + Math.Round(res.balance * Utilities.SECONDS_PER_DAY, 4)
+                        + fullstring, barTextStyle);
                     GUILayout.EndHorizontal();
 
                 }

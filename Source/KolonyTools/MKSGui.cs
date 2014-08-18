@@ -8,7 +8,8 @@ namespace KolonyTools
 {
     public static class MKSGui
     {
-        public static GUIStyle windowStyle, labelStyle, redlabelStyle, textFieldStyle, buttonStyle;
+        public static GUIStyle windowStyle, labelStyle, redlabelStyle, textFieldStyle, buttonStyle,
+            frontBarStyle, backgroundLabelStyle, barTextStyle;
 
         static MKSGui()
         {
@@ -33,6 +34,32 @@ namespace KolonyTools
             buttonStyle = new GUIStyle(HighLogic.Skin.button);
             buttonStyle.stretchHeight = false;
             buttonStyle.stretchWidth = false;
+
+            backgroundLabelStyle = new GUIStyle(HighLogic.Skin.box)
+            {
+                border = new RectOffset(2, 2, 2, 2),
+                normal = { textColor = Color.white },
+                fixedHeight = 15,
+                alignment = TextAnchor.UpperCenter,
+                wordWrap = false,
+                margin = new RectOffset(2,2,2,2)
+            };
+            var labelTexture = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            labelTexture.SetPixel(0, 0, new Color(0.173f, 0.243f, 0.067f));
+            labelTexture.Apply();
+            var frontTexture = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            frontTexture.SetPixel(0, 0, new Color(0.42f, 0.58f, 0.2f));
+            frontTexture.Apply();
+
+            backgroundLabelStyle.normal.background = labelTexture;
+            frontBarStyle = new GUIStyle(backgroundLabelStyle) { normal = { background = frontTexture } };
+
+            barTextStyle = new GUIStyle(HighLogic.Skin.label);
+            barTextStyle.fontSize = 12;
+            barTextStyle.wordWrap = false;
+            barTextStyle.alignment = TextAnchor.MiddleCenter;
+            barTextStyle.normal.textColor = new Color(255, 255, 255, 0.8f);
+            
         }
 
     }
