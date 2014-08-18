@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KSP.IO;
 using Toolbar;
 using UnityEngine;
 
@@ -41,22 +42,42 @@ namespace KolonyTools
     public class StationView : Window<StationView>
     {
         private readonly Vessel _model;
-        private bool _showConverters;
+        private OpenTab _tab;
 
-        public StationView(Vessel model) : base(model.vesselName, 700, 500)
+        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None}
+
+        public StationView(Vessel model) : base(model.vesselName, 500, 400)
         {
             _model = model;
+            _tab = OpenTab.None;
         }
 
         protected override void DrawWindowContents(int windowId)
         {
-            GUILayout.BeginVertical();
-
-            if (GUIButton.LayoutButton("toggle showing converters"))
+            GUILayout.BeginHorizontal();
+            if (GUIButton.LayoutButton("Parts"))
             {
-                _showConverters = !_showConverters;
+                _tab = OpenTab.Parts;
             }
-            if (_showConverters)
+            if (GUIButton.LayoutButton("Production"))
+            {
+                _tab = OpenTab.Production;
+            }
+            if (GUIButton.LayoutButton("Consumption"))
+            {
+                _tab = OpenTab.Consumption;
+            }
+            if (GUIButton.LayoutButton("Balance"))
+            {
+                _tab = OpenTab.Balance;
+            }
+            GUILayout.EndHorizontal();
+
+            var prod = _model.GetProduction().ToList();
+            var cons = _model.GetProduction(false).ToList();
+
+            GUILayout.BeginVertical();
+            if (_tab == OpenTab.Parts)
             {
                 GUILayout.BeginVertical();
                 foreach (var converterPart in _model.GetConverterParts())
@@ -65,6 +86,14 @@ namespace KolonyTools
                     GUILayout.BeginVertical();
                     GUILayout.Label(converterPart.partInfo.title);
                     GUILayout.Label(converterPart.FindModuleImplementing<MKSModule>().efficiency);
+                    if (GUIButton.LayoutButton("highlight"))
+                    {
+                        converterPart.SetHighlight(true);
+                    }
+                    if (GUIButton.LayoutButton("unhighlight"))
+                    {
+                        converterPart.SetHighlight(false);
+                    }
                     GUILayout.EndVertical();
                     foreach (var converter in converterPart.FindModulesImplementing<KolonyConverter>())
                     {
@@ -86,41 +115,51 @@ namespace KolonyTools
                 GUILayout.EndVertical();
             }
 
-            var prod = _model.GetProduction().ToList();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Production");
-            foreach (var product in prod)
+            if (_tab == OpenTab.Production)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(product.resourceName);
-                GUILayout.Label(product.amount * Utilities.SECONDS_PER_DAY+" per day");
-                GUILayout.EndHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Label("Production");
+                foreach (var product in prod)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(product.resourceName);
+                    GUILayout.Label(product.amount * Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
             }
-            GUILayout.EndVertical();
-            var cons = _model.GetProduction(false).ToList();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Consumption");
-            foreach (var product in cons)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(product.resourceName);
-                GUILayout.Label(product.amount * Utilities.SECONDS_PER_DAY + " per day");
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
-            var balance = MKSLExtensions.CalcBalance(cons, prod);
-            GUILayout.BeginVertical();
-            GUILayout.Label("Balance");
-            foreach (var product in balance)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(product.resourceName);
-                GUILayout.Label(product.amount * Utilities.SECONDS_PER_DAY + " per day");
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
 
+            if (_tab == OpenTab.Consumption)
+            {
+                GUILayout.BeginVertical();
+                GUILayout.Label("Consumption");
+                foreach (var product in cons)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(product.resourceName);
+                    GUILayout.Label(product.amount*Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+            }
+
+            if (_tab == OpenTab.Balance)
+            {
+                var balance = MKSLExtensions.CalcBalance(cons, prod);
+                GUILayout.BeginVertical();
+                GUILayout.Label("Balance");
+                foreach (var product in balance)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(product.resourceName);
+                    GUILayout.Label(product.amount*Utilities.SECONDS_PER_DAY + " per day");
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+            }
             GUILayout.EndVertical();
         }
+
+
     }
 }

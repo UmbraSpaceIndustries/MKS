@@ -133,10 +133,6 @@ public class GUIButton
         if ( Event.current.type == EventType.Repaint )
         {
             bool isDown = (GUIUtility.hotControl == controlID);
-            if (isDown)
-            {
-                bounds.Log("is repaint: " + controlID + " hot " + GUIUtility.hotControl);
-            }
             btnStyle.Draw(bounds, new GUIContent(caption), paintMouseOver, isDown, false, false);          
            
         }
@@ -147,7 +143,6 @@ public class GUIButton
             {
                 if ( isTopmostMouseOver)
                 {
-                    bounds.Log("is down: " + controlID + " hot " + GUIUtility.hotControl);
                     GUIUtility.hotControl = controlID;
                 }
                 break;
@@ -157,7 +152,6 @@ public class GUIButton
             {
                 if ( isTopmostMouseOver)
                 {
-                    bounds.Log("is up: " + controlID + " hot " + GUIUtility.hotControl);
                     GUIUtility.hotControl = 0;
                     return true;
                 }
