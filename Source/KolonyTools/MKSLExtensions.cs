@@ -192,5 +192,76 @@ namespace KolonyTools
             return (amountExchanged);
         }
 
+        public static IEnumerable<KolonyConverter> GetActiveConverters(this Vessel vessel)
+        {
+            return vessel.GetConverters().Where(mod => mod.converterEnabled).Where(mod => mod.converterStatus == "Running");
+        }
+
+        public static IEnumerable<KolonyConverter> GetConverters(this Vessel vessel)
+        {
+            return vessel.parts.SelectMany(part => part.Modules.OfType<KolonyConverter>());
+        }
+
+        public static IEnumerable<Part> GetConverterParts(this Vessel vessel)
+        {
+            return vessel.parts.Where(part => part.FindModuleImplementing<KolonyConverter>() != null);
+        }
+
+        public static IEnumerable<MKSLresource> GetProduction(this Vessel vessel, bool output = true)
+        {
+            var parts = GetActiveConverters(vessel);
+            var res = parts.SelectMany(conv =>
+            {
+                var list = output ? conv.outputResourceList : conv.inputResourceList;
+                return list.Select(resRatio => new MKSLresource
+                {
+                    resourceName = resRatio.resource.name,
+                    amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.ratio
+                });
+            }).GroupBy(x => x.resourceName, x => x.amount, (key,grp) => new MKSLresource { amount = grp.Sum(), resourceName = key });
+            return res;
+        }
+
+        public static IEnumerable<MKSLresource> CalcBalance(IEnumerable<MKSLresource> input, IEnumerable<MKSLresource> output)
+        {
+            return input.FullOuterJoin(output, x => x.resourceName, lresource => lresource.resourceName,
+                (lresource, mksLresource,name) =>
+                    new MKSLresource
+                    {
+                        
+                        amount = mksLresource.amount - lresource.amount,
+                        resourceName = name
+                    },
+                    new MKSLresource{amount = 0},
+                    new MKSLresource { amount = 0 });
+        }
+
+
+        //provided by sehe at http://stackoverflow.com/questions/5489987/linq-full-outer-join
+        internal static IList<TR> FullOuterJoin<TA, TB, TK, TR>(
+            this IEnumerable<TA> a,
+            IEnumerable<TB> b,
+            Func<TA, TK> selectKeyA,
+            Func<TB, TK> selectKeyB,
+            Func<TA, TB, TK, TR> projection,
+            TA defaultA = default(TA),
+            TB defaultB = default(TB),
+            IEqualityComparer<TK> cmp = null)
+        {
+            cmp = cmp ?? EqualityComparer<TK>.Default;
+            var alookup = a.ToLookup(selectKeyA, cmp);
+            var blookup = b.ToLookup(selectKeyB, cmp);
+
+            var keys = new HashSet<TK>(alookup.Select(p => p.Key), cmp);
+            keys.UnionWith(blookup.Select(p => p.Key));
+
+            var join = from key in keys
+                       from xa in alookup[key].DefaultIfEmpty(defaultA)
+                       from xb in blookup[key].DefaultIfEmpty(defaultB)
+                       select projection(xa, xb, key);
+
+            return join.ToList();
+        }
+
     }
 }

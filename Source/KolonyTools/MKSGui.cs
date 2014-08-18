@@ -90,6 +90,15 @@ public class GUIButton
     private static int highestDepthID = 0;
     private static EventType lastEventType = EventType.Layout;
 
+    public static bool LayoutButton(string caption, GUIStyle style = null, params GUILayoutOption[] options)
+    {
+        var content = new GUIContent(caption);
+        if (style == null)
+        {
+            style = GUI.skin.button;
+        }
+        return Button(GUILayoutUtility.GetRect(content, style, options), content.text, style);
+    }
     public static bool LayoutButton(GUIContent caption, GUIStyle style=null, params GUILayoutOption[] options)
     {
         if (style == null)

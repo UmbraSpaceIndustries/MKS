@@ -14,9 +14,9 @@ namespace KolonyTools
         [KSPField]
         public bool SurfaceOnly = true;
 
-        private List<ResourceRatio> inputResourceList;
-        private List<ResourceRatio> outputResourceList;
-        private List<ResourceRatio> requiredResourceList;
+        internal List<ResourceRatio> inputResourceList;
+        internal List<ResourceRatio> outputResourceList;
+        internal List<ResourceRatio> requiredResourceList;
         private float _baseConversionRate;
         private MKSModule _mks;
 
