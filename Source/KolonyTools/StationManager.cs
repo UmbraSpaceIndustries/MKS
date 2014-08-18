@@ -174,7 +174,7 @@ namespace KolonyTools
                                 lResource.resourceName,
                                 lResource.amount,
                                 max = rResource.amount,
-                                full = (Math.Abs(lResource.amount - rResource.amount) < 0.5),
+                                full = (Math.Round((lResource.amount / rResource.amount) * 100) > 99),
                                 percent = Math.Round((lResource.amount / rResource.amount) *100)
                             }
                     ).GroupJoin(balance, outer => outer.resourceName, inner => inner.resourceName,

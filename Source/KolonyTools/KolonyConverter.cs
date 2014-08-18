@@ -197,7 +197,7 @@ namespace KolonyTools
                     {
                         var r = part.Resources[resource.name];
                         var amountAvailable = r.amount;
-                        if (amountAvailable < numRequired) missingResources.Add(resource.name); 
+                        if (amountAvailable < numRequired - 0.1) missingResources.Add(resource.name); 
                     }
                 }
                 return string.Join(",", missingResources.ToArray());
