@@ -60,7 +60,7 @@ namespace KolonyTools
                 float numWorkspaces = GetKolonyWorkspaces(vessel);
                 print("NumWorkspaces: " + numWorkspaces);
                 //Plus 25% of Crew Cap as low efficiency workspaces
-                numWorkspaces += vessel.GetCrewCapacity()*.25f;
+                numWorkspaces += vessel.GetCrewCapacity()*.25f; 
                 print("AdjNumWorkspaces: " + numWorkspaces);
                 var numModules = GetActiveKolonyModules(vessel);
                 print("numModules: " + numModules);
@@ -97,7 +97,7 @@ namespace KolonyTools
 
                 if (vessel.GetCrewCount() > 0)
                 {
-                    //Switch this to three workspaces max per Kerbal so that WS makes sense
+                    //TODO:Switch this to three workspaces max per Kerbal so that WS makes sense
                     float WorkSpaceKerbalRatio = numWorkspaces / vessel.GetCrewCount();
                     if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
                     print("WorkSpaceKerbalRatio: " + WorkSpaceKerbalRatio);

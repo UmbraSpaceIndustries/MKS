@@ -265,15 +265,22 @@ namespace KolonyTools
         public void Load(ConfigNode node)
         {
             Clear();
-            string savestring = node.GetValue("key");
-            if (savestring == "") { return; }
-            string[] deliveries = savestring.Split('@');
-
-            for (int i = deliveries.Length - 1; i >= 0; i--)
+            try
             {
-                var trans = new MKSLtransfer();
-                trans.loadstring(deliveries[i]);
-                Add(trans);
+                string savestring = node.GetValue("key");
+                if (savestring == "") { return; }
+                string[] deliveries = savestring.Split('@');
+
+                for (int i = deliveries.Length - 1; i >= 0; i--)
+                {
+                    var trans = new MKSLtransfer();
+                    trans.loadstring(deliveries[i]);
+                    Add(trans);
+                }
+            }
+            catch (Exception e)
+            {
+                this.Log("Couldnt load the transferlist "+e.StackTrace);
             }
         }
 

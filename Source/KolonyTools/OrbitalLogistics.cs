@@ -279,33 +279,78 @@ namespace KolonyTools
         private string StrAmount;
         private double currentAvailable;
         private string StrValidationMessage;
-        private int vesselFrom = 0;
-        private int vesselTo = 0;
+        private int vesselFrom;
+        private int vesselTo;
+
+        private ComboBox fromVesselComboBox;
+        
+        private ComboBox toVesselComboBox;
+
+        private void Start()
+        {
+            var listStyle = new GUIStyle();
+            var fromList = _central.bodyVesselList.Select(x => new GUIContent(x.vesselName)).ToArray();
+            var toList = _central.bodyVesselList.Select(x => new GUIContent(x.vesselName)).ToArray();
+            //comboBoxList = new GUIContent[5];
+            //comboBoxList[0] = new GUIContent("Thing 1");
+            //comboBoxList[1] = new GUIContent("Thing 2");
+            //comboBoxList[2] = new GUIContent("Thing 3");
+            //comboBoxList[3] = new GUIContent("Thing 4");
+            //comboBoxList[4] = new GUIContent("Thing 5");
+            listStyle.normal.textColor = Color.white;
+            listStyle.onHover.background =
+            listStyle.hover.background = new Texture2D(2, 2);
+            listStyle.padding.left =
+            listStyle.padding.right =
+            listStyle.padding.top =
+            listStyle.padding.bottom = 4;
+
+            fromVesselComboBox = new ComboBox(new Rect(20, 30, 100, 20), fromList[0], fromList, "button", "box", listStyle,
+                i =>
+                {
+                    vesselFrom = i;
+                    _model.VesselFrom = _central.bodyVesselList[i];
+                    _model.calcResources();
+                });
+            fromVesselComboBox.SelectedItemIndex = _central.bodyVesselList.IndexOf(_model.VesselFrom);
+            toVesselComboBox = new ComboBox(new Rect(20, 30, 100, 20), toList[0], toList, "button", "box", listStyle, 
+                i =>
+                {
+                    vesselTo = i;
+                    _model.VesselTo = _central.bodyVesselList[i];
+                    _model.calcResources();
+                });
+            toVesselComboBox.SelectedItemIndex = _central.bodyVesselList.IndexOf(_model.VesselTo);
+        }
+
         public MKSTransferCreateView(MKSLGuiTransfer model, MKSLcentral central)
             : base(model.transferName, 400, 450)
         {
             _model = model;
             _central = central;
+            Start();
             SetVisible(true);
         }
 
         protected override void DrawWindowContents(int windowId)
         {
             GUILayout.BeginVertical();
-
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("<<", MKSGui.buttonStyle, GUILayout.Width(40)))
             {
                 previousBodyVesselList(ref vesselFrom);
                 _model.VesselFrom = _central.bodyVesselList[vesselFrom];
+                fromVesselComboBox.SelectedItemIndex = vesselFrom;
                 _model.calcResources();
             }
             GUILayout.Label("From:", MKSGui.labelStyle, GUILayout.Width(60));
-            GUILayout.Label(_model.VesselFrom.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
-            if (GUILayout.Button(">>", MKSGui.buttonStyle, GUILayout.Width(40)))
+            fromVesselComboBox.Show();
+            //GUILayout.Label(_model.VesselFrom.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
+            if (GUIButton.LayoutButton(new GUIContent(">>"), MKSGui.buttonStyle, GUILayout.Width(40)))
             {
                 nextBodyVesselList(ref vesselFrom);
                 _model.VesselFrom = _central.bodyVesselList[vesselFrom];
+                fromVesselComboBox.SelectedItemIndex = vesselFrom;
                 _model.calcResources();
             }
             GUILayout.EndHorizontal();
@@ -315,29 +360,30 @@ namespace KolonyTools
             {
                 previousBodyVesselList(ref vesselTo);
                 _model.VesselTo = _central.bodyVesselList[vesselTo];
+                toVesselComboBox.SelectedItemIndex = vesselTo;
                 _model.calcResources();
             }
             GUILayout.Label("To:", MKSGui.labelStyle, GUILayout.Width(60));
-            GUILayout.Label(_model.VesselTo.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
-            if (GUILayout.Button(">>", MKSGui.buttonStyle, GUILayout.Width(40)))
+            toVesselComboBox.Show();
+            //GUILayout.Label(_model.VesselTo.vesselName, MKSGui.labelStyle, GUILayout.Width(160));
+            if (GUIButton.LayoutButton(new GUIContent(">>"), MKSGui.buttonStyle, GUILayout.Width(40)))
             {
                 nextBodyVesselList(ref vesselTo);
                 _model.VesselTo = _central.bodyVesselList[vesselTo];
+                toVesselComboBox.SelectedItemIndex = vesselTo;
                 _model.calcResources();
             }
             GUILayout.EndHorizontal();
-
-
+            GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-
             GUILayout.BeginVertical();
             scrollPositionEditGUIResources = GUILayout.BeginScrollView(scrollPositionEditGUIResources, GUILayout.Width(300), GUILayout.Height(150));
             foreach (MKSLresource res in _model.transferList)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(res.resourceName + ": " + Math.Round(res.amount, 2) + " of " +
-                    Math.Round(_model.resourceAmount.Find(x => x.resourceName == res.resourceName).amount)))
+                if (GUIButton.LayoutButton(new GUIContent(res.resourceName + ": " + Math.Round(res.amount, 2) + " of " +
+                    Math.Round(_model.resourceAmount.Find(x => x.resourceName == res.resourceName).amount)) ))
                 {
                     editGUIResource = res;
                     StrAmount = Math.Round(res.amount, 2).ToString();
@@ -394,11 +440,12 @@ namespace KolonyTools
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-
+            GUILayout.BeginVertical();
             GUILayout.Label("Tranfer Mass: " + Math.Round(_model.totalMass(), 2) + " (maximum: " + _central.maxTransferMass + ")", MKSGui.labelStyle, GUILayout.Width(300));
-
-            GUILayout.Label("");
+            
+            
             GUILayout.BeginHorizontal();
+            GUILayout.Label("");
             if (_central.Mix1CostName != "")
             {
                 if (GUILayout.Button(_central.Mix1CostName, MKSGui.buttonStyle, GUILayout.Width(170)))
@@ -461,9 +508,9 @@ namespace KolonyTools
                 SetVisible(false);
             }
             GUILayout.EndHorizontal();
-
             GUILayout.EndVertical();
-
+            fromVesselComboBox.ShowRest();
+            toVesselComboBox.ShowRest();
         }
         public void updateCostList(MKSLtransfer trans)
         {
