@@ -415,14 +415,13 @@ namespace KolonyTools
                             editGUIResource.amount = number;
                         else
                             editGUIResource.amount = currentAvailable;
-                        StrAmount = Math.Round(number, 2).ToString();
+                        StrAmount = Math.Round(editGUIResource.amount, 2).ToString();
                     }
                     else
                     {
                         StrAmount = "0";
                         editGUIResource.amount = 0;
                     }
-                    editGUIResource.amount = Convert.ToDouble(StrAmount);
                     updateCostList(_model);
                     validateTransfer(_model, ref StrValidationMessage);
                 }
