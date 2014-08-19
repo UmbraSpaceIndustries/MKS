@@ -203,11 +203,11 @@ namespace KolonyTools
                     }
                     if (res.balance < 0)
                     {
-                        barTextStyle.normal.textColor = Color.green;
+                        barTextStyle.normal.textColor = new Color(220, 50, 50);
                     }
-                    if (res.percent > 0)
+                    if (res.balance > 0)
                     {
-                        barTextStyle.normal.textColor = Color.red;
+                        barTextStyle.normal.textColor = new Color(50,220,50);
                     }
                     if (res.full || res.percent < 0.1 || Math.Abs(res.balance * Utilities.SECONDS_PER_DAY) < 0.0001)
                     {

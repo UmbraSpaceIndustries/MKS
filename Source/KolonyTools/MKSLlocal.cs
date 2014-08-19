@@ -48,38 +48,154 @@ namespace KolonyTools
             var transfers = new MKSLTranferList();
             foreach (Vessel ves in FlightGlobals.Vessels)
             {
-                if (ves.packed && !ves.loaded) //inactive vessel
-                {
-                    foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
-                    {
-                        foreach (ProtoPartModuleSnapshot pm in p.modules)
-                        {
-                            if (pm.moduleName != "MKSLcentral") continue;
-                            var tempTranferList = new MKSLTranferList();
-                            tempTranferList.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
-                            transfers.AddRange(tempTranferList);
-                        }
-                    }
-                }
-                else //active vessel
-                {
-                    foreach (Part p in ves.parts)
-                    {
-                        foreach (PartModule pm in p.Modules)
-                        {
-                            if (pm.moduleName == "MKSLcentral")
-                            {
-                                MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
-                                var tempTranferList = MKSLc.saveCurrentTransfersList;
-                                transfers.AddRange(tempTranferList);
-                            }
-                        }
-                    }
-                }
+                DoToVesselMKSLCentral(ves, (part, list) => transfers.AddRange(list), c => transfers.AddRange(c.saveCurrentTransfersList));
             }
-            this.Log("found "+transfers.Count);
             return transfers;
         }
+        //public void Remove(MKSLtransfer transfer)
+        //{
+        //    Vessel ves = FlightGlobals.Vessels.Find(x => x.id == transfer.VesselFrom.id);
+        //    if (ves.packed && !ves.loaded) //inactive vessel
+        //    {
+        //        foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
+        //        {
+        //            foreach (ProtoPartModuleSnapshot pm in p.modules)
+        //            {
+        //                if (pm.moduleName != "MKSLcentral") continue;
+
+        //                var savestring = new MKSLTranferList();
+        //                savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
+
+        //                var currentNode = new ConfigNode();
+        //                savestring.Save(currentNode);
+        //                pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
+
+        //                var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
+        //                var previouse = new MKSLTranferList();
+        //                previouse.Load(previouseList);
+        //                previouse.Add(transfer);
+        //                var previousNode = new ConfigNode();
+        //                previouse.Save(previousNode);
+        //                pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
+
+        //            }
+        //        }
+        //    }
+        //    else //active vessel
+        //    {
+        //        foreach (Part p in ves.parts)
+        //        {
+        //            foreach (PartModule pm in p.Modules)
+        //            {
+        //                if (pm.moduleName == "MKSLcentral")
+        //                {
+        //                    MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
+        //                    MKSLc.saveCurrentTransfersList.RemoveAll(x => x.transferName == transfer.transferName);
+        //                    MKSLc.savePreviousTransfersList.Add(transfer);
+
+        //                }
+        //            }
+        //        }
+        //    }
+        //    KnownTransfers.RemoveAll(x => x.transferName == transfer.transferName);
+        //}
+
+        public void Remove(MKSLtransfer transfer)
+        {
+            Vessel ves = FlightGlobals.Vessels.Find(x => x.id == transfer.VesselFrom.id);
+            DoToVesselMKSLCentral(ves, 
+                (pm, savestring) =>
+                    {
+                        var currentNode = new ConfigNode();
+                        savestring.Save(currentNode);
+                        pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
+
+                        var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
+                        var previouse = new MKSLTranferList();
+                        previouse.Load(previouseList);
+                        previouse.Add(transfer);
+                        var previousNode = new ConfigNode();
+                        previouse.Save(previousNode);
+                        pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
+                    },
+                MKSLc =>
+                {
+                    MKSLc.saveCurrentTransfersList.RemoveAll(x => x.transferName == transfer.transferName);
+                    MKSLc.savePreviousTransfersList.Add(transfer);
+                });
+            
+            KnownTransfers.RemoveAll(x => x.transferName == transfer.transferName);
+        }
+        //private void Ondraw()
+        //{
+        //    if (!(nextchecktime < Planetarium.GetUniversalTime())) return;
+        //    KnownTransfers = GetTransfers();
+        //    foreach (Vessel ves in FlightGlobals.Vessels)
+        //    {
+        //        if (FlightGlobals.ActiveVessel.protoVessel.orbitSnapShot.ReferenceBodyIndex !=
+        //            ves.protoVessel.orbitSnapShot.ReferenceBodyIndex) continue;
+        //        if (ves.packed && !ves.loaded) //inactive vessel
+        //        {
+        //            foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
+        //            {
+        //                foreach (ProtoPartModuleSnapshot pm in p.modules)
+        //                {
+        //                    if (pm.moduleName != "MKSLcentral") continue;
+                            
+        //                    var savestring = new MKSLTranferList();
+        //                    savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
+        //                    var completeddeliveries = new MKSLTranferList();
+        //                    if (savestring.Count > 0)
+        //                    {
+        //                        this.Log("delivering from active" + savestring.First().transferName + " with " + savestring.First().transferList.First().resourceName + ":" + savestring.First().transferList.First().amount);
+        //                    }
+        //                    if (checkDeliveries(savestring, completeddeliveries))
+        //                    {
+        //                        var currentNode = new ConfigNode();
+        //                        savestring.Save(currentNode);
+        //                        pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
+
+        //                        var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
+        //                        var previouse = new MKSLTranferList();
+        //                        previouse.Load(previouseList);
+        //                        previouse.AddRange(completeddeliveries);
+        //                        var previousNode = new ConfigNode();
+        //                        previouse.Save(previousNode);
+        //                        pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
+                                
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else //active vessel
+        //        {
+        //            foreach (Part p in ves.parts)
+        //            {
+        //                foreach (PartModule pm in p.Modules)
+        //                {
+        //                    if (pm.moduleName == "MKSLcentral")
+        //                    {
+        //                        MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
+                                
+        //                        var savestring = MKSLc.saveCurrentTransfersList;
+        //                        if (savestring.Count > 0)
+        //                        {
+        //                            this.Log("delivering from active" + savestring.First().transferName + " with "+ savestring.First().transferList.First().resourceName+":"+savestring.First().transferList.First().amount);
+        //                        }
+                                
+        //                        var completeddeliveries = new MKSLTranferList();
+        //                        if (checkDeliveries(savestring, completeddeliveries))
+        //                        {
+        //                            MKSLc.savePreviousTransfersList.AddRange(completeddeliveries);
+        //                        }
+                                
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    nextchecktime = Planetarium.GetUniversalTime() + 60;
+        //}
 
         private void Ondraw()
         {
@@ -89,6 +205,43 @@ namespace KolonyTools
             {
                 if (FlightGlobals.ActiveVessel.protoVessel.orbitSnapShot.ReferenceBodyIndex !=
                     ves.protoVessel.orbitSnapShot.ReferenceBodyIndex) continue;
+                DoToVesselMKSLCentral(ves,
+                    (pm, savestring) =>
+                    {
+                        var completeddeliveries = new MKSLTranferList();
+                        if (checkDeliveries(savestring, completeddeliveries))
+                        {
+                            var currentNode = new ConfigNode();
+                            savestring.Save(currentNode);
+                            pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
+
+                            var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
+                            var previouse = new MKSLTranferList();
+                            previouse.Load(previouseList);
+                            previouse.AddRange(completeddeliveries);
+                            var previousNode = new ConfigNode();
+                            previouse.Save(previousNode);
+                            pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
+
+                        }
+                    },
+                    MKSLc =>
+                    {
+                        var savestring = MKSLc.saveCurrentTransfersList;
+
+                        var completeddeliveries = new MKSLTranferList();
+                        if (checkDeliveries(savestring, completeddeliveries))
+                        {
+                            MKSLc.savePreviousTransfersList.AddRange(completeddeliveries);
+                        }
+                    });
+            }
+            nextchecktime = Planetarium.GetUniversalTime() + 60;
+        }
+        private void DoToVesselMKSLCentral(Vessel ves, Action<ProtoPartModuleSnapshot,MKSLTranferList> protoPartAction, Action<MKSLcentral> centralAction)
+        {
+            try
+            {
                 if (ves.packed && !ves.loaded) //inactive vessel
                 {
                     foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
@@ -96,29 +249,11 @@ namespace KolonyTools
                         foreach (ProtoPartModuleSnapshot pm in p.modules)
                         {
                             if (pm.moduleName != "MKSLcentral") continue;
-
+                        
                             var savestring = new MKSLTranferList();
                             savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
-                            var completeddeliveries = new MKSLTranferList();
-                            if (savestring.Count > 0)
-                            {
-                                this.Log("delivering from active" + savestring.First().transferName + " with " + savestring.First().transferList.First().resourceName + ":" + savestring.First().transferList.First().amount);
-                            }
-                            if (checkDeliveries(savestring, completeddeliveries))
-                            {
-                                var currentNode = new ConfigNode();
-                                savestring.Save(currentNode);
-                                pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
 
-                                var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
-                                var previouse = new MKSLTranferList();
-                                previouse.Load(previouseList);
-                                previouse.AddRange(completeddeliveries);
-                                var previousNode = new ConfigNode();
-                                previouse.Save(previousNode);
-                                pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
-                                
-                            }
+                            protoPartAction(pm, savestring);
                         }
                     }
                 }
@@ -131,25 +266,18 @@ namespace KolonyTools
                             if (pm.moduleName == "MKSLcentral")
                             {
                                 MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
-                                
-                                var savestring = MKSLc.saveCurrentTransfersList;
-                                if (savestring.Count > 0)
-                                {
-                                    this.Log("delivering from active" + savestring.First().transferName + " with "+ savestring.First().transferList.First().resourceName+":"+savestring.First().transferList.First().amount);
-                                }
-                                
-                                var completeddeliveries = new MKSLTranferList();
-                                if (checkDeliveries(savestring, completeddeliveries))
-                                {
-                                    MKSLc.savePreviousTransfersList.AddRange(completeddeliveries);
-                                }
-                                
+
+                                centralAction(MKSLc);
+
                             }
                         }
                     }
                 }
             }
-            nextchecktime = Planetarium.GetUniversalTime() + 60;
+            catch (Exception e)
+            {
+                this.Log("couldnt read transfers "+e.StackTrace);
+            }
         }
 
         public bool checkDeliveries(MKSLTranferList savestring, MKSLTranferList completeddeliveries)
@@ -308,53 +436,7 @@ namespace KolonyTools
             KnownTransfers = GetTransfers();
         }
 
-        public void Remove(MKSLtransfer transfer)
-        {
-            Vessel ves = FlightGlobals.Vessels.Find(x => x.id == transfer.VesselFrom.id);
-            if (ves.packed && !ves.loaded) //inactive vessel
-            {
-                foreach (ProtoPartSnapshot p in ves.protoVessel.protoPartSnapshots)
-                {
-                    foreach (ProtoPartModuleSnapshot pm in p.modules)
-                    {
-                        if (pm.moduleName != "MKSLcentral") continue;
-
-
-                        var savestring = new MKSLTranferList();
-                        savestring.Load(pm.moduleValues.GetNode("saveCurrentTransfersList"));
-                        var currentNode = new ConfigNode();
-                        savestring.Save(currentNode);
-                        pm.moduleValues.SetNode("saveCurrentTransfersList", currentNode);
-
-                        var previouseList = pm.moduleValues.GetNode("savePreviousTransfersList");
-                        var previouse = new MKSLTranferList();
-                        previouse.Load(previouseList);
-                        previouse.Add(transfer);
-                        var previousNode = new ConfigNode();
-                        previouse.Save(previousNode);
-                        pm.moduleValues.SetNode("savePreviousTransfersList", previousNode);
-
-                    }
-                }
-            }
-            else //active vessel
-            {
-                foreach (Part p in ves.parts)
-                {
-                    foreach (PartModule pm in p.Modules)
-                    {
-                        if (pm.moduleName == "MKSLcentral")
-                        {
-                            MKSLcentral MKSLc = p.Modules.OfType<MKSLcentral>().FirstOrDefault();
-                            MKSLc.saveCurrentTransfersList.RemoveAll(x => x.transferName == transfer.transferName);
-                            MKSLc.savePreviousTransfersList.Add(transfer);
-
-                        }
-                    }
-                }
-            }
-            KnownTransfers.RemoveAll(x => x.transferName == transfer.transferName);
-        }
+        
         
     }
 
