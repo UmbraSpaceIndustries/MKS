@@ -474,7 +474,7 @@ namespace KolonyTools
                 _showIncoming = !_showIncoming;
             }
             GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true, GUILayout.Width(160), GUILayout.Height(300));
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true, GUILayout.MaxHeight(300));
             foreach (MKSLtransfer trans in currenTranferList)
             {
                 if (GUILayout.Button(trans.transferName + " (" + Utilities.FormatTime(trans.arrivaltime - Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
