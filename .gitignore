@@ -24,3 +24,4 @@ Source/KolonyTools/obj/x64/Debug/build.force
 *.cache
 *.db
 *.cache
+*.zip
