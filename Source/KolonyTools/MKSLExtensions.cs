@@ -134,7 +134,7 @@ namespace KolonyTools
                         else
                         {
                             var max = Convert.ToDouble(r.resourceValues.GetValue("maxAmount"));
-                            if (max < amount - amountExchanged)
+                            if (max - amountInPart < amount - amountExchanged)
                             {
                                 amountExchanged += (max - amountInPart);
                                 r.resourceValues.SetValue("amount",max.ToString());
@@ -182,7 +182,7 @@ namespace KolonyTools
                         }
                         else
                         {
-                            if (r.maxAmount < amount - amountExchanged)
+                            if (r.maxAmount - r.amount < amount - amountExchanged)
                             {
                                 amountExchanged += (r.maxAmount - r.amount);
                                 r.amount = r.maxAmount;
