@@ -26,10 +26,8 @@ namespace KolonyTools
 
         private void ToggleGui()
         {
-            if (_stationView == null)
-            {
-                _stationView = new StationView(FlightGlobals.ActiveVessel);
-            }
+            _stationView = new StationView(FlightGlobals.ActiveVessel);
+            
             _stationView.ToggleVisible();
         }
 
@@ -43,6 +41,11 @@ namespace KolonyTools
     {
         private readonly Vessel _model;
         private OpenTab _tab;
+        private string _activeRes;
+        private Part _highlight;
+        private double _highlightStart;
+        private Vector2 _scrollPosition;
+        private Vector2 _scrollResourcesPosition;
 
         enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources}
 
@@ -54,6 +57,10 @@ namespace KolonyTools
 
         protected override void DrawWindowContents(int windowId)
         {
+            if (_highlight != null)
+            {
+                _highlight.SetHighlight(_highlightStart + 1 > Planetarium.GetUniversalTime());
+            }
             GUILayout.BeginHorizontal();
             if (GUIButton.LayoutButton("Parts"))
             {
@@ -85,6 +92,7 @@ namespace KolonyTools
             if (_tab == OpenTab.Parts)
             {
                 GUILayout.BeginVertical();
+                _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
                 foreach (var converterPart in _model.GetConverterParts())
                 {
                     GUILayout.BeginHorizontal();
@@ -107,22 +115,23 @@ namespace KolonyTools
                         GUILayout.Label(converter.converterStatus);
                         if (converter.converterEnabled)
                         {
-                            if (GUIButton.LayoutButton("activate"))
+                            if (GUIButton.LayoutButton("deactivate"))
                             {
-                                converter.ActivateConverter();
+                                converter.DeactivateConverter();
                             }
                         }
                         else
                         {
-                            if (GUIButton.LayoutButton("deactivate"))
+                            if (GUIButton.LayoutButton("activate"))
                             {
-                                converter.DeactivateConverter();
+                                converter.ActivateConverter();
                             }
                         }
                         GUILayout.EndVertical();
                     }
                     GUILayout.EndHorizontal();
                 }
+                GUILayout.EndScrollView();
                 GUILayout.EndVertical();
             }
 
@@ -171,62 +180,136 @@ namespace KolonyTools
             if (_tab == OpenTab.Resources)
             {
                 GUILayout.BeginVertical();
-                var maxAmounts = _model.GetStorage();
-                var resDistri = _model.GetResourceAmounts()
-                    .Join(maxAmounts, lResource => lResource.resourceName, rResource => rResource.resourceName,
-                        (lResource, rResource) =>
-                            new
-                            {
-                                lResource.resourceName,
-                                lResource.amount,
-                                max = rResource.amount,
-                                full = (Math.Round((lResource.amount / rResource.amount) * 100) > 99),
-                                percent = Math.Round((lResource.amount / rResource.amount) *100)
-                            }
-                    ).GroupJoin(balance, outer => outer.resourceName, inner => inner.resourceName,
-                        (outer, innerList) => new {outer.resourceName, outer.amount, outer.max, outer.full, outer.percent, innerList})
-                        .SelectMany(x => x.innerList.DefaultIfEmpty(new MKSLresource()), (x,y) => new {x.amount,x.full,x.max,x.resourceName,x.percent, balance = y.amount})
-                        .OrderByDescending(x => x.percent);
-                foreach (var res in resDistri)
-                {
-                    GUILayout.BeginHorizontal();
-                    string fullstring;
-                    double timeTillFull = (res.max - res.amount)/res.balance;
-                    var barTextStyle = new GUIStyle(MKSGui.barTextStyle);
-                    if (timeTillFull > 0)
-                    {
-                        fullstring = " until full: " + Utilities.FormatTime(timeTillFull);
-                    }
-                    else
-                    {
-                        fullstring = " until empty: " + Utilities.FormatTime(Math.Abs(timeTillFull));
-                    }
-                    if (res.balance < 0)
-                    {
-                        barTextStyle.normal.textColor = new Color(220, 50, 50);
-                    }
-                    if (res.balance > 0)
-                    {
-                        barTextStyle.normal.textColor = new Color(50,220,50);
-                    }
-                    if (res.full || res.percent < 0.1 || Math.Abs(res.balance * Utilities.SECONDS_PER_DAY) < 0.0001)
-                    {
-                        fullstring = "";
-                    }
-                    GUILayout.Label("", MKSGui.backgroundLabelStyle);
-                    var backRect = GUILayoutUtility.GetLastRect();
-                    var frontRect = new Rect(backRect) {width = (float) (backRect.width*res.percent/100)};
-                    MKSGui.frontBarStyle.Draw(frontRect,"",false,false,false,false);
-                    GUI.Label(backRect, res.resourceName + " amount:" + Math.Round(res.amount, 4) + " of " + Math.Round(res.max, 2) + "(" + res.percent + "%)" + " producing " + Math.Round(res.balance * Utilities.SECONDS_PER_DAY, 4)
-                        + fullstring, barTextStyle);
-                    GUILayout.EndHorizontal();
 
-                }
+                DrawResources(balance);
                 GUILayout.EndVertical();
             }
             GUILayout.EndVertical();
         }
 
+        private void DrawResources(List<MKSLresource> balance)
+        {
+            var maxAmounts = _model.GetStorage();
+            var resDistri = _model.GetResourceAmounts()
+                .Join(maxAmounts, lResource => lResource.resourceName, rResource => rResource.resourceName,
+                    (lResource, rResource) =>
+                        new
+                        {
+                            lResource.resourceName,
+                            lResource.amount,
+                            max = rResource.amount,
+                            full = (Math.Round((lResource.amount / rResource.amount) * 100) > 99),
+                            percent = Math.Round((lResource.amount / rResource.amount) * 100)
+                        }
+                ).GroupJoin(balance, outer => outer.resourceName, inner => inner.resourceName,
+                    (outer, innerList) => new { outer.resourceName, outer.amount, outer.max, outer.full, outer.percent, innerList })
+                    .SelectMany(x => x.innerList.DefaultIfEmpty(new MKSLresource()), (x, y) => new { x.amount, x.full, x.max, x.resourceName, x.percent, balance = y.amount })
+                    .OrderByDescending(x => x.percent);
+            
+            foreach (var res in resDistri)
+            {
+                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                string fullstring;
+                double timeTillFull = (res.max - res.amount) / res.balance;
+                var barTextStyle = new GUIStyle(MKSGui.barTextStyle);
+                if (timeTillFull > 0)
+                {
+                    fullstring = " until full: " + Utilities.FormatTime(timeTillFull);
+                }
+                else
+                {
+                    fullstring = " until empty: " + Utilities.FormatTime(Math.Abs(timeTillFull));
+                }
+                if (res.balance < 0)
+                {
+                    barTextStyle.normal.textColor = new Color(220, 50, 50);
+                }
+                if (res.balance > 0)
+                {
+                    barTextStyle.normal.textColor = new Color(50, 220, 50);
+                }
+                if (res.full || res.percent < 0.1 || Math.Abs(res.balance * Utilities.SECONDS_PER_DAY) < 0.0001)
+                {
+                    fullstring = "";
+                }
+                if (GUIButton.LayoutButton("", MKSGui.backgroundLabelStyle))
+                {
+                    _activeRes = _activeRes == res.resourceName ? null : res.resourceName;
+                }
+                var backRect = GUILayoutUtility.GetLastRect();
+                var frontRect = new Rect(backRect) { width = (float)(backRect.width * res.percent / 100) };
+                MKSGui.frontBarStyle.Draw(frontRect, "", false, false, false, false);
+                GUI.Label(backRect, res.resourceName + " amount:" + Math.Round(res.amount, 4) + " of " + Math.Round(res.max, 2) + "(" + res.percent + "%)" + " producing " + Math.Round(res.balance * Utilities.SECONDS_PER_DAY, 4)
+                    + fullstring, barTextStyle);
+                GUILayout.EndHorizontal();
+                if (_activeRes == res.resourceName)
+                {
+                    DrawResource(res.resourceName);
+                }
+                
+                GUILayout.EndVertical();
+            }
+        }
 
+        private void DrawResource(string resourceName)
+        {
+            _scrollResourcesPosition = GUILayout.BeginScrollView(_scrollResourcesPosition, false, true, GUILayout.MaxHeight(300));
+            GUILayout.BeginVertical();
+            foreach (var converter in _model.GetConverters())
+            {
+                var inputRatio = converter.inputResourceList.Find(res => res.resource.name == resourceName);
+                var outputRatio = converter.outputResourceList.Find(res => res.resource.name == resourceName);
+                
+                if (inputRatio == null && outputRatio == null)
+                {
+                    continue;
+                }
+                string production = "";
+                var mksmodule = converter.part.FindModuleImplementing<MKSModule>();
+                
+                
+                if (inputRatio != null)
+                {
+                    production = " consumes " + inputRatio.ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                }
+                else
+                {
+                    production = " produces " + outputRatio.ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                }
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(converter.converterName +" status: "+ converter.converterStatus + production);
+                var bounds = GUILayoutUtility.GetLastRect();
+                if (bounds.Contains(Event.current.mousePosition))
+                {
+                    if (_highlight != converter.part)
+                    {
+                        if (_highlight != null)
+                        {
+                            _highlight.SetHighlight(false);
+                        }
+                        
+                        _highlight = converter.part;
+                    }
+                    _highlightStart = Planetarium.GetUniversalTime();
+                }
+                
+                if (GUIButton.LayoutButton("toggle"))
+                {
+                    if (converter.converterEnabled)
+                    {
+                        converter.DeactivateConverter();
+                    }
+                    else
+                    {
+                        converter.ActivateConverter();
+                    }
+                }
+                GUILayout.EndHorizontal();
+                
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
+        }
     }
 }

@@ -221,7 +221,7 @@ namespace KolonyTools
             }
 
             GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));
-            scrollPositionGUICurrentTransfers = GUILayout.BeginScrollView(scrollPositionGUICurrentTransfers, false, true, GUILayout.Width(160), GUILayout.Height(180));
+            scrollPositionGUICurrentTransfers = GUILayout.BeginScrollView(scrollPositionGUICurrentTransfers, false, true, GUILayout.MinWidth(160), GUILayout.MaxHeight(180));
             foreach (MKSLtransfer trans in _model.saveCurrentTransfersList)
             {
                 if (GUILayout.Button(trans.transferName + " (" + Utilities.DeliveryTimeString(trans.arrivaltime, Planetarium.GetUniversalTime()) + ")", MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
@@ -239,7 +239,7 @@ namespace KolonyTools
             GUILayout.EndScrollView();
 
             GUILayout.Label("Previous tranfers", MKSGui.labelStyle, GUILayout.Width(150));
-            scrollPositionGUIPreviousTransfers = GUILayout.BeginScrollView(scrollPositionGUIPreviousTransfers, false, true, GUILayout.Width(160), GUILayout.Height(80));
+            scrollPositionGUIPreviousTransfers = GUILayout.BeginScrollView(scrollPositionGUIPreviousTransfers, false, true, GUILayout.MinWidth(160), GUILayout.MaxHeight(120));
             foreach (MKSLtransfer trans in _model.savePreviousTransfersList)
             {
                 if (GUILayout.Button(trans.transferName + " " + (trans.delivered ? "succes" : "failure"), MKSGui.buttonStyle, GUILayout.Width(135), GUILayout.Height(22)))
@@ -415,14 +415,13 @@ namespace KolonyTools
                             editGUIResource.amount = number;
                         else
                             editGUIResource.amount = currentAvailable;
-                        StrAmount = Math.Round(number, 2).ToString();
+                        StrAmount = Math.Round(editGUIResource.amount, 2).ToString();
                     }
                     else
                     {
                         StrAmount = "0";
                         editGUIResource.amount = 0;
                     }
-                    editGUIResource.amount = Convert.ToDouble(StrAmount);
                     updateCostList(_model);
                     validateTransfer(_model, ref StrValidationMessage);
                 }
