@@ -53,6 +53,11 @@ namespace KolonyTools
             }        
         }
 
+        public override string GetInfo()
+        {
+            return "Proximity Logistics Module";
+        }
+
         private List<LogisticsGoal> SetupResourceList(string resString)
         {
             try

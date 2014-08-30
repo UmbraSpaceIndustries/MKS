@@ -67,6 +67,7 @@
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyLogistics.cs" />
+    <Compile Include="StationManager.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
