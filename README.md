@@ -42,7 +42,7 @@ NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are 
 
 Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
 
-There is also a [Walkthrough](https://github.com/BobPalmer/MKS/Tutorial_00)
+There is also a [Walkthrough](https://github.com/BobPalmer/MKS/wiki/Tutorial_00)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
