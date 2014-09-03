@@ -1,5 +1,7 @@
 {
      "NAME":"MKS",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/GameData/UmbraSpaceIndustries/MKS.version"
+	 "DOWNLOAD":"https://github.com/BobPalmer/MKS/releases"
      "GITHUB":{
          "USERNAME":"BobPalmer",
          "REPOSITORY":"MKS",
@@ -8,7 +10,7 @@
      "VERSION":{
          "MAJOR":0,
          "MINOR":20,
-         "PATCH":4,
+         "PATCH":8,
          "BUILD":0
      },
      "KSP_VERSION":{
