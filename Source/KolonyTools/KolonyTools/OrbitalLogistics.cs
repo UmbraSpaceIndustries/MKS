@@ -278,6 +278,7 @@ namespace KolonyTools
         private MKSLresource editGUIResource;
         private string StrAmount;
         private double currentAvailable;
+        private double[] currentTargetAmounts;
         private string StrValidationMessage;
         private int vesselFrom;
         private int vesselTo;
@@ -387,7 +388,8 @@ namespace KolonyTools
                 {
                     editGUIResource = res;
                     StrAmount = Math.Round(res.amount, 2).ToString();
-                    currentAvailable = readResource(_model.VesselFrom, editGUIResource.resourceName);
+                    currentAvailable = readResource(_model.VesselFrom, editGUIResource.resourceName)[0];
+                    currentTargetAmounts = this.readResource(_model.VesselTo, editGUIResource.resourceName);
                 }
                 GUILayout.EndHorizontal();
             }
@@ -435,6 +437,11 @@ namespace KolonyTools
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Available:", MKSGui.labelStyle, GUILayout.Width(80));
                 GUILayout.Label(Math.Round(currentAvailable, 2).ToString(), MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Target:", MKSGui.labelStyle, GUILayout.Width(80));
+                GUILayout.Label(string.Format("{0:F}/{1:F}", currentTargetAmounts[0], currentTargetAmounts[1]), MKSGui.labelStyle, GUILayout.Width(100));
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
@@ -584,7 +591,7 @@ namespace KolonyTools
             //check for sufficient transfer resources
             foreach (MKSLresource transRes in trans.transferList)
             {
-                if (readResource(trans.VesselFrom, transRes.resourceName) < transRes.amount)
+                if (readResource(trans.VesselFrom, transRes.resourceName)[0] < transRes.amount)
                 {
                     check = false;
                     validationMess = validationMess + "insufficient " + transRes.resourceName + "    ";
@@ -607,7 +614,7 @@ namespace KolonyTools
                     }
                 }
 
-                if ((readResource(trans.VesselFrom, costRes.resourceName) + readResource(_central.vessel, costRes.resourceName)) < totalResAmount)
+                if ((readResource(trans.VesselFrom, costRes.resourceName)[0] + readResource(_central.vessel, costRes.resourceName)[0]) < totalResAmount)
                 {
                     check = false;
                     validationMess = validationMess + "insufficient " + costRes.resourceName + "    ";
@@ -660,9 +667,10 @@ namespace KolonyTools
             _central.saveCurrentTransfersList.Add(trans);
             SetVisible(false);
         }
-        public double readResource(Vessel ves, string ResourceName)
+        public double[] readResource(Vessel ves, string ResourceName)
         {
-            double amountCounted = 0;
+            double amountCounted = 0d;
+            double maxAmountCounted = 0d;
             if (ves.packed && !ves.loaded)
             {
                 //Thanks to NathanKell for explaining how to access and edit parts of unloaded vessels and pointing me for some example code is NathanKell's own Mission Controller Extended mod!
@@ -673,6 +681,7 @@ namespace KolonyTools
                         if (r.resourceName == ResourceName)
                         {
                             amountCounted = amountCounted + Convert.ToDouble(r.resourceValues.GetValue("amount"));
+                            maxAmountCounted += Convert.ToDouble(r.resourceValues.GetValue("maxAmount"));
                         }
                     }
                 }
@@ -686,11 +695,12 @@ namespace KolonyTools
                         if (r.resourceName == ResourceName)
                         {
                             amountCounted = amountCounted + r.amount;
+                            maxAmountCounted += r.maxAmount;
                         }
                     }
                 }
             }
-            return amountCounted;
+            return new [] {amountCounted,maxAmountCounted};
         }
         private double getValueFromStrPlanet(string StrPlanet, string PlanetName)
         {
