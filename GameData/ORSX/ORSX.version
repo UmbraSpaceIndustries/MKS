@@ -1,15 +1,15 @@
 {
-     "NAME":"Community Resource Pack",
-	 "URL":"https://raw.githubusercontent.com/BobPalmer/CommunityResourcePack/master/GameData/CommunityResourcePack/CRP.version"
-	 "DOWNLOAD":"https://github.com/BobPalmer/CommunityResourcePack/releases"
+     "NAME":"ORSX",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/ORSX/master/GameData/ORSX/ORSX.version"
+	 "DOWNLOAD":"https://github.com/BobPalmer/ORSX/releases"
      "GITHUB":{
          "USERNAME":"BobPalmer",
-         "REPOSITORY":"CommunityResourcePack",
+         "REPOSITORY":"ORSX",
          "ALLOW_PRE_RELEASE":false,
      },
      "VERSION":{
          "MAJOR":0,
-         "MINOR":2,
+         "MINOR":1,
          "PATCH":0,
          "BUILD":0
      },
