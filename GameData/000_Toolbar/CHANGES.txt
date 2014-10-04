@@ -1,0 +1,146 @@
+﻿1.7.6, 2014-07-26
+- In addition to the automatic update check, the plugin now also gets KSP versions
+  from the update check server. In case the currently running KSP version is one of
+  those versions, the plugin will not complain about being incompatible with this
+  KSP version. This saves both players' and plugin author's time.
+- Updated for KSP 0.24.2.
+
+1.7.5, 2014-07-25
+- Updated for KSP 0.24.1.
+
+1.7.4, 2014-07-17
+- Updated for KSP 0.24.0.
+
+1.7.3, 2014-06-26
+- Improved positioning of folders and "drawables." This also fixes a bug that
+  occurred if a folder/drawable was blocking both the nav ball and the altimeter
+  at the same time.
+
+1.7.2, 2014-06-22
+- Folders and "drawables" (which are provided by third-party plugins) are now
+  prevented from blocking the nav ball and altimeter.
+- Folders and "drawables" will now open in the same spot as they opened the
+  last time (as long as they fit on screen.) This should be helpful for third-
+  party plugin developers that provide "drawables" that may change their size
+  while being displayed.
+
+1.7.1, 2014-04-02
+- Updated for KSP 0.23.5.
+
+1.7.0, 2014-03-03
+- Fixed a bug that could prevent the saving of settings in certain situations.
+- Plugin authors: Added new API to allow to display "drawables." These are any
+  GUI widgets that you wish to display that are tied to a particular button.
+  For example, drawables can be used to display a popup menu (see the
+  PopupMenuDrawable class and the example source code), or an informational
+  small window when hovering over a button. Drawables will always be positioned
+  near the parent toolbar (much like button folders.)
+  This new API is available for users of the official Toolbar wrapper as well.
+
+1.6.1, 2014-02-28
+- You can now choose different icons for folder buttons.
+
+1.6.0, 2014-02-15
+- Added support for multiple toolbars. You can add new toolbars by selecting
+  "Create New Toolbar" from the triangle drop-down menu. Each toolbar has its
+  own separate set of settings, folders, and visible buttons.
+- The map view during flight is now considered a separate game scene. This
+  means that it is now possible to configure different toolbars for the
+  regular flight scene and the flight map scene.
+
+1.5.3, 2014-02-13
+- Fixed a bug where buttons marked as "important" could prevent the toolbar
+  from auto-hiding itself, even though those buttons have not been configured
+  to be visible.
+
+1.5.2, 2014-02-08
+- Removed the popup dialog that notifies about new buttons that became
+  available. Instead, the toolbar will always show the configuration button as
+  long as no other buttons are configured to be visible.
+- Fixed a bug where the toolbar would lose the configured visibility of some
+  buttons.
+- Fixed a bug where a newly-created folder would not respect the "show border"
+  setting of the main toolbar.
+- Plugin authors: Added an official Toolbar Plugin wrapper that can be used to
+  provide Toolbar Plugin support without creating a hard dependency. Check the
+  development forum thread at http://bit.ly/1b1ZXda for details.
+
+1.5.1, 2014-02-07
+- Fixed a bug where the new buttons notification would pop up more often
+  than intended.
+- Fixed a bug where folders would not display their contents.
+- The update notification button can now be dismissed (hidden) by right-
+  clicking it.
+
+1.5.0, 2014-02-07
+- You can now configure the visibility of each button. For example, you can
+  now hide a button if you don't need it. Button visibility is saved in
+  relation to game scene.
+  Note: This change will cause a one-time reset of the toolbar, such that
+  no buttons are visible at first. Toolbar location will be preserved.
+
+1.4.5, 2014-02-04
+- Fixed another bug where the toolbar would get completely invisible under
+  certain circumstances.
+- Various other minor improvements and bug fixes.
+
+1.4.4, 2014-01-27
+- Fixed a bug where the toolbar would get completely invisible under certain
+  circumstances.
+
+1.4.3, 2014-01-25
+- Various minor improvements and bug fixes.
+
+1.4.2, 2014-01-13
+- The plugin will now display a confirmation dialog before deleting a folder.
+- The plugin will now check for incorrect installations and display a
+  warning if necessary.
+
+1.4.1, 2014-01-05
+- Fixed a bug that could sometimes cause buttons to render with Unity's
+  default skin instead of the KSP skin.
+
+1.4.0, 2014-01-01
+- You can now add custom folders to the toolbar, which can hold any number
+  of regular buttons for improved organization.
+
+1.3.0, 2013-12-26
+- You can now reorder the buttons on the toolbar. Button order is saved in
+  relation to game scene (for example, you can have a different button order
+  in the flight scene and the tracking station scene.)
+- Plugin authors: Added new property IButton.EffectivelyVisible. See the
+  documentation of that property for details.
+
+1.2.2, 2013-12-23
+- You may now chose to use the KSP skin for buttons instead of Unity's
+  default 'Smoke' skin.
+- The toolbar border can now be hidden.
+- Improved the positioning/sizing of the toolbar after startup with respect
+  to the size that has been chosen previously by the player.
+
+1.2.1, 2013-12-20
+- Increased the size of the triangle button that opens the toolbar-specific
+  drop-down menu.
+- Fixed a bug that could make the toolbar completely invisible under
+  certain circumstances.
+- The toolbar should now no longer be visible during loading screens.
+- Plugin authors: Added new events IButton.OnMouseEnter/OnMouseLeave.
+  See the documentation of those events for details.
+
+1.2.0, 2013-12-17
+- Toolbar position and size are stored in relation to the current scene now.
+  For example, you can place it at different positions in the vehicle assembly
+  building, the spaceplane hangar, and the actual flight scene.
+- Plugin authors: There is a new property IButton.Important now. See the
+  documentation of that property for details.
+
+1.1.0, 2013-12-08
+- Added a new toolbar-specific drop-down menu where players can configure
+  the toolbar.
+- Repositioning and resizing the toolbar should now be considerably easier.
+- Added the ability to auto-hide the toolbar when it is positioned at the
+  screen edge.
+- Plugin authors: No API changes were made in this version.
+
+1.0.0, 2013-12-06
+- Initial public release.
