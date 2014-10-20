@@ -1,8 +1,11 @@
-﻿1.7.6, 2014-07-26
+﻿1.7.7, 2014-10-09
+- Fixed a bug in the KSP compatibility check.
+
+1.7.6, 2014-07-26
 - In addition to the automatic update check, the plugin now also gets KSP versions
   from the update check server. In case the currently running KSP version is one of
   those versions, the plugin will not complain about being incompatible with this
-  KSP version. This saves both players' and plugin author's time.
+  KSP version. This saves both players' and plugin authors' time.
 - Updated for KSP 0.24.2.
 
 1.7.5, 2014-07-25
