@@ -17,7 +17,7 @@ namespace KolonyTools
         public StationManager()
         {
             _stationManagerButton = ToolbarManager.Instance.add("KolonyTools", "StationManagerButton");
-            _stationManagerButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/StationManager";
+            _stationManagerButton.TexturePath = "UmbraSpaceIndustries/Kolonization/MKS/Assets/StationManager";
             _stationManagerButton.ToolTip = "Station Manager";
             _stationManagerButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
             _stationManagerButton.OnClick += e => this.Log("_stationManagerButton clicked");

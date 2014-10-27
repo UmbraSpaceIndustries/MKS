@@ -22,7 +22,7 @@ namespace KolonyTools
         internal MKSLlocal()
         {
             OrbLogButton = ToolbarManager.Instance.add("KolonyTools", "OrbLogButton");
-            OrbLogButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/OrbLogisticsIcon";
+            OrbLogButton.TexturePath = "UmbraSpaceIndustries/Kolonization/MKS/Assets/OrbLogisticsIcon";
             OrbLogButton.ToolTip = "Orbital Logistics";
             OrbLogButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
             OrbLogButton.OnClick += e => this.Log("OrbLogButton clicked");

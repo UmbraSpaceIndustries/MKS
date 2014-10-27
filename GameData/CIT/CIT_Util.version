@@ -1,16 +1,16 @@
-﻿{
-     "NAME":"CIT - CIT_Util",
-	 "URL":"https://static.marce.at/file/KSP/CIT/CIT_Util/CIT_Util.version",
-	 "DOWNLOAD":"https://static.marce.at/file/KSP/CIT/CIT_Util/CITUtil.7z",
-     "VERSION":{
-         "MAJOR":1,
-         "MINOR":0,
-         "PATCH":0,
-         "BUILD":0
-     },
-     "KSP_VERSION":{
-         "MAJOR":0,
-         "MINOR":25,
-         "PATCH":0
-     }
- }
+{
+"NAME":"CIT - CIT_Util",
+"URL":"https://static.marce.at/file/KSP/CIT/CIT_Util/CIT_Util.version",
+"DOWNLOAD":"https://static.marce.at/file/KSP/CIT/CIT_Util/CITUtil_1.0.4.7z",
+"VERSION":{
+"MAJOR":1,
+"MINOR":0,
+"PATCH":4,
+"BUILD":0
+},
+"KSP_VERSION":{
+"MAJOR":0,
+"MINOR":25,
+"PATCH":0
+}
+}

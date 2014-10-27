@@ -10,7 +10,7 @@ namespace KolonyTools
     {
         [KSPField]
         public string requiredResources = "";
-        
+
         [KSPField]
         public bool SurfaceOnly = true;
 
@@ -49,7 +49,7 @@ namespace KolonyTools
             }
             catch (Exception ex)
             {
-                print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}",ex.Message));
+                print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}", ex.Message));
             }
         }
 
@@ -78,7 +78,7 @@ namespace KolonyTools
                 var rstr = (rate.ratio * 4).ToString();
                 if (rate.ratio >= 2500)
                 {
-                    rstr = Math.Round(rate.ratio/250, 0) + "k";
+                    rstr = Math.Round(rate.ratio / 250, 0) + "k";
                 }
                 sb.AppendFormat("- <b>{0}</b>: {1:N2}/d", rate.resource.name, rstr);
                 sb.AppendLine();
@@ -137,11 +137,11 @@ namespace KolonyTools
         {
             try
             {
-                inputResourceList = UpdateResourceList(inputResources,2);
-                outputResourceList = UpdateResourceList(outputResources,3);
-                requiredResourceList = UpdateResourceList(requiredResources,2);
-                _mks = part.Modules.OfType<MKSModule>().Any() 
-                    ? part.Modules.OfType<MKSModule>().First() 
+                inputResourceList = UpdateResourceList(inputResources, 2);
+                outputResourceList = UpdateResourceList(outputResources, 3);
+                requiredResourceList = UpdateResourceList(requiredResources, 2);
+                _mks = part.Modules.OfType<MKSModule>().Any()
+                    ? part.Modules.OfType<MKSModule>().First()
                     : new MKSModule();
             }
             catch (Exception ex)
@@ -197,7 +197,7 @@ namespace KolonyTools
                     {
                         var r = part.Resources[resource.name];
                         var amountAvailable = r.amount;
-                        if (amountAvailable < numRequired - 0.1) missingResources.Add(resource.name); 
+                        if (amountAvailable < numRequired - 0.1) missingResources.Add(resource.name);
                     }
                 }
                 return string.Join(",", missingResources.ToArray());
