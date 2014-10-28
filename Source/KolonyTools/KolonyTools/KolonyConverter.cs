@@ -22,6 +22,44 @@ namespace KolonyTools
 
         private static char[] delimiters = { ' ', ',', '\t', ';' };
 
+        public void ShowGUI(bool showGUI)
+        {
+            if (this.Events["ActivateConverter"] != null)
+            {
+                this.Events["ActivateConverter"].active = showGUI;
+                this.Events["ActivateConverter"].guiActive = showGUI;
+                this.Events["ActivateConverter"].guiActiveEditor = showGUI;
+            }
+
+            if (this.Events["DeactivateConverter"] != null)
+            {
+                this.Events["DeactivateConverter"].active = showGUI;
+                this.Events["DeactivateConverter"].guiActiveEditor = showGUI;
+                this.Events["DeactivateConverter"].guiActive = showGUI;
+            }
+
+            if (this.Fields["remainingTimeDisplay"] != null)
+            {
+                this.Fields["remainingTimeDisplay"].guiActive = showGUI;
+                this.Fields["remainingTimeDisplay"].guiActiveEditor = showGUI;
+            }
+
+            if (this.Fields["constraintDisplay"] != null)
+            {
+                this.Fields["constraintDisplay"].guiActive = showGUI;
+                this.Fields["constraintDisplay"].guiActiveEditor = showGUI;
+            }
+
+            if (this.Fields["converterStatus"] != null)
+            {
+                this.Fields["converterStatus"].guiActive = showGUI;
+                this.Fields["converterStatus"].guiActiveEditor = showGUI;
+            }
+
+            if (this.Actions["ToggleConverter"] != null)
+                this.Actions["ToggleConverter"].active = showGUI;
+        }
+
         public override void OnFixedUpdate()
         {
             try

@@ -36,11 +36,32 @@ namespace KolonyTools
         [KSPField(isPersistant = true)]
         public bool governorActive;
 
+        private bool _showGUI = true;
         private int _numConverters;
         private float _efficiencyRate;
         private void EfficiencySetup()
         {
             _efficiencyRate = GetEfficiency();
+        }
+
+        public bool ShowGUI
+        {
+            get
+            {
+                return _showGUI;
+            }
+
+            set
+            {
+                _showGUI = value;
+
+                //Hide/show MKSModule gui
+                if (Fields["Efficiency"] != null)
+                    Fields["Efficiency"].guiActive = _showGUI;
+
+                if (Events["ToggleGovernor"] != null)
+                    Events["ToggleGovernor"].guiActive = _showGUI;
+            }
         }
 
         private float GetEfficiency()
