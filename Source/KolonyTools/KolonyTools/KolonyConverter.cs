@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using USI;
-using UnityEngine;
 
 namespace KolonyTools
 {
@@ -11,7 +10,7 @@ namespace KolonyTools
     {
         [KSPField]
         public string requiredResources = "";
-        
+
         [KSPField]
         public bool SurfaceOnly = true;
 
@@ -50,7 +49,7 @@ namespace KolonyTools
             }
             catch (Exception ex)
             {
-                print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}",ex.Message));
+                print(String.Format("[MKS] - ERROR in OnFixedUpdate - {0}", ex.Message));
             }
         }
 
@@ -79,7 +78,7 @@ namespace KolonyTools
                 var rstr = (rate.ratio * 4).ToString();
                 if (rate.ratio >= 2500)
                 {
-                    rstr = Math.Round(rate.ratio/250, 0) + "k";
+                    rstr = Math.Round(rate.ratio / 250, 0) + "k";
                 }
                 sb.AppendFormat("- <b>{0}</b>: {1:N2}/d", rate.resource.name, rstr);
                 sb.AppendLine();
@@ -138,55 +137,17 @@ namespace KolonyTools
         {
             try
             {
-                inputResourceList = UpdateResourceList(inputResources,2);
-                outputResourceList = UpdateResourceList(outputResources,3);
-                requiredResourceList = UpdateResourceList(requiredResources,2);
-                _mks = part.Modules.OfType<MKSModule>().Any() 
-                    ? part.Modules.OfType<MKSModule>().First() 
+                inputResourceList = UpdateResourceList(inputResources, 2);
+                outputResourceList = UpdateResourceList(outputResources, 3);
+                requiredResourceList = UpdateResourceList(requiredResources, 2);
+                _mks = part.Modules.OfType<MKSModule>().Any()
+                    ? part.Modules.OfType<MKSModule>().First()
                     : new MKSModule();
             }
             catch (Exception ex)
             {
                 print(String.Format("[MKS] - ERROR in ResourceSetup - {0}", ex.Message));
             }
-        }
-
-        public void ShowGUI(bool showGUI)
-        {
-            if (this.Events["ActivateConverter"] != null)
-            {
-                this.Events["ActivateConverter"].active = showGUI;
-                this.Events["ActivateConverter"].guiActive = showGUI;
-                this.Events["ActivateConverter"].guiActiveEditor = showGUI;
-            }
-
-            if (this.Events["DeactivateConverter"] != null)
-            {
-                this.Events["DeactivateConverter"].active = showGUI;
-                this.Events["DeactivateConverter"].guiActiveEditor = showGUI;
-                this.Events["DeactivateConverter"].guiActive = showGUI;
-            }
-
-            if (this.Fields["remainingTimeDisplay"] != null)
-            {
-                this.Fields["remainingTimeDisplay"].guiActive = showGUI;
-                this.Fields["remainingTimeDisplay"].guiActiveEditor = showGUI;
-            }
-
-            if (this.Fields["constraintDisplay"] != null)
-            {
-                this.Fields["constraintDisplay"].guiActive = showGUI;
-                this.Fields["constraintDisplay"].guiActiveEditor = showGUI;
-            }
-
-            if (this.Fields["converterStatus"] != null)
-            {
-                this.Fields["converterStatus"].guiActive = showGUI;
-                this.Fields["converterStatus"].guiActiveEditor = showGUI;
-            }
-
-            if (this.Actions["ToggleConverter"] != null)
-                this.Actions["ToggleConverter"].active = showGUI;
         }
 
         private List<ResourceRatio> UpdateResourceList(string resString, int skip)
@@ -236,7 +197,7 @@ namespace KolonyTools
                     {
                         var r = part.Resources[resource.name];
                         var amountAvailable = r.amount;
-                        if (amountAvailable < numRequired - 0.1) missingResources.Add(resource.name); 
+                        if (amountAvailable < numRequired - 0.1) missingResources.Add(resource.name);
                     }
                 }
                 return string.Join(",", missingResources.ToArray());
