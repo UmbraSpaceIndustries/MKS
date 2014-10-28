@@ -14,7 +14,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 namespace KolonyTools
 {
-    public class ExtendedPartModule : PartModule
+    public class PartModuleExtensions : PartModule
     {
         //Nodes found in the part file's MODULE config node
         //These aren't availble after the first time the part is loaded.
