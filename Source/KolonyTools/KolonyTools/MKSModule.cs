@@ -38,6 +38,9 @@ namespace KolonyTools
 
         private int _numConverters;
         private float _efficiencyRate;
+        private bool _showGUI = false;
+
+
         private void EfficiencySetup()
         {
             _efficiencyRate = GetEfficiency();
@@ -245,7 +248,27 @@ namespace KolonyTools
                 return 0;
             }
         }
-        
+
+
+        public bool ShowGUI
+        {
+            get
+            {
+                return _showGUI;
+            }
+
+            set
+            {
+                _showGUI = value;
+
+                //Hide/show MKSModule gui
+                if (Fields["Efficiency"] != null)
+                    Fields["Efficiency"].guiActive = _showGUI;
+
+                if (Events["ToggleGovernor"] != null)
+                    Events["ToggleGovernor"].guiActive = _showGUI;
+            }
+        }
 
         public float GetEfficiencyRate()
         {
