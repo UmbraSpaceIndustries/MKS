@@ -172,6 +172,8 @@ namespace KolonyTools
             try
             {
                 Log("RedecorateModule called.");
+                if (mksTemplates == null)
+                    return;
                 if (mksTemplates.templateNodes == null)
                     return;
 

@@ -25,8 +25,8 @@ namespace KolonyTools
         #region Logging
         public virtual void Log(object message)
         {
-//           if (!_loggingEnabled)
-//              return;
+           if (!_loggingEnabled)
+              return;
 
             Debug.Log(this.ClassName + " [" + this.GetInstanceID().ToString("X")
                 + "][" + Time.time.ToString("0.0000") + "]: " + message);
@@ -100,8 +100,7 @@ namespace KolonyTools
             string fileName = this.part.name;
 
             //Account for Editor
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
-                fileName = fileName.Replace("(Clone)", "");
+            fileName = fileName.Replace("(Clone)", "");
 
             //Strip out invalid characters
             fileName = string.Join("_", fileName.Split(System.IO.Path.GetInvalidFileNameChars()));
