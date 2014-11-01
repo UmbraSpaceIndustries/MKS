@@ -109,16 +109,11 @@ namespace KolonyTools
             sb.Append(heading);
             sb.AppendLine(":</color></b>");
             sb.Append("<color=#99ff00ff>");
-            sb.Append("(kerbin days - 6h)");
-            sb.AppendLine(":</color>");
+            sb.AppendLine("</color>");
             foreach (var rate in rates)
             {
-                var rstr = (rate.ratio * 4).ToString();
-                if (rate.ratio >= 2500)
-                {
-                    rstr = Math.Round(rate.ratio / 250, 0) + "k";
-                }
-                sb.AppendFormat("- <b>{0}</b>: {1:N2}/d", rate.resource.name, rstr);
+                var rstr = String.Format("{0:0.0000}", rate.ratio * 3600);
+                sb.AppendFormat("- <b>{0}</b>: {1}/h", rate.resource.name, rstr);
                 sb.AppendLine();
             }
         }
