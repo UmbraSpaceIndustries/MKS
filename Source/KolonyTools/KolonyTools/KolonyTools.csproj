@@ -68,6 +68,7 @@
     <Compile Include="MKSLresource.cs" />
     <Compile Include="MKSLtransfer.cs" />
     <Compile Include="MKSModule.cs" />
+    <Compile Include="ModuleResourceDistributor.cs" />
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyLogistics.cs" />
