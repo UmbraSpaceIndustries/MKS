@@ -14,10 +14,10 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\Kolonization\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,6 +35,11 @@
       <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Regolith, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\Regolith\Regolith.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,13 +54,8 @@
       <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="USITools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="USITools">
       <HintPath>..\..\..\..\UmbraSpaceIndustries\OUTPUT\USITools.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="USI_Converter">
-      <HintPath>..\..\..\..\UmbraSpaceIndustries\OUTPUT\USI_Converter.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -68,11 +68,14 @@
     <Compile Include="MKSLresource.cs" />
     <Compile Include="MKSLtransfer.cs" />
     <Compile Include="MKSModule.cs" />
-    <Compile Include="ModuleResourceDistributor.cs" />
+    <Compile Include="USI_ModuleResourceDistributor.cs" />
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyLogistics.cs" />
     <Compile Include="StationManager.cs" />
+    <Compile Include="USI_ModuleCleaningBin.cs" />
+    <Compile Include="USI_ModuleFieldRepair.cs" />
+    <Compile Include="USI_ModuleResourceWarehouse.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>

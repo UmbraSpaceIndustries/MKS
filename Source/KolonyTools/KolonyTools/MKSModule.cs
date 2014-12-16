@@ -93,10 +93,16 @@ namespace KolonyTools
                 float modKerbalFactor = 0;
                 foreach (var k in part.protoModuleCrew)
                 {
-                    //A range from 1 to 2, average should be 1.5
-                    modKerbalFactor += 2;
-                    modKerbalFactor -= k.stupidity;
-                    //modKerbalFactor -= .5f;
+                    modKerbalFactor = k.experienceLevel/2f;
+                    //(0.25 - 3.25)
+                    if (k.experienceTrait.Title == "Pilot")
+                    {
+                        modKerbalFactor *=.5f;
+                    }
+                    if (k.experienceTrait.Title == "Engineer")
+                    {
+                        modKerbalFactor *=1.5f;
+                    }
                 }
                 print("modKerbalFactor: " + modKerbalFactor);
 
@@ -118,7 +124,6 @@ namespace KolonyTools
 
                 if (vessel.GetCrewCount() > 0)
                 {
-                    //TODO:Switch this to three workspaces max per Kerbal so that WS makes sense
                     float WorkSpaceKerbalRatio = numWorkspaces / vessel.GetCrewCount();
                     if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
                     print("WorkSpaceKerbalRatio: " + WorkSpaceKerbalRatio);
@@ -136,7 +141,22 @@ namespace KolonyTools
                 if (efficiencyPart != "")
                 {
                     var genParts = vessel.Parts.Count(p => p.name == part.name);
-                    var effParts = vessel.Parts.Count(p => p.name == (efficiencyPart.Replace('_','.')));
+                    var effPartList = vessel.Parts.Where(p => p.name == (efficiencyPart.Replace('_','.')));
+                    var effParts = 0;
+
+                    foreach (var ep in effPartList)
+                    {
+                        var mod = ep.FindModuleImplementing<USIAnimation>();
+                        if (mod == null)
+                        {
+                            effParts++;
+                        }
+                        else
+                        {
+                            if (mod.isDeployed)
+                                effParts++;
+                        };
+                    }
 
                     effParts = (effParts - genParts) / genParts;
                     print("effParts: " + effParts);
@@ -195,7 +215,7 @@ namespace KolonyTools
                     var mods = p.Modules.OfType<KolonyConverter>();
                     foreach (var pm in mods)
                     {
-                        if (pm.converterEnabled)
+                        if (pm.IsActivated)
                             numMods++;
                     }
                 }

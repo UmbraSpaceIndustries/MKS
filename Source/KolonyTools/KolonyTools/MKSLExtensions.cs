@@ -202,7 +202,7 @@ namespace KolonyTools
 
         public static IEnumerable<KolonyConverter> GetActiveConverters(this Vessel vessel)
         {
-            return vessel.GetConverters().Where(mod => mod.converterEnabled).Where(mod => mod.converterStatus == "Running");
+            return vessel.GetConverters().Where(mod => mod.IsActivated);
         }
 
         public static IEnumerable<KolonyConverter> GetConverters(this Vessel vessel)
@@ -220,11 +220,11 @@ namespace KolonyTools
             var parts = GetActiveConverters(vessel);
             var res = parts.SelectMany(conv =>
             {
-                var list = output ? conv.outputResourceList : conv.inputResourceList;
+                var list = output ? conv.Recipe.Outputs : conv.Recipe.Inputs;
                 return list.Select(resRatio => new MKSLresource
                 {
-                    resourceName = resRatio.resource.name,
-                    amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.ratio
+                    resourceName = resRatio.ResourceName,
+                    amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.Ratio
                 });
             }).GroupBy(x => x.resourceName, x => x.amount, (key,grp) => new MKSLresource { amount = grp.Sum(), resourceName = key });
             return res;

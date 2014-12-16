@@ -1,39 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using KSP.IO;
 using Toolbar;
 using UnityEngine;
+using File = KSP.IO.File;
 
 namespace KolonyTools
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class StationManager : MonoBehaviour
     {
-        private readonly IButton _stationManagerButton;
+        private ApplicationLauncherButton stationButton;
+
         private StationView _stationView;
 
         public StationManager()
         {
-            _stationManagerButton = ToolbarManager.Instance.add("KolonyTools", "StationManagerButton");
-            _stationManagerButton.TexturePath = "UmbraSpaceIndustries/Kolonization/MKS/Assets/StationManager";
-            _stationManagerButton.ToolTip = "Station Manager";
-            _stationManagerButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
-            _stationManagerButton.OnClick += e => this.Log("_stationManagerButton clicked");
-            _stationManagerButton.OnClick += e => ToggleGui();
+            var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
+            var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "StationManager.png");
+            print("Loading " + textureFile);
+            texture.LoadImage(System.IO.File.ReadAllBytes(textureFile));
+            this.stationButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
+                ApplicationLauncher.AppScenes.ALWAYS, texture);
+        }
+
+        private void GuiOn()
+        {
+            _stationView = new StationView(FlightGlobals.ActiveVessel);
+            _stationView.SetVisible(true);
+        }
+
+        private void GuiOff()
+        {
+            _stationView = new StationView(FlightGlobals.ActiveVessel);
+            _stationView.SetVisible(false);
         }
 
         private void ToggleGui()
         {
             _stationView = new StationView(FlightGlobals.ActiveVessel);
-            
             _stationView.ToggleVisible();
         }
 
         internal void OnDestroy()
         {
-            _stationManagerButton.Destroy();
+            ApplicationLauncher.Instance.RemoveModApplication(stationButton);
+            stationButton = null;
         }
     }
 
@@ -59,7 +74,7 @@ namespace KolonyTools
         {
             if (_highlight != null)
             {
-                _highlight.SetHighlight(_highlightStart + 1 > Planetarium.GetUniversalTime());
+                _highlight.SetHighlight(_highlightStart + 1 > Planetarium.GetUniversalTime(),false);
             }
             GUILayout.BeginHorizontal();
             if (GUIButton.LayoutButton("Parts"))
@@ -101,30 +116,30 @@ namespace KolonyTools
                     GUILayout.Label(converterPart.FindModuleImplementing<MKSModule>().efficiency);
                     if (GUIButton.LayoutButton("highlight"))
                     {
-                        converterPart.SetHighlight(true);
+                        converterPart.SetHighlight(true,false);
                     }
                     if (GUIButton.LayoutButton("unhighlight"))
                     {
-                        converterPart.SetHighlight(false);
+                        converterPart.SetHighlight(false,false);
                     }
                     GUILayout.EndVertical();
                     foreach (var converter in converterPart.FindModulesImplementing<KolonyConverter>())
                     {
                         GUILayout.BeginVertical();
-                        GUILayout.Label(converter.converterName);
-                        GUILayout.Label(converter.converterStatus);
-                        if (converter.converterEnabled)
+                        GUILayout.Label(converter.ConverterName);
+                        GUILayout.Label(converter.status);
+                        if (converter.IsActivated)
                         {
                             if (GUIButton.LayoutButton("deactivate"))
                             {
-                                converter.DeactivateConverter();
+                                converter.IsActivated = false;
                             }
                         }
                         else
                         {
                             if (GUIButton.LayoutButton("activate"))
                             {
-                                converter.ActivateConverter();
+                                converter.IsActivated = true;
                             }
                         }
                         GUILayout.EndVertical();
@@ -258,8 +273,8 @@ namespace KolonyTools
             GUILayout.BeginVertical();
             foreach (var converter in _model.GetConverters())
             {
-                var inputRatio = converter.inputResourceList.Find(res => res.resource.name == resourceName);
-                var outputRatio = converter.outputResourceList.Find(res => res.resource.name == resourceName);
+                var inputRatio = converter.Recipe.Inputs.Find(res => res.ResourceName == resourceName);
+                var outputRatio = converter.Recipe.Outputs.Find(res => res.ResourceName == resourceName);
                 
                 if (inputRatio == null && outputRatio == null)
                 {
@@ -271,14 +286,14 @@ namespace KolonyTools
                 
                 if (inputRatio != null)
                 {
-                    production = " consumes " + inputRatio.ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                    production = " consumes " + inputRatio.Ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
                 }
                 else
                 {
-                    production = " produces " + outputRatio.ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                    production = " produces " + outputRatio.Ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
                 }
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(converter.converterName +" status: "+ converter.converterStatus + production);
+                GUILayout.Label(converter.ConverterName +" status: "+ converter.status + production);
                 var bounds = GUILayoutUtility.GetLastRect();
                 if (bounds.Contains(Event.current.mousePosition))
                 {
@@ -286,7 +301,7 @@ namespace KolonyTools
                     {
                         if (_highlight != null)
                         {
-                            _highlight.SetHighlight(false);
+                            _highlight.SetHighlight(false,false);
                         }
                         
                         _highlight = converter.part;
@@ -296,14 +311,7 @@ namespace KolonyTools
                 
                 if (GUIButton.LayoutButton("toggle"))
                 {
-                    if (converter.converterEnabled)
-                    {
-                        converter.DeactivateConverter();
-                    }
-                    else
-                    {
-                        converter.ActivateConverter();
-                    }
+                    converter.IsActivated = !converter.IsActivated;
                 }
                 GUILayout.EndHorizontal();
                 

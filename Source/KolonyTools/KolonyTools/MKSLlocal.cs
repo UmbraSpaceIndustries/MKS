@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Toolbar;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ namespace KolonyTools
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class MKSLlocal : MonoBehaviour
     {
-        private IButton OrbLogButton;
+        private ApplicationLauncherButton orbLogButton;
 
         double nextchecktime;
 
@@ -21,19 +23,26 @@ namespace KolonyTools
 
         internal MKSLlocal()
         {
-            OrbLogButton = ToolbarManager.Instance.add("KolonyTools", "OrbLogButton");
-            OrbLogButton.TexturePath = "UmbraSpaceIndustries/Kolonization/MKS/Assets/OrbLogisticsIcon";
-            OrbLogButton.ToolTip = "Orbital Logistics";
-            OrbLogButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
-            OrbLogButton.OnClick += e => this.Log("OrbLogButton clicked");
-            OrbLogButton.OnClick += e => ToggleGui();
+            var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
+            var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "OrbitalLogistics.png");
+            print("Loading " + textureFile);
+            texture.LoadImage(File.ReadAllBytes(textureFile));
+            this.orbLogButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
+                ApplicationLauncher.AppScenes.ALWAYS, texture);
         }
 
-        private void ToggleGui()
+        private void GuiOn()
         {
             if (_logisticsMasterView == null) _logisticsMasterView = new MKSLogisticsMasterView(this);
-            _logisticsMasterView.ToggleVisible();
+            _logisticsMasterView.SetVisible(true);
         }
+
+        private void GuiOff()
+        {
+            if (_logisticsMasterView == null) _logisticsMasterView = new MKSLogisticsMasterView(this);
+            _logisticsMasterView.SetVisible(false);
+        }
+
 
         private void Awake()
         {
@@ -428,7 +437,8 @@ namespace KolonyTools
 
         internal void OnDestroy()
         {
-            OrbLogButton.Destroy();
+            ApplicationLauncher.Instance.RemoveModApplication(orbLogButton);
+            orbLogButton = null;
         }
 
         public void UpdateTransfers()
