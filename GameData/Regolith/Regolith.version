@@ -1,5 +1,5 @@
 {
-     "NAME":"Community Resource Pack",
+     "NAME":"Regolith",
      "URL":"https://raw.githubusercontent.com/BobPalmer/Regolith/master/GameData/Regolith/Regolith.version",
      "DOWNLOAD":"https://github.com/BobPalmer/Regolith/releases",
      "GITHUB":{
@@ -10,7 +10,7 @@
      "VERSION":{
          "MAJOR":0,
          "MINOR":1,
-         "PATCH":0,
+         "PATCH":1,
          "BUILD":0
      },
      "KSP_VERSION":{
