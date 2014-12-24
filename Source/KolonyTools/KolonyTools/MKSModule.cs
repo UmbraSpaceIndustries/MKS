@@ -138,7 +138,17 @@ namespace KolonyTools
 
                 print("effpartname: " + efficiencyPart);
                 //Add in efficiencyParts 
-                eff += GetTotalEfficiencyParts(efficiencyPart);
+                if (efficiencyPart != "")
+                {
+                    print("Current Efficiency: " + eff);
+
+                    eff += GetTotalEfficiencyParts(efficiencyPart);
+
+                    if (eff < 0.25)
+                        eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
+
+                    print("Efficiency after accounting for efficiency parts: " + eff);
+                }
 
                 if (!calculateEfficiency)
                 {
@@ -168,44 +178,36 @@ namespace KolonyTools
         {
             float eff = 0;
 
-            if (efficiencyPart != "")
-            {
-                char[] delimeters = { ';' };
-                var efficiencyParts = efficiencyPart.Split(delimeters);
+            char[] delimeters = { ';' };
+            var efficiencyParts = efficiencyPart.Split(delimeters);
 
+            //If multiple efficiency parts are listed, each type contributes to the total.
+            //Count up the total number of parts from the allowed types.
+            foreach (var efficiencyPartType in efficiencyParts)
+            {
                 var genParts = vessel.Parts.Count(p => p.name == part.name);
                 var effParts = 0;
+                var effPartList = vessel.Parts.Where(p => p.name == (efficiencyPartType.Replace('_', '.')));
 
-                //If multiple efficiency parts are listed, each type contributes to the total.
-                //Count up the total number of parts from the allowed types.
-                foreach (var efficiencyPartType in efficiencyParts)
+                foreach (var ep in effPartList)
                 {
-                    var effPartList = vessel.Parts.Where(p => p.name == (efficiencyPartType.Replace('_', '.')));
-
-                    foreach (var ep in effPartList)
+                    var mod = ep.FindModuleImplementing<USIAnimation>();
+                    if (mod == null)
                     {
-                        var mod = ep.FindModuleImplementing<USIAnimation>();
-                        if (mod == null)
-                        {
-                            effParts++;
-                        }
-                        else
-                        {
-                            if (mod.isDeployed)
-                                effParts++;
-                        };
+                        effParts++;
                     }
+                    else
+                    {
+                        if (mod.isDeployed)
+                            effParts++;
+                    };
                 }
 
                 effParts = (effParts - genParts) / genParts;
                 print("effParts: " + effParts);
                 eff += effParts;
                 print("part efficiency: " + eff);
-
-                if (eff < 0.25)
-                    eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
             }
-
 
             return eff;
         }
