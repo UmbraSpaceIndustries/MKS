@@ -140,31 +140,14 @@ namespace KolonyTools
                 //Add in efficiencyParts 
                 if (efficiencyPart != "")
                 {
-                    var genParts = vessel.Parts.Count(p => p.name == part.name);
-                    var effPartList = vessel.Parts.Where(p => p.name == (efficiencyPart.Replace('_','.')));
-                    var effParts = 0;
+                    print("Current Efficiency: " + eff);
 
-                    foreach (var ep in effPartList)
-                    {
-                        var mod = ep.FindModuleImplementing<USIAnimation>();
-                        if (mod == null)
-                        {
-                            effParts++;
-                        }
-                        else
-                        {
-                            if (mod.isDeployed)
-                                effParts++;
-                        };
-                    }
+                    eff += GetTotalEfficiencyParts(efficiencyPart);
 
-                    effParts = (effParts - genParts) / genParts;
-                    print("effParts: " + effParts);
-                    print("oldEff: " + eff);
-                    eff += effParts;
-                    print("newEff: " + eff); 
-                    if (eff < 0.25)  
+                    if (eff < 0.25)
                         eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
+
+                    print("Efficiency after accounting for efficiency parts: " + eff);
                 }
 
                 if (!calculateEfficiency)
@@ -190,6 +173,44 @@ namespace KolonyTools
             }
         }
 
+
+        private float GetTotalEfficiencyParts(string efficiencyPart)
+        {
+            float eff = 0;
+
+            char[] delimeters = { ';' };
+            var efficiencyParts = efficiencyPart.Split(delimeters);
+
+            //If multiple efficiency parts are listed, each type contributes to the total.
+            //Count up the total number of parts from the allowed types.
+            foreach (var efficiencyPartType in efficiencyParts)
+            {
+                var genParts = vessel.Parts.Count(p => p.name == part.name);
+                var effParts = 0;
+                var effPartList = vessel.Parts.Where(p => p.name == (efficiencyPartType.Replace('_', '.')));
+
+                foreach (var ep in effPartList)
+                {
+                    var mod = ep.FindModuleImplementing<USIAnimation>();
+                    if (mod == null)
+                    {
+                        effParts++;
+                    }
+                    else
+                    {
+                        if (mod.isDeployed)
+                            effParts++;
+                    };
+                }
+
+                effParts = (effParts - genParts) / genParts;
+                print("effParts: " + effParts);
+                eff += effParts;
+                print("part efficiency: " + eff);
+            }
+
+            return eff;
+        }
 
         private float GetCrewHappiness()
         {
