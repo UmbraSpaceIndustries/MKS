@@ -437,6 +437,8 @@ namespace KolonyTools
 
         internal void OnDestroy()
         {
+            if (orbLogButton == null)
+                return;
             ApplicationLauncher.Instance.RemoveModApplication(orbLogButton);
             orbLogButton = null;
         }

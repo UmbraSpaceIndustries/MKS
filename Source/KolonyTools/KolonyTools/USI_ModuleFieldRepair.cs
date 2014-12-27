@@ -14,7 +14,7 @@ namespace KolonyTools
             unfocusedRange = 2f)]
         public void PerformMaintenance()
         {
-            var kerbal = vessel.rootPart.protoModuleCrew[0];
+            var kerbal = FlightGlobals.ActiveVessel.rootPart.protoModuleCrew[0];
             if (kerbal.experienceTrait.Title != "Engineer")
             {
                 ScreenMessages.PostScreenMessage("Only Engineers can perform EVA Maintenance!", 5f,

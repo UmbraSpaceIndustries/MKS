@@ -47,6 +47,8 @@ namespace KolonyTools
 
         internal void OnDestroy()
         {
+            if (stationButton == null)
+                return;
             ApplicationLauncher.Instance.RemoveModApplication(stationButton);
             stationButton = null;
         }

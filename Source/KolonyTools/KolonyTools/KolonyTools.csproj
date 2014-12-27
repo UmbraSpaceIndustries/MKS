@@ -56,7 +56,6 @@
     </Reference>
     <Reference Include="USITools">
       <HintPath>..\..\..\..\UmbraSpaceIndustries\OUTPUT\USITools.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
