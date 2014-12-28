@@ -288,7 +288,7 @@ namespace KolonyTools
         }
         
 
-        public virtual float GetEfficiencyRate()
+        public float GetEfficiencyRate()
         {
             var curConverters = GetActiveKolonyModules(vessel);
             if (curConverters != _numConverters)
