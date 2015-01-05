@@ -15,7 +15,7 @@ namespace KolonyTools
             try
             {
                 var eff = _mks.GetEfficiencyRate();
-                EfficiencBonus = eff;
+                EfficiencyBonus = eff;
                 base.OnFixedUpdate();
             }
             catch (Exception ex)
