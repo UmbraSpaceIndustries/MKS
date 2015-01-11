@@ -615,8 +615,10 @@ namespace KolonyTools
         {
             var res = new[] {true, true};
             var validationMess = "";
+            var totals = new Dictionary<string, double>();
             foreach (var tRes in trans.transferList)
             {
+                totals.Add(tRes.resourceName,tRes.amount);
                 if (this.readResource(trans.VesselFrom, tRes.resourceName)[0] < tRes.amount)
                 {
                     res[0] = res[1] = false;
@@ -626,6 +628,14 @@ namespace KolonyTools
             }
             if (res[1])
             {
+                Func<string, double, double> subtractTransfer = (n, a) =>
+                                                                {
+                                                                    if (totals.ContainsKey(n))
+                                                                    {
+                                                                        return a - totals[n];
+                                                                    }
+                                                                    return a;
+                                                                };
                 foreach (var cRes in trans.costList)
                 {
                     var totalAvail = 0d;
@@ -633,7 +643,7 @@ namespace KolonyTools
                     {
                         case TransferCostPaymentModes.Source:
                         {
-                            totalAvail = this.readResource(trans.VesselFrom, cRes.resourceName)[0];
+                            totalAvail = subtractTransfer(cRes.resourceName, this.readResource(trans.VesselFrom, cRes.resourceName)[0]);
                         }
                             break;
                         case TransferCostPaymentModes.Target:
@@ -643,7 +653,7 @@ namespace KolonyTools
                             break;
                         case TransferCostPaymentModes.Both:
                         {
-                            totalAvail = this.readResource(trans.VesselTo, cRes.resourceName)[0] + this.readResource(trans.VesselFrom, cRes.resourceName)[0];
+                            totalAvail = this.readResource(trans.VesselTo, cRes.resourceName)[0] + subtractTransfer(cRes.resourceName, this.readResource(trans.VesselFrom, cRes.resourceName)[0]);
 
                         }break;
                     }
