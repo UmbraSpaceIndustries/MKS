@@ -32,12 +32,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>J:\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Regolith, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\Regolith\Regolith.dll</HintPath>
+      <HintPath>J:\Steam\SteamApps\common\Kerbal Space Program\GameData\Regolith\Regolith.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -47,11 +47,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Toolbar">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\000_Toolbar\Toolbar.dll</HintPath>
+      <HintPath>J:\Steam\SteamApps\common\Kerbal Space Program\GameData\000_Toolbar\Toolbar.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>J:\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="USITools">
