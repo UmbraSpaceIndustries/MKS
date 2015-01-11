@@ -165,7 +165,8 @@ namespace KolonyTools
                             break;
                         }
                         if (r.info.id != resource.id) continue;
-
+                        Func<Part, PartResource,double[], bool, string> getProcDbgString = (ip, ir,amountsInfo, pre) => string.Format("{5} resource on part {0} of {7} vessel {6} which has now {1:F2}/{2:F2} stored while {3:F2}/{4:F2} has already been transferred", ip.name, ir.amount, ir.maxAmount, amountsInfo[0], amountsInfo[1],pre?"About to process":"Processed",ip.vessel.vesselName,ip.vessel.loaded?"loaded":"unloaded");
+                        //Debug.Log("[MKS-Logistics] "+getProcDbgString(p,r,new []{amountExchanged,amount},true));
                         if (amount < 0)
                         {
                             if (r.amount < Math.Abs(amount - amountExchanged))
@@ -194,6 +195,7 @@ namespace KolonyTools
                                 done = true;
                             }
                         }
+                        //Debug.Log("[MKS-Logistics] " + getProcDbgString(p, r, new[] { amountExchanged, amount }, false));
                     }
                 }
             }

@@ -270,8 +270,34 @@ namespace KolonyTools
         }
     }
 
+    internal enum TransferCostPaymentModes
+    {
+        Source,
+        Target,
+        Both
+    }
+
     public class MKSTransferCreateView : Window<MKSTransferCreateView>
     {
+        private struct TransferValidationResult
+        {
+            internal bool EnoughTransferResources;
+            internal bool EnoughTransferCostResources;
+            internal string ValidationMessage;
+
+            internal TransferValidationResult(bool tRes, bool tcRes, string msg)
+            {
+                this.EnoughTransferCostResources = tcRes;
+                this.EnoughTransferResources = tRes;
+                this.ValidationMessage = msg;
+            }
+
+            internal bool EnoughRes
+            {
+                get { return this.EnoughTransferCostResources && this.EnoughTransferResources; }
+            }
+        }
+
         private readonly MKSLGuiTransfer _model;
         private readonly MKSLcentral _central;
         private Vector2 scrollPositionEditGUIResources;
@@ -282,6 +308,7 @@ namespace KolonyTools
         private string StrValidationMessage;
         private int vesselFrom;
         private int vesselTo;
+        private Dictionary<TransferCostPaymentModes, bool> _costPayModes;
 
         private ComboBox fromVesselComboBox;
         
@@ -305,6 +332,12 @@ namespace KolonyTools
             listStyle.padding.right =
             listStyle.padding.top =
             listStyle.padding.bottom = 4;
+            this._costPayModes = new Dictionary<TransferCostPaymentModes, bool>
+                                 {
+                                     {TransferCostPaymentModes.Source, false},
+                                     {TransferCostPaymentModes.Target, false},
+                                     {TransferCostPaymentModes.Both, true}
+                                 };
 
             fromVesselComboBox = new ComboBox(new Rect(20, 30, 100, 20), fromList[0], fromList, "button", "box", listStyle,
                 i =>
@@ -335,6 +368,10 @@ namespace KolonyTools
 
         protected override void DrawWindowContents(int windowId)
         {
+            Func<TransferCostPaymentModes> getSelectedMode = () =>
+            {
+                return (this._costPayModes.First(kv => kv.Value)).Key;
+            };
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("<<", MKSGui.buttonStyle, GUILayout.Width(40)))
@@ -408,16 +445,24 @@ namespace KolonyTools
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Amount:", MKSGui.labelStyle, GUILayout.Width(80));
                 StrAmount = GUILayout.TextField(StrAmount, 10, MKSGui.textFieldStyle, GUILayout.Width(60));
+                Action<double> setAmount = (a) =>
+                                              {
+                                                  if (a < currentAvailable)
+                                                  {
+                                                      editGUIResource.amount = a;
+                                                  }
+                                                  else
+                                                  {
+                                                      editGUIResource.amount = currentAvailable;
+                                                      StrAmount = editGUIResource.amount.ToString("F2");
+                                                  }
+                                              };
                 if (GUILayout.Button("Set", MKSGui.buttonStyle, GUILayout.Width(30)))
                 {
                     double number;
                     if (Double.TryParse(StrAmount, out number))
                     {
-                        if (number < currentAvailable)
-                            editGUIResource.amount = number;
-                        else
-                            editGUIResource.amount = currentAvailable;
-                        StrAmount = Math.Round(editGUIResource.amount, 2).ToString();
+                        setAmount(number);
                     }
                     else
                     {
@@ -425,7 +470,7 @@ namespace KolonyTools
                         editGUIResource.amount = 0;
                     }
                     updateCostList(_model);
-                    validateTransfer(_model, ref StrValidationMessage);
+                    validateTransfer(_model,getSelectedMode(), ref StrValidationMessage);
                 }
                 GUILayout.EndHorizontal();
 
@@ -441,7 +486,19 @@ namespace KolonyTools
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Target:", MKSGui.labelStyle, GUILayout.Width(80));
-                GUILayout.Label(string.Format("{0:F}/{1:F}", currentTargetAmounts[0], currentTargetAmounts[1]), MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.Label(string.Format("{0:F2}/{1:F2}", currentTargetAmounts[0], currentTargetAmounts[1]), MKSGui.labelStyle, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Fill Up", MKSGui.buttonStyle, GUILayout.Width(100)))
+                {
+                    var diff = Math.Round(currentTargetAmounts[1] - currentTargetAmounts[0], 2);
+                    if (diff >= 0)
+                    {
+                        setAmount(diff);
+                        StrAmount = diff.ToString("F2");
+                    }
+                }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
@@ -497,6 +554,40 @@ namespace KolonyTools
                 GUILayout.EndHorizontal();
             }
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Transfer cost paid by: ", MKSGui.labelStyle, GUILayout.Width(170));
+            if (this._checkTransferAmounts(this._model, TransferCostPaymentModes.Both).EnoughRes)
+            {
+                var oldVal = this._costPayModes[TransferCostPaymentModes.Both];
+                this._costPayModes[TransferCostPaymentModes.Both] = GUILayout.Toggle(this._costPayModes[TransferCostPaymentModes.Both], "Both", MKSGui.buttonStyle);
+                if (oldVal != this._costPayModes[TransferCostPaymentModes.Both])
+                {
+                    this._costPayModes[TransferCostPaymentModes.Source] = this._costPayModes[TransferCostPaymentModes.Target] = false;
+                }
+            }
+            if (this._checkTransferAmounts(this._model, TransferCostPaymentModes.Source).EnoughRes)
+            {
+                var oldVal = this._costPayModes[TransferCostPaymentModes.Source];
+                this._costPayModes[TransferCostPaymentModes.Source] = GUILayout.Toggle(this._costPayModes[TransferCostPaymentModes.Source], "Source", MKSGui.buttonStyle);
+                if (oldVal != this._costPayModes[TransferCostPaymentModes.Source])
+                {
+                    this._costPayModes[TransferCostPaymentModes.Both] = this._costPayModes[TransferCostPaymentModes.Target] = false;
+                }
+            }
+            if (this._checkTransferAmounts(this._model, TransferCostPaymentModes.Target).EnoughRes)
+            {
+                var oldVal = this._costPayModes[TransferCostPaymentModes.Target];
+                this._costPayModes[TransferCostPaymentModes.Target] = GUILayout.Toggle(this._costPayModes[TransferCostPaymentModes.Target], "Target", MKSGui.buttonStyle);
+                if (oldVal != this._costPayModes[TransferCostPaymentModes.Target])
+                {
+                    this._costPayModes[TransferCostPaymentModes.Both] = this._costPayModes[TransferCostPaymentModes.Source] = false;
+                }
+            }
+            if (!(this._costPayModes[TransferCostPaymentModes.Both] || this._costPayModes[TransferCostPaymentModes.Source] || this._costPayModes[TransferCostPaymentModes.Target]))
+            {
+                this._costPayModes[TransferCostPaymentModes.Both] = true;
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.Label(StrValidationMessage, MKSGui.redlabelStyle);
 
@@ -504,9 +595,10 @@ namespace KolonyTools
             if (GUILayout.Button("Initiate Transfer", MKSGui.buttonStyle, GUILayout.Width(200)))
             {
                 updateCostList(_model);
-                if (validateTransfer(_model, ref StrValidationMessage))
+                var selMode = getSelectedMode();
+                if (validateTransfer(_model, selMode, ref StrValidationMessage))
                 {
-                    createTransfer(_model);
+                    createTransfer(_model,selMode);
                 }
             }
             if (GUILayout.Button("Cancel", MKSGui.buttonStyle, GUILayout.Width(100)))
@@ -518,6 +610,55 @@ namespace KolonyTools
             fromVesselComboBox.ShowRest();
             toVesselComboBox.ShowRest();
         }
+
+        private TransferValidationResult _checkTransferAmounts(MKSLtransfer trans, TransferCostPaymentModes paymentMode)
+        {
+            var res = new[] {true, true};
+            var validationMess = "";
+            foreach (var tRes in trans.transferList)
+            {
+                if (this.readResource(trans.VesselFrom, tRes.resourceName)[0] < tRes.amount)
+                {
+                    res[0] = res[1] = false;
+                    validationMess = validationMess + "insufficient " + tRes.resourceName + "    ";
+                    break;
+                }
+            }
+            if (res[1])
+            {
+                foreach (var cRes in trans.costList)
+                {
+                    var totalAvail = 0d;
+                    switch (paymentMode)
+                    {
+                        case TransferCostPaymentModes.Source:
+                        {
+                            totalAvail = this.readResource(trans.VesselFrom, cRes.resourceName)[0];
+                        }
+                            break;
+                        case TransferCostPaymentModes.Target:
+                        {
+                            totalAvail = this.readResource(trans.VesselTo, cRes.resourceName)[0];
+                        }
+                            break;
+                        case TransferCostPaymentModes.Both:
+                        {
+                            totalAvail = this.readResource(trans.VesselTo, cRes.resourceName)[0] + this.readResource(trans.VesselFrom, cRes.resourceName)[0];
+
+                        }break;
+                    }
+                    if (!(totalAvail < cRes.amount))
+                    {
+                        continue;
+                    }
+                    validationMess = validationMess + "insufficient " + cRes.resourceName + "    ";
+                    res[1] = false;
+                    break;
+                }
+            }
+            return new TransferValidationResult(res[0],res[1],validationMess);
+        }
+
         public void updateCostList(MKSLtransfer trans)
         {
             double PSSM = getValueFromStrPlanet(_central.DistanceModifierPlanet, _central.vessel.mainBody.name);
@@ -561,7 +702,7 @@ namespace KolonyTools
 
             }
         }
-        public bool validateTransfer(MKSLtransfer trans, ref string validationMess)
+        internal bool validateTransfer(MKSLtransfer trans, TransferCostPaymentModes mode, ref string validationMess)
         {
             bool check = true;
             validationMess = "";
@@ -571,74 +712,110 @@ namespace KolonyTools
             if (trans.VesselFrom.id.ToString() == trans.VesselTo.id.ToString())
             {
                 validationMess = "origin and destination are equal";
-                return (false);
+                return false;
             }
 
             //check situation origin vessel
             if (trans.VesselFrom.situation != Vessel.Situations.ORBITING && trans.VesselFrom.situation != Vessel.Situations.SPLASHED && trans.VesselFrom.situation != Vessel.Situations.LANDED && trans.VesselFrom.situation != Vessel.Situations.PRELAUNCH)
             {
                 validationMess = "origin of transfer is not in a stable situation";
-                return (false);
+                return false;
             }
 
             //check situation destination vessel
             if (trans.VesselTo.situation != Vessel.Situations.ORBITING && trans.VesselTo.situation != Vessel.Situations.SPLASHED && trans.VesselTo.situation != Vessel.Situations.LANDED && trans.VesselFrom.situation != Vessel.Situations.LANDED)
             {
                 validationMess = "destination of transfer is not in a stable situation";
-                return (false);
+                return false;
             }
 
-            //check for sufficient transfer resources
-            foreach (MKSLresource transRes in trans.transferList)
-            {
-                if (readResource(trans.VesselFrom, transRes.resourceName)[0] < transRes.amount)
-                {
-                    check = false;
-                    validationMess = validationMess + "insufficient " + transRes.resourceName + "    ";
-                }
-            }
 
-            //check for sufficient cost resources
 
-            foreach (MKSLresource costRes in trans.costList)
-            {
-                double totalResAmount = 0;
+            ////check for sufficient transfer resources
+            //foreach (MKSLresource transRes in trans.transferList)
+            //{
+            //    if (readResource(trans.VesselFrom, transRes.resourceName)[0] < transRes.amount)
+            //    {
+            //        check = false;
+            //        validationMess = validationMess + "insufficient " + transRes.resourceName + "    ";
+            //    }
+            //}
 
-                totalResAmount = costRes.amount;
+            ////check for sufficient cost resources
 
-                foreach (MKSLresource transRes in trans.transferList)
-                {
-                    if (costRes.resourceName == transRes.resourceName)
-                    {
-                        totalResAmount = totalResAmount + transRes.amount;
-                    }
-                }
+            //foreach (MKSLresource costRes in trans.costList)
+            //{
+            //    double totalResAmount = 0;
 
-                if ((readResource(trans.VesselFrom, costRes.resourceName)[0] + readResource(_central.vessel, costRes.resourceName)[0]) < totalResAmount)
-                {
-                    check = false;
-                    validationMess = validationMess + "insufficient " + costRes.resourceName + "    ";
-                }
-            }
+            //    totalResAmount = costRes.amount;
+
+            //    foreach (MKSLresource transRes in trans.transferList)
+            //    {
+            //        if (costRes.resourceName == transRes.resourceName)
+            //        {
+            //            totalResAmount = totalResAmount + transRes.amount;
+            //        }
+            //    }
+
+            //    if ((readResource(trans.VesselFrom, costRes.resourceName)[0] + readResource(_central.vessel, costRes.resourceName)[0]) < totalResAmount)
+            //    {
+            //        check = false;
+            //        validationMess = validationMess + "insufficient " + costRes.resourceName + "    ";
+            //    }
+            //}
+
+            var checkRes = this._checkTransferAmounts(trans, mode);
+            check = checkRes.EnoughRes;
 
             if (check)
             {
                 validationMess = "";
                 return true;
             }
+            validationMess = checkRes.ValidationMessage;
             return false;
         }
 
-        public void createTransfer(MKSLtransfer trans)
+        internal void createTransfer(MKSLtransfer trans, TransferCostPaymentModes mode)
         {
             trans.costList = trans.costList.Where(x => x.amount > 0).ToList();
             trans.transferList = trans.transferList.Where(x => x.amount > 0).ToList();
+
             foreach (MKSLresource costRes in trans.costList)
             {
-                double AmountToGather = costRes.amount;
-                double AmountGathered = 0;
-                AmountGathered += -_central.vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
-                AmountGathered += -trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                var toDraw = -costRes.amount;
+                switch (mode)
+                {
+                    case TransferCostPaymentModes.Source:
+                        {
+                            trans.VesselFrom.ExchangeResources(costRes.resourceName, toDraw);
+                        }
+                        break;
+                    case TransferCostPaymentModes.Target:
+                        {
+                            trans.VesselTo.ExchangeResources(costRes.resourceName, toDraw);
+                        }
+                        break;
+                    case TransferCostPaymentModes.Both:
+                    default:
+                    {
+                        Vessel first;
+                        Vessel second;
+                        if (this._central.vessel.id == trans.VesselFrom.id)
+                        {
+                            first = trans.VesselFrom;
+                            second = trans.VesselTo;
+                        }
+                        else
+                        {
+                            first = trans.VesselTo;
+                            second = trans.VesselFrom;
+                        }
+                        var drawn = first.ExchangeResources(costRes.resourceName, toDraw);
+                        second.ExchangeResources(costRes.resourceName, toDraw - drawn);
+                    }
+                        break;
+                }
             }
 
             foreach (MKSLresource transRes in trans.transferList)
