@@ -637,8 +637,9 @@ namespace KolonyTools
             {
                 double AmountToGather = costRes.amount;
                 double AmountGathered = 0;
-                AmountGathered += -_central.vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
-                AmountGathered += -trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                //AmountGathered += -_central.vessel.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                //AmountGathered += -trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
+                trans.VesselFrom.ExchangeResources(costRes.resourceName, -(AmountToGather - AmountGathered));
             }
 
             foreach (MKSLresource transRes in trans.transferList)
