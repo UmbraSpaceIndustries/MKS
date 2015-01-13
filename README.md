@@ -5,21 +5,18 @@ This is the repository for the MKS and OKS mods for [Kerbal Space Program](http:
 
 MKS and OKS are the original works of RoverDude (GitHub user BobPalmer).  
 
-You can find the official repo for this mod on [Github](http://github.com/BobPalmer/MKS).  Releases, along with other USI products, can be found on [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a). 
-
-
-NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are still being updated to reflect the new changes - be patient :)
+You can find the official repo for this mod on [Github](http://github.com/BobPalmer/MKS).  Releases, along with other USI products, can be found on [the USI Catalog Page](bobpalmer.github.io/UmbraSpaceIndustries). 
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
 * [TAC Life Support] (http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
 * [Snacks] (http://forum.kerbalspaceprogram.com/threads/90841-0-24-2-Snacks%21-Kerbal-simplified-life-support-v0-3-1) via the [E-Z Snack Oven] (http://forum.kerbalspaceprogram.com/threads/92309-0-24-2-EZ-Snack-Oven-Snacks%21-for-MKS-0-1-0-2014-08-29)
+* Extraplanetary Launchpads
+
 
 ### Included Plugins/Mods
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
-* [Open Resource System] (http://forum.kerbalspaceprogram.com/threads/64595) (alternate to Kethane)
-* [Karbonite] (http://forum.kerbalspaceprogram.com/threads/89401)
-* [TweakScale] (http://forum.kerbalspaceprogram.com/threads/80234-24-2-TweakScale-Rescale-Everything!-(v1-43-2014-08-23-52-UTC))
+* [Regolith] (http://forum.kerbalspaceprogram.com/threads/100162)
 
 ### Recommended mods
 (These are absolutely not required, but have aspects that make gameplay easier)
@@ -34,11 +31,6 @@ NOTE:  0.18 is a BREAKING change for 0.17 users.  Also, most docs on Github are 
 
 ### Compatible with
 
-* [Kethane](http://forum.kerbalspaceprogram.com/threads/23979)
-* [Extraplanetary Launchpads](http://forum.kerbalspaceprogram.com/threads/59545) (resource compatibility)
-* [KSP Interstellar Lite](http://forum.kerbalspaceprogram.com/threads/91867-0-24-2-Interstellar-Lite-Tweakscale-Integration-v0-12-2-Aug-29) (reactors)
-* [BioMass](http://forum.kerbalspaceprogram.com/threads/53009) (resource compatibility)
-* [BahamutoD's Drills](http://forum.kerbalspaceprogram.com/threads/70325) (MM extension)
 * [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/70161) (efficiency extensions)
 
 ### FAQ, Documentation and issues
@@ -51,7 +43,7 @@ You can also use GitHub issues to report bugs and provide suggestions, etc.
 
 ### Download Link
 
-You can download the current version of MKS from  [Dropbox](https://www.dropbox.com/sh/1fsuzvl35s2gppt/AAD8kNgBm6rO9m4paXmwuqA0a).  Note that for the sake of my own sanity, 0.17 and prior versions are no longer supported.
+You can download the current version of MKS from [the USI Catalog Page](bobpalmer.github.io/UmbraSpaceIndustries).  Note that for the sake of my own sanity, 0.17 and prior versions are no longer supported.
 
 ### License
 
