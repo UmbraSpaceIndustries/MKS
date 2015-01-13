@@ -56,6 +56,4 @@ MKS is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.
 
 ### Other Contributors and Thanks!
 * PrivateFlip/Cyrik (Orbital Logistics code)
-* Stage (ORS Maps)
-* Vim Razz (Mission Flags)
 * Olympic1 (Science Logs)
