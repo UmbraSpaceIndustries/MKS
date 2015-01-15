@@ -10,8 +10,11 @@ namespace KolonyTools
         //Very simple module.  Just lets you transfer spare parts in via an EVA.
         //super hacky.  Don't judge me.
 
+        [KSPField]
+        public float EVARange = 5f;
+
         [KSPEvent(active = true, guiActiveUnfocused = true, externalToEVAOnly = true, guiName = "Perform maintenance",
-            unfocusedRange = 2f)]
+            unfocusedRange = 5f)]
         public void PerformMaintenance()
         {
             var kerbal = FlightGlobals.ActiveVessel.rootPart.protoModuleCrew[0];
@@ -27,6 +30,13 @@ namespace KolonyTools
             GrabResources("Machinery");
             PushResources("DepletedUranium");
         }
+
+        public override void OnStart(StartState state)
+        {
+            Events["PerformMaintenance"].unfocusedRange = EVARange;
+            base.OnStart(state);
+        }
+
 
         private void PushResources(string resourceName)
         {
@@ -55,6 +65,9 @@ namespace KolonyTools
 
         private void GrabResources(string resourceName)
         {
+            if (!part.Resources.Contains(resourceName))
+                return;
+
             var brokRes = part.Resources[resourceName];
             var needed = brokRes.maxAmount - brokRes.amount;
             //Pull in from warehouses
