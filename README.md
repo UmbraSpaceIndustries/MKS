@@ -43,7 +43,7 @@ You can also use GitHub issues to report bugs and provide suggestions, etc.
 
 ### Download Link
 
-You can download the current version of MKS from [the USI Catalog Page](bobpalmer.github.io/UmbraSpaceIndustries).  Note that for the sake of my own sanity, 0.17 and prior versions are no longer supported.
+You can download the current version of MKS from [the USI Catalog Page](http://bobpalmer.github.io/UmbraSpaceIndustries).  Note that for the sake of my own sanity, 0.17 and prior versions are no longer supported.
 
 ### License
 
