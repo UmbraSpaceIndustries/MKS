@@ -32,16 +32,6 @@ namespace KolonyTools
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
-        [KSPEvent(guiActive = true, guiName = "Governor", active = true)]
-        public void ToggleGovernor()
-        {
-            governorActive = !governorActive;
-            EfficiencySetup();
-        }
-
-        [KSPField(isPersistant = true)]
-        public bool governorActive;
-
         private bool _showGUI = true;
         private int _numConverters;
         private float _efficiencyRate;
@@ -161,13 +151,7 @@ namespace KolonyTools
                     efficiency = String.Format("100% [Fixed]");
                 }
 
-                var prefix = "";
-                if (governorActive)
-                {
-                    if (eff > 1f) eff = 1f;
-                    prefix = "G:";
-                }
-                efficiency = String.Format("{5}{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), Math.Round(modKerbalFactor, 1), numWorkspaces, numModules, Math.Round(numWeightedKerbals, 1),prefix);
+                efficiency = String.Format("{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), Math.Round(modKerbalFactor, 1), numWorkspaces, numModules, Math.Round(numWeightedKerbals, 1));
 
                 return eff;
             }
