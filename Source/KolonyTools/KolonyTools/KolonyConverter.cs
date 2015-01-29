@@ -51,6 +51,19 @@ namespace KolonyTools
             }
         }
 
+        public override void OnStart(StartState state)
+        {
+            try
+            {
+                ResourceSetup();
+                base.OnStart(state);
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in OnLoad - {0}", ex.Message));
+            }
+        }
+
         private void ResourceSetup()
         {
             try

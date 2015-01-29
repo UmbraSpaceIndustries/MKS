@@ -35,6 +35,7 @@ namespace KolonyTools
         private bool _showGUI = true;
         private int _numConverters;
         private float _efficiencyRate;
+
         private void EfficiencySetup()
         {
             _efficiencyRate = GetEfficiency();
