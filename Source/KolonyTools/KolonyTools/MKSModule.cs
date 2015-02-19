@@ -105,7 +105,10 @@ namespace KolonyTools
                     float WorkSpaceKerbalRatio = numWorkspaces / vessel.GetCrewCount();
                     if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
                     print("WorkSpaceKerbalRatio: " + WorkSpaceKerbalRatio);
-                    float WorkUnits = WorkSpaceKerbalRatio * numWeightedKerbals;
+                    //A module gets 100% bonus from Kerbals inside of it,
+                    //in addition to a 10% bonus for Kerbals in the entire station.
+                    float WorkUnits = WorkSpaceKerbalRatio * modKerbalFactor;
+                    WorkUnits += WorkSpaceKerbalRatio * numWeightedKerbals / 10;
                     print("WorkUnits: " + WorkUnits);
                     eff = WorkUnits / numModules;
                     print("eff: " + eff);

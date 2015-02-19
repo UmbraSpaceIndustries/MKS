@@ -38,6 +38,7 @@
     <Reference Include="Regolith, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\Regolith\Regolith.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +56,7 @@
     </Reference>
     <Reference Include="USITools">
       <HintPath>..\..\..\..\UmbraSpaceIndustries\OUTPUT\USITools.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

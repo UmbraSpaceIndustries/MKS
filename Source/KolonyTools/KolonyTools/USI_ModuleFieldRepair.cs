@@ -41,8 +41,6 @@ namespace KolonyTools
         private void PushResources(string resourceName)
         {
             var brokRes = part.Resources[resourceName];
-            //Push to warehouses
-
             //Put remaining parts in warehouses
             foreach (var p in vessel.parts.Where(vp => vp != part && vp.Modules.Contains("USI_ModuleCleaningBin")))
             {
