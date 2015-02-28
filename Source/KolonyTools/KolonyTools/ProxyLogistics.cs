@@ -135,33 +135,6 @@ namespace KolonyTools
             LogisticsRange = 2000;
         }
 
-        private List<Vessel> GetNearbyVessels(int range, bool includeSelf)
-        {
-            try
-            {
-                var vessels = new List<Vessel>();
-                foreach (var v in FlightGlobals.Vessels.Where(
-                    x => x.mainBody == vessel.mainBody
-                    && x.Landed))
-                {
-                    if (v == vessel && !includeSelf) continue;
-                    var posCur = vessel.GetWorldPos3D();
-                    var posNext = v.GetWorldPos3D();
-                    var distance = Vector3d.Distance(posCur, posNext);
-                    if (distance < range)
-                    {
-                        vessels.Add(v);
-                    }
-                }
-                return vessels;
-            }
-            catch (Exception ex)
-            {
-                print(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
-                return new List<Vessel>();
-            }
-        }
-
         private void CheckResources()
         {
             if (ResourceList.Any(r => r.Resource == null)) SetupResourceList("");
@@ -208,7 +181,7 @@ namespace KolonyTools
             try
             {
                 var transferAmount = amount;
-                var nearVessels = GetNearbyVessels(LogisticsRange,false);
+                var nearVessels = GetNearbyVessels(LogisticsRange,false, vessel);
                 foreach (var v in nearVessels)
                 {
                     if (transferAmount == 0) break;
@@ -287,6 +260,33 @@ namespace KolonyTools
         {
             TakeResources,
             StoreResources
+        }
+
+        public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel)
+        {
+            try
+            {
+                var vessels = new List<Vessel>();
+                foreach (var v in FlightGlobals.Vessels.Where(
+                    x => x.mainBody == thisVessel.mainBody
+                    && x.Landed))
+                {
+                    if (v == thisVessel && !includeSelf) continue;
+                    var posCur = thisVessel.GetWorldPos3D();
+                    var posNext = v.GetWorldPos3D();
+                    var distance = Vector3d.Distance(posCur, posNext);
+                    if (distance < range)
+                    {
+                        vessels.Add(v);
+                    }
+                }
+                return vessels;
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
+                return new List<Vessel>();
+            }
         }
 
     }

@@ -69,6 +69,8 @@
     <Compile Include="MKSLtransfer.cs" />
     <Compile Include="MKSModule.cs" />
     <Compile Include="SpaceAcademy.cs" />
+    <Compile Include="USI_ModuleRecycleablePart.cs" />
+    <Compile Include="USI_ModuleRecycleBin.cs" />
     <Compile Include="USI_ModuleResourceDistributor.cs" />
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
