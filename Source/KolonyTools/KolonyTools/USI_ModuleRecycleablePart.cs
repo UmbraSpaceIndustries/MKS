@@ -74,10 +74,10 @@ namespace KolonyTools
                         }
                     }
                 }
-                if (amount > 1f)
-                {
-                    ScreenMessages.PostScreenMessage(String.Format("{0:0} units of {1} were lost due to lack of recycle space", amount, ResourceName), 5f, ScreenMessageStyle.UPPER_CENTER);
-                }
+            }
+            if (amount > 1f)
+            {
+                ScreenMessages.PostScreenMessage(String.Format("{0:0} units of {1} were lost due to lack of recycle space", amount, ResourceName), 5f, ScreenMessageStyle.UPPER_CENTER);
             }
         }
     }
