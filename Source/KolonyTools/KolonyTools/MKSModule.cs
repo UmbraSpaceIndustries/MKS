@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using UnityEngine;
 using USITools;
+
 
 namespace KolonyTools
 {
@@ -123,6 +122,7 @@ namespace KolonyTools
                     var effPartNames = efficiencyPart.Split(',')
                         .Select(effPartName => effPartName.Trim().Replace('_', '.'));
                     var genParts = vessel.Parts.Count(p => p.name == part.name);
+
                     var effPartList = vessel.Parts.Where(p => effPartNames.Contains(p.name));
                     var effParts = 0;
 
@@ -165,7 +165,6 @@ namespace KolonyTools
                 return 1f;
             }
         }
-
 
         private float GetKerbalFactor(ProtoCrewMember k)
         {
@@ -217,10 +216,10 @@ namespace KolonyTools
             try
             {
                 var numMods = 0;
-                var pList = v.parts.Where(p => p.Modules.Contains("KolonyConverter"));
+                var pList = v.parts.Where(p => p.Modules.Contains("ModuleResourceConverter"));
                 foreach (var p in pList)
                 {
-                    var mods = p.Modules.OfType<KolonyConverter>();
+                    var mods = p.Modules.OfType<ModuleResourceConverter>();
                     numMods += mods.Count(pm => pm.IsActivated);
                 }
                 return numMods;
@@ -231,8 +230,6 @@ namespace KolonyTools
                 return 0;
             }
         }
-
-
         private int GetKolonyWorkspaces(Vessel v)
         {
             try
@@ -252,8 +249,6 @@ namespace KolonyTools
                 return 0;
             }
         }
-
-
         private int GetKolonyLivingSpace(Vessel v)
         {
             try
@@ -288,7 +283,6 @@ namespace KolonyTools
             }
         }
         
-
         public virtual float GetEfficiencyRate()
         {
             var curConverters = GetActiveKolonyModules(vessel);
@@ -313,6 +307,20 @@ namespace KolonyTools
             catch (Exception ex)
             {
                 print("ERROR IN MKSModuleOnLoad - " + ex.Message);
+            }
+        }
+
+        public override void OnStart(StartState state)
+        {
+            part.force_activate();
+        }
+
+        public override void OnFixedUpdate()
+        {
+            var eff = GetEfficiencyRate();
+            foreach (var con in part.FindModulesImplementing<ModuleResourceConverter>())
+            {
+                con.EfficiencyBonus = eff;
             }
         }
     }
