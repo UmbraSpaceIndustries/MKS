@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Toolbar;
 using UnityEngine;
 using File = KSP.IO.File;
 
@@ -125,7 +124,7 @@ namespace KolonyTools
                         converterPart.SetHighlight(false,false);
                     }
                     GUILayout.EndVertical();
-                    foreach (var converter in converterPart.FindModulesImplementing<KolonyConverter>())
+                    foreach (var converter in converterPart.FindModulesImplementing<ModuleResourceConverter>())
                     {
                         GUILayout.BeginVertical();
                         GUILayout.Label(converter.ConverterName);

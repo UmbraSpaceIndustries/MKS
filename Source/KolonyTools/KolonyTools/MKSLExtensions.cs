@@ -202,19 +202,19 @@ namespace KolonyTools
             return (amountExchanged);
         }
 
-        public static IEnumerable<KolonyConverter> GetActiveConverters(this Vessel vessel)
+        public static IEnumerable<ModuleResourceConverter> GetActiveConverters(this Vessel vessel)
         {
             return vessel.GetConverters().Where(mod => mod.IsActivated);
         }
 
-        public static IEnumerable<KolonyConverter> GetConverters(this Vessel vessel)
+        public static IEnumerable<ModuleResourceConverter> GetConverters(this Vessel vessel)
         {
-            return vessel.parts.SelectMany(part => part.Modules.OfType<KolonyConverter>());
+            return vessel.parts.SelectMany(part => part.Modules.OfType<ModuleResourceConverter>());
         }
 
         public static IEnumerable<Part> GetConverterParts(this Vessel vessel)
         {
-            return vessel.parts.Where(part => part.FindModuleImplementing<KolonyConverter>() != null);
+            return vessel.parts.Where(part => part.FindModuleImplementing<ModuleResourceConverter>() != null);
         }
 
         public static IEnumerable<MKSLresource> GetProduction(this Vessel vessel, bool output = true)
