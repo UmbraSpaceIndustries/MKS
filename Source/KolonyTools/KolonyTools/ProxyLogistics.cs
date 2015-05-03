@@ -289,5 +289,32 @@ namespace KolonyTools
             }
         }
 
+		public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel, bool ignoreFlightState)
+		{
+			try
+			{
+				var vessels = new List<Vessel>();
+				foreach (var v in FlightGlobals.Vessels.Where(
+					x => x.mainBody == thisVessel.mainBody
+					&& ((thisVessel.Landed && x.Landed) || (!thisVessel.Landed && !x.Landed))))
+				{
+					if (v == thisVessel && !includeSelf) continue;
+					var posCur = thisVessel.GetWorldPos3D();
+					var posNext = v.GetWorldPos3D();
+					var distance = Vector3d.Distance(posCur, posNext);
+					if (distance < range)
+					{
+						vessels.Add(v);
+					}
+				}
+				return vessels;
+			}
+			catch (Exception ex)
+			{
+				print(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
+				return new List<Vessel>();
+			}
+		}
+
     }
 }

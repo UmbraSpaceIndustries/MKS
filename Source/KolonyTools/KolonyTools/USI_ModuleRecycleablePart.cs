@@ -53,7 +53,7 @@ namespace KolonyTools
 
         private void PushResources(string resourceName, double amount)
         {
-            var vessels = ProxyLogistics.GetNearbyVessels(2000, true, vessel);
+            var vessels = ProxyLogistics.GetNearbyVessels(2000, true, vessel, true);
             foreach (var v in vessels)
             {
                 //Put recycled stuff into recycleable places
