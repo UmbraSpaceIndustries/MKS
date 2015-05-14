@@ -262,14 +262,14 @@ namespace KolonyTools
             StoreResources
         }
 
-        public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel)
+        public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel, bool landedOnly = true)
         {
             try
             {
                 var vessels = new List<Vessel>();
                 foreach (var v in FlightGlobals.Vessels.Where(
                     x => x.mainBody == thisVessel.mainBody
-                    && x.Landed))
+                    && (x.Landed || !landedOnly)))
                 {
                     if (v == thisVessel && !includeSelf) continue;
                     var posCur = thisVessel.GetWorldPos3D();
