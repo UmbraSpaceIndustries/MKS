@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using USITools;
 
@@ -226,10 +227,10 @@ namespace KolonyTools
             try
             {
                 var numMods = 0;
-                var pList = v.parts.Where(p => p.Modules.Contains("ModuleResourceConverter"));
+                var pList = v.parts.Where(p => p.Modules.Contains("Konverter"));
                 foreach (var p in pList)
                 {
-                    var mods = p.Modules.OfType<ModuleResourceConverter>();
+                    var mods = p.Modules.OfType<Konverter>();
                     numMods += mods.Count(pm => pm.IsActivated);
                 }
                 return numMods;
@@ -328,7 +329,7 @@ namespace KolonyTools
         public override void OnFixedUpdate()
         {
             var eff = GetEfficiencyRate();
-            foreach (var con in part.FindModulesImplementing<ModuleResourceConverter>())
+            foreach (var con in part.FindModulesImplementing<Konverter>())
             {
                 con.EfficiencyBonus = eff;
             }

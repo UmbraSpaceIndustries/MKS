@@ -2,9 +2,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace KolonyTools
 {
+    public class LogisticsTools
+    {
+        private const int LOG_RANGE = 500;
+
+        public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel, bool landedOnly = true)
+        {
+            try
+            {
+                var vessels = new List<Vessel>();
+                foreach (var v in FlightGlobals.Vessels.Where(
+                    x => x.mainBody == thisVessel.mainBody
+                    && (x.Landed || !landedOnly)))
+                {
+                    if (v == thisVessel && !includeSelf) continue;
+                    var posCur = thisVessel.GetWorldPos3D();
+                    var posNext = v.GetWorldPos3D();
+                    var distance = Vector3d.Distance(posCur, posNext);
+                    if (distance < range)
+                    {
+                        vessels.Add(v);
+                    }
+                }
+                return vessels;
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
+                return new List<Vessel>();
+            }
+        }
+
+        public static IEnumerable<Part> GetRegionalWarehouses(Vessel vessel, string module)
+        {
+            var pList = new List<Part>();
+            var vList = GetNearbyVessels(LOG_RANGE, true, vessel, false);
+            foreach (var v in vList)
+            {
+                foreach (var vp in v.parts.Where(p => p.Modules.Contains(module)))
+                {
+                    pList.Add(vp);
+                }
+            }
+            return pList;
+        }
+    }
+
     public class LogisticsGoal
     {
         public PartResourceDefinition Resource { get; set; }
@@ -13,7 +60,7 @@ namespace KolonyTools
     public class ProxyLogistics : PartModule
     {
         [KSPField]
-        public int LogisticsRange = 2000; 
+        public int LogisticsRange = 10; 
 
         [KSPField]
         public string LogisticsResources = "";
@@ -181,7 +228,7 @@ namespace KolonyTools
             try
             {
                 var transferAmount = amount;
-                var nearVessels = GetNearbyVessels(LogisticsRange,false, vessel);
+                var nearVessels = LogisticsTools.GetNearbyVessels(LogisticsRange, false, vessel);
                 foreach (var v in nearVessels)
                 {
                     if (transferAmount == 0) break;
@@ -262,32 +309,6 @@ namespace KolonyTools
             StoreResources
         }
 
-        public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel, bool landedOnly = true)
-        {
-            try
-            {
-                var vessels = new List<Vessel>();
-                foreach (var v in FlightGlobals.Vessels.Where(
-                    x => x.mainBody == thisVessel.mainBody
-                    && (x.Landed || !landedOnly)))
-                {
-                    if (v == thisVessel && !includeSelf) continue;
-                    var posCur = thisVessel.GetWorldPos3D();
-                    var posNext = v.GetWorldPos3D();
-                    var distance = Vector3d.Distance(posCur, posNext);
-                    if (distance < range)
-                    {
-                        vessels.Add(v);
-                    }
-                }
-                return vessels;
-            }
-            catch (Exception ex)
-            {
-                print(String.Format("[MKS] - ERROR in GetNearbyVessels - {0}", ex.Message));
-                return new List<Vessel>();
-            }
-        }
 
     }
 }
