@@ -1,0 +1,18 @@
+0.30.3 - 2015.05.02
+-------------------
+Added Changelog file
+Fixed some log spam
+Bundled new Kontainers/Tanks
+Removed surface attach from Oct-3.75 adapter
+Fixed various cost issues
+Fixed missing textures for OKS ILM
+Fuel refinery now has Uraninite and DepletedUranium conversion capabilities
+
+Advanced Logistics:
+* A PDU with an engineer can now transfer EC for the use of converters
+  to disconnected ships within 2KM.
+* If a converter module is within 150m of an MKS workspace module with a pilot, 
+  converter inputs will be retrieved from disconnected ships up to 750km away.
+* When using the context menu to perform maintenance, ships within 500m will be 
+  considered when looking for resources to store or retrieve.
+
