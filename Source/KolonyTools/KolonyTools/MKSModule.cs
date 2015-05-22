@@ -312,7 +312,6 @@ namespace KolonyTools
                 if (!hasGenerators)
                 {
                     Fields["efficiency"].guiActive = false;
-                    Events["ToggleGovernor"].active = false;
                 }
             }
             catch (Exception ex)
