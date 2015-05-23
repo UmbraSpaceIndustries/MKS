@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using USITools;
 
@@ -311,7 +312,6 @@ namespace KolonyTools
                 if (!hasGenerators)
                 {
                     Fields["efficiency"].guiActive = false;
-                    Events["ToggleGovernor"].active = false;
                 }
             }
             catch (Exception ex)
@@ -332,6 +332,9 @@ namespace KolonyTools
             {
                 con.EfficiencyBonus = eff;
             }
+
+            //Now check for logistics.
+
         }
 
         private struct EffPart
