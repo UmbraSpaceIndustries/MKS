@@ -227,10 +227,10 @@ namespace KolonyTools
             try
             {
                 var numMods = 0;
-                var pList = v.parts.Where(p => p.Modules.Contains("Konverter"));
+                var pList = v.parts.Where(p => p.Modules.Contains("ModuleResourceConverter"));
                 foreach (var p in pList)
                 {
-                    var mods = p.Modules.OfType<Konverter>();
+                    var mods = p.Modules.OfType<ModuleResourceConverter>();
                     numMods += mods.Count(pm => pm.IsActivated);
                 }
                 return numMods;
@@ -312,7 +312,6 @@ namespace KolonyTools
                 if (!hasGenerators)
                 {
                     Fields["efficiency"].guiActive = false;
-                    Events["ToggleGovernor"].active = false;
                 }
             }
             catch (Exception ex)
@@ -329,10 +328,13 @@ namespace KolonyTools
         public override void OnFixedUpdate()
         {
             var eff = GetEfficiencyRate();
-            foreach (var con in part.FindModulesImplementing<Konverter>())
+            foreach (var con in part.FindModulesImplementing<ModuleResourceConverter>())
             {
                 con.EfficiencyBonus = eff;
             }
+
+            //Now check for logistics.
+
         }
 
         private struct EffPart
