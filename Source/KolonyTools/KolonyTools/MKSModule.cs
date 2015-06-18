@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using USITools;
 
@@ -33,9 +34,18 @@ namespace KolonyTools
         [KSPField(guiActive = true, guiName = "Efficiency")]
         public string efficiency = "Unknown";
 
+        [KSPField] 
+        public float CrewBonus = 0.1f;
+
+        [KSPField] 
+        public float MaxEfficiency = 2.5f;
+
         private bool _showGUI = true;
         private int _numConverters;
         private float _efficiencyRate;
+        private double lastCheck;
+        private double checkTime = 5f;
+        private const int COLONY_RANGE = 100;
 
         private void EfficiencySetup()
         {
@@ -52,13 +62,9 @@ namespace KolonyTools
             set
             {
                 _showGUI = value;
-
                 //Hide/show MKSModule gui
                 if (Fields["Efficiency"] != null)
                     Fields["Efficiency"].guiActive = _showGUI;
-
-                if (Events["ToggleGovernor"] != null)
-                    Events["ToggleGovernor"].guiActive = _showGUI;
             }
         }
 
@@ -66,14 +72,19 @@ namespace KolonyTools
         {
             try
             {
-                //Efficiency is a function of:
-                //  - Workspaces                [numWorkspaces]
-                //  - 25% of Crew Cap           [numWorkSpaces]
-                //  - Active MKS Module count   [numModules]
-                //  - Crew in the module itself [modKerbalFactor]   (0.05 - 3.5 per Kerbal)
-                //  - All Kerbals in the crew   [numWeightedKerbals]
-                //  - efficiency parts          [added to eff]
+                //Efficiency is based on various factors.  These come in three
+                //categories: 
+                //  * Part
+                //  * Vessel
+                //  * Colony
+                //  - Vessel Workspaces         [numWorkspaces]
+                //  - 25% Vessel Crew Capacity  [numWorkSpaces]
+                //  - Vessel MKS Module count   [numModules]
+                //  - Part Crew                 [modKerbalFactor]   (0.05 - 3.5 per Kerbal)
+                //  - Vessel crew               [numWeightedKerbals]
+                //  - Colony efficiency parts   [added to eff]
                 //          Bonus equal to 100 * number of units - 1
+                //  - Colony Living Space/Kerbal Happiness
 
                 float numWorkspaces = GetKolonyWorkspaces(vessel);
                 print("NumWorkspaces: " + numWorkspaces);
@@ -109,11 +120,11 @@ namespace KolonyTools
                     //A module gets 100% bonus from Kerbals inside of it,
                     //in addition to a 10% bonus for Kerbals in the entire station.
                     float WorkUnits = WorkSpaceKerbalRatio * modKerbalFactor;
-                    WorkUnits += WorkSpaceKerbalRatio * numWeightedKerbals / 10;
+                    WorkUnits += WorkSpaceKerbalRatio*numWeightedKerbals*CrewBonus;
                     print("WorkUnits: " + WorkUnits);
                     eff = WorkUnits / numModules;
                     print("eff: " + eff);
-                    if (eff > 2.5) eff = 2.5f;
+                    if (eff > MaxEfficiency) eff = MaxEfficiency;
                     if (eff < .25) eff = .25f;
                 }
 
@@ -137,7 +148,13 @@ namespace KolonyTools
                     var effParts = 0f;
                     foreach (var vep in validEffParts)
                     {
-                        var effPartList = vessel.Parts.Where(p => p.name == vep.Name);
+                        var vList = LogisticsTools.GetNearbyVessels(EFF_RANGE, true, vessel, true);
+                        var effPartList = new List<Part>();
+                        foreach (var v in vList)
+                        {
+                            effPartList.AddRange(v.Parts.Where(p => p.name == vep.Name));
+                        }
+
                         foreach (var ep in effPartList)
                         {
                             var mod = ep.FindModuleImplementing<USIAnimation>();
@@ -166,7 +183,10 @@ namespace KolonyTools
                     efficiency = String.Format("100% [Fixed]");
                 }
 
-                efficiency = String.Format("{0}% [{1}k/{2}s/{3}m/{4}c]", Math.Round((eff * 100), 1), Math.Round(modKerbalFactor, 1), numWorkspaces, numModules, Math.Round(numWeightedKerbals, 1));
+                efficiency = String.Format("{0}%", Math.Round((eff * 100), 1));
+
+                //DEBUG DATA
+                //DEBUG
 
                 return eff;
             }
@@ -211,17 +231,52 @@ namespace KolonyTools
 
         private float GetCrewHappiness()
         {
-            //Prototype.  Crew Happiness is a function of the ratio of living space to Kerbals.
-            float ls = GetKolonyLivingSpace(vessel);
-            //We can add in a limited number for crew capacity - 10%
-            ls += vessel.GetCrewCapacity()*.1f;
+            //Crew Happiness is a function of the ratio of living space to Kerbals.
+            //These are COLONY-WIDE.
+            var kShips = LogisticsTools.GetNearbyVessels(COLONY_RANGE, true, vessel, true);
 
-            var hap = ls/vessel.GetCrewCount();
-            //Range is 50% - 150%
+            float ls = GetKolonyLivingSpace(kShips);
+            //We can add in a limited number for crew capacity - 10%
+            ls += GetKolonyCrewCap(kShips) * .1f;
+
+            var totKerbs = GetKolonyInhabitants(kShips);
+            var hap = ls/totKerbs;
+
+            //Range is 50% - 150% for crowding and extra space.
+            //This is calculated before loneliness.
             if (hap < .5f) hap = .5f;
             if (hap > 1.5f) hap = 1.5f;
+
+            //Kerbals hate being alone.  Any fewer than five Kerbals incurs a pretty significant penalty.
+            if (totKerbs < 5)
+            {
+                //20% - 80%
+                hap *= (totKerbs * .2f);
+            }
             return hap;
         }
+
+        private float GetKolonyCrewCap(List<Vessel> vlist)
+        {
+            var cc = 0f;
+            foreach (var v in vlist)
+            {
+                cc += v.GetCrewCapacity();
+            }
+            return cc;
+        }
+
+        private float GetKolonyInhabitants(List<Vessel> vlist)
+        {
+            var cc = 0f;
+            foreach (var v in vlist)
+            {
+                cc += v.GetCrewCount();
+            }
+            return cc;
+        }
+
+
         private int GetActiveKolonyModules(Vessel v)
         {
             try
@@ -241,6 +296,7 @@ namespace KolonyTools
                 return 0;
             }
         }
+
         private int GetKolonyWorkspaces(Vessel v)
         {
             try
@@ -260,28 +316,31 @@ namespace KolonyTools
                 return 0;
             }
         }
-        private int GetKolonyLivingSpace(Vessel v)
+        private int GetKolonyLivingSpace(List<Vessel> vList)
         {
             try
             {
                 var numLS = 0;
-                var pList = v.parts.Where(p => p.Modules.Contains("MKSModule"));
-                foreach (var p in pList)
+                foreach (var v in vList)
                 {
-                    var mods = p.Modules.OfType<MKSModule>();
-                    foreach (var pm in mods)
+                    var pList = v.parts.Where(p => p.Modules.Contains("MKSModule"));
+                    foreach (var p in pList)
                     {
-                        if (p.Modules.Contains("USIAnimation"))
+                        var mods = p.Modules.OfType<MKSModule>();
+                        foreach (var pm in mods)
                         {
-                            var am = p.Modules.OfType<USIAnimation>().First();
-                            if (am.isDeployed)
+                            if (p.Modules.Contains("USIAnimation"))
+                            {
+                                var am = p.Modules.OfType<USIAnimation>().First();
+                                if (am.isDeployed)
+                                {
+                                    numLS += pm.livingSpace;
+                                }
+                            }
+                            else
                             {
                                 numLS += pm.livingSpace;
                             }
-                        }
-                        else
-                        {
-                            numLS += pm.livingSpace;
                         }
                     }
                 }
@@ -327,15 +386,222 @@ namespace KolonyTools
 
         public override void OnFixedUpdate()
         {
-            var eff = GetEfficiencyRate();
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
+
+            if (Math.Abs(lastCheck - Planetarium.GetUniversalTime()) < checkTime)
+                return;
+
+            lastCheck = Planetarium.GetUniversalTime();
+
+            var conEff = GetEfficiencyRate();
             foreach (var con in part.FindModulesImplementing<ModuleResourceConverter>())
             {
-                con.EfficiencyBonus = eff;
+                con.EfficiencyBonus = conEff;
+                if(con.inputList != null)
+                    CheckLogistics(con.inputList);
             }
-
-            //Now check for logistics.
-
+           
+            //Special for USI-LS
+            if(vessel.GetCrewCount() > 0)
+            {
+                CheckLogistics(new List<ResourceRatio> { new ResourceRatio { ResourceName = "Supplies" }, new ResourceRatio { ResourceName = "ElectricCharge" } });
+            }
         }
+
+        private void CheckLogistics(List<ResourceRatio> resList)
+        {
+            //Surface only
+            if (!vessel.LandedOrSplashed)
+                return;
+
+            var hasDepot = LogisticsAvailable();
+            var hasPDU = PowerAvailable();     
+
+            //The konverter will scan for missing resources and
+            //attempt to pull them in from nearby ships.
+
+
+            //Find what we need!
+            foreach (var res in resList)
+            {
+                //There are certain exeptions - specifically, anything for field repair.
+                if (res.ResourceName == "Machinery")
+                    continue;
+
+                if (res.ResourceName != "ElectricCharge")
+                {
+                    //A logistics module (ILM, etc.) must be nearby
+                    if (!hasDepot)
+                        continue;
+                }
+                else
+                {
+                    //A PDU must be nearby
+                    if (!hasPDU)
+                        continue;
+                }
+                //How many do we have in our ship
+                var pRes = PartResourceLibrary.Instance.GetDefinition(res.ResourceName);
+                var maxAmount = 0d;
+                var curAmount = 0d;
+                foreach (var p in vessel.parts.Where(pr => pr.Resources.Contains(res.ResourceName)))
+                {
+                    var rr = p.Resources[res.ResourceName];
+                    maxAmount += rr.maxAmount;
+                    curAmount += rr.amount;
+                }
+                double fillPercent = curAmount/maxAmount; //We use this to equalize things cross-ship as a percentage.
+                if (fillPercent < 0.5d) //We will not attempt a fillup until we're at less than half capacity
+                {
+                    //Keep changes small - 10% per tick.  So we should hover between 50% and 60%
+                    var deficit = Math.Floor(maxAmount * .1d);
+                    double receipt = FetchResources(deficit, pRes, fillPercent);
+                    //Put these in our vessel
+                    StoreResources(receipt, pRes);
+                }
+            }
+        }
+
+        private const int LOG_RANGE = 750;
+        private const int DEPOT_RANGE = 150;
+        private const int POWER_RANGE = 2000;
+        private const int EFF_RANGE = 500;
+
+        public bool LogisticsAvailable()
+        {
+            var vList = LogisticsTools.GetNearbyVessels(DEPOT_RANGE, true, vessel, true);
+            foreach (var v in vList)
+            {
+                if (v.Parts.Any(p => p.FindModuleImplementing<ModuleResourceDistributor>() != null && HasCrew(p, "Pilot")))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool PowerAvailable()
+        {
+            var vList = LogisticsTools.GetNearbyVessels(POWER_RANGE, true, vessel, true);
+            foreach (var v in vList)
+            {
+                if (v.Parts.Any(p => p.FindModuleImplementing<ModulePowerDistributor>() != null && HasCrew(p, "Engineer")))
+                    return true;
+            }
+            return false;
+        }
+
+        private bool HasCrew(Part p, string skill)
+        {
+            if (p.CrewCapacity > 0)
+            {
+                return (p.protoModuleCrew.Any(c => c.experienceTrait.TypeName == skill));
+            }
+            else
+            {
+                return (p.vessel.GetVesselCrew().Any(c => c.experienceTrait.TypeName == skill));
+            }
+        }
+
+        private void StoreResources(double amount, PartResourceDefinition resource)
+        {
+            try
+            {
+                var transferAmount = amount;
+                var partList = vessel.Parts.Where(
+                    p => p.Resources.Contains(resource.name));
+                foreach (var p in partList)
+                {
+                    var pr = p.Resources[resource.name];
+                    var storageSpace = pr.maxAmount - pr.amount;
+                    if (storageSpace >= transferAmount)
+                    {
+                        pr.amount += transferAmount;
+                        break;
+                    }
+                    else
+                    {
+                        transferAmount -= storageSpace;
+                        pr.amount = pr.maxAmount;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in StoreResources - {0}", ex.StackTrace));
+            }
+        }
+
+        private double FetchResources(double amount, PartResourceDefinition resource, double fillPercent)
+        {
+            double demand = amount;
+            double fetched = 0d;
+            try
+            {
+                var rangeFactor = LOG_RANGE;
+                if (resource.name == "ElectricCharge")
+                    rangeFactor = POWER_RANGE;
+
+                var nearVessels = LogisticsTools.GetNearbyVessels(rangeFactor, false, vessel, true);
+                foreach (var v in nearVessels)
+                {
+                    if (demand <= ResourceUtilities.FLOAT_TOLERANCE) break;
+                    //Is this a valid target?
+                   if(!HasResourcesToSpare(v, resource, fillPercent))
+                       continue;
+                    //Can we find what we're looking for?
+                    var partList = v.Parts.Where(
+                        p => p.Resources.Contains(resource.name));
+                    foreach (var p in partList)
+                    {
+                        //Special case - EC can only come from a PDU
+                        if (resource.name == "ElectricCharge" && !p.Modules.Contains("ModulePowerDistributor"))
+                            continue;
+                        var pr = p.Resources[resource.name];
+                        if (pr.amount >= demand)
+                        {
+                            pr.amount -= demand;
+                            fetched += demand;
+                            demand = 0;
+                            break;
+                        }
+                        else
+                        {
+                            demand -= pr.amount;
+                            fetched += pr.amount;
+                            pr.amount = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                print(String.Format("[MKS] - ERROR in FetchResources - {0}", ex.StackTrace));
+            }
+            return fetched;
+        }
+
+        private bool HasResourcesToSpare(Vessel v, PartResourceDefinition resource, double targetPercent)
+        {
+            var maxAmount = 0d;
+            var curAmount = 0d;
+            foreach (var p in v.parts.Where(pr => pr.Resources.Contains(resource.name)))
+            {
+                var rr = p.Resources[resource.name];
+                maxAmount += rr.maxAmount;
+                curAmount += rr.amount;
+            }
+            double fillPercent = curAmount/maxAmount;
+            if (fillPercent > targetPercent)
+            {
+                //If we're in better shape, they can take some of our stuff.
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         private struct EffPart
         {

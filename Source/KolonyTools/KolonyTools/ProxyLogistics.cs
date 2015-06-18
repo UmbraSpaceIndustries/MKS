@@ -8,7 +8,7 @@ namespace KolonyTools
 {
     public class LogisticsTools
     {
-        private const int LOG_RANGE = 500;
+        private const int PROXY_RANGE = 500;
 
         public static List<Vessel> GetNearbyVessels(int range, bool includeSelf, Vessel thisVessel, bool landedOnly = true)
         {
@@ -40,7 +40,7 @@ namespace KolonyTools
         public static IEnumerable<Part> GetRegionalWarehouses(Vessel vessel, string module)
         {
             var pList = new List<Part>();
-            var vList = GetNearbyVessels(LOG_RANGE, true, vessel, false);
+            var vList = GetNearbyVessels(PROXY_RANGE, true, vessel, false);
             foreach (var v in vList)
             {
                 foreach (var vp in v.parts.Where(p => p.Modules.Contains(module)))

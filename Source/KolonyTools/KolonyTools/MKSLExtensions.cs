@@ -207,14 +207,17 @@ namespace KolonyTools
             return vessel.GetConverters().Where(mod => mod.IsActivated);
         }
 
+        
         public static IEnumerable<ModuleResourceConverter> GetConverters(this Vessel vessel)
         {
-            return vessel.parts.SelectMany(part => part.Modules.OfType<ModuleResourceConverter>());
+            var mksParts = vessel.parts.Where(p => p.Modules.Contains("MKSModule"));
+            return mksParts.SelectMany(part => part.Modules.OfType<ModuleResourceConverter>());
         }
 
         public static IEnumerable<Part> GetConverterParts(this Vessel vessel)
         {
-            return vessel.parts.Where(part => part.FindModuleImplementing<ModuleResourceConverter>() != null);
+            var mksParts = vessel.parts.Where(p => p.Modules.Contains("MKSModule"));
+            return mksParts.Where(part => part.FindModuleImplementing<ModuleResourceConverter>() != null);
         }
 
         public static IEnumerable<MKSLresource> GetProduction(this Vessel vessel, bool output = true)
