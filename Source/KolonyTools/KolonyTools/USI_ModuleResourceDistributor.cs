@@ -10,8 +10,6 @@ namespace KolonyTools
         [KSPField] 
         public string BrokeredResource;
 
-
-
         public override void OnFixedUpdate()
         {
             if (part.Resources.Contains(BrokeredResource) && part.protoModuleCrew.Count == part.CrewCapacity)
