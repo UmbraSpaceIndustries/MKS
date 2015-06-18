@@ -25,7 +25,7 @@ namespace KolonyTools
                 return;
             }
             ScreenMessages.PostScreenMessage("You perform routine maintenance...", 5f, ScreenMessageStyle.UPPER_CENTER);
-            GrabResources("SpareParts");
+            GrabResources("Machinery");
             GrabResources("EnrichedUranium");
             PushResources("Recyclables");
             PushResources("DepletedUranium");
