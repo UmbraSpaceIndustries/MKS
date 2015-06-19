@@ -1,3 +1,11 @@
+0.31.1 - 2015.06.19
+-------------------
+Removed legacy folders since it turns out 0.31.x is save breaking.
+Added colored markers to the hab and workshop inflatables to aid in identification while deflated
+Tweaked the Agroponics converter vaules
+Fixed texture issue with reactors
+
+
 0.31.0 - 2015.06.18
 -------------------
 Fixed most of the log spam with the colony overview window. 
