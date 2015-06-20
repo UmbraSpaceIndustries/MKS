@@ -1,3 +1,60 @@
+0.31.1 - 2015.06.19
+-------------------
+Removed legacy folders since it turns out 0.31.x is save breaking.
+Added colored markers to the hab and workshop inflatables to aid in identification while deflated
+Tweaked the Agroponics converter vaules
+Fixed texture issue with reactors
+
+
+0.31.0 - 2015.06.18
+-------------------
+Fixed most of the log spam with the colony overview window. 
+ScanOMatic Soil Sampler shows surface concentrations of all MKS resources
+Rebalanced the greenhouse module:
+- A USI-LS greenhouse or pioneer module operates at 50% efficiency
+- A Mk-V Ag Module operates at 75% efficiency
+- An Aeroponics Module operates at 90% efficiency
+MK-V Ag Modules and the Aeroponics Module have a new converter called 'Agroponics'.  This adds fertilizer as an input (25% of the mulch amount) but in return grants a lossless conversion.
+Added Fertilizer to various containers
+Added Mulch storage to the Pioneer modules
+Added Monoprop and LiquidFuel storage tanks
+Fixed mass issue with water conversion
+Fixed various cost issues
+Temprarily removed the MDS part as it needs a rework
+The HabDome, Agriculture Module, and Radial tank have been deprecated to 'Legacy'.  The Hab and Ag modules are replaced by Mk-V equivelants, and the radial tank is replaced by Kontainers.
+The Fuel refinery now requires a Mk-V Mini-Lab as an efficiency part.
+The Fabricator now requires a Mk-V Workshop as an efficiency part.
+The Refinery now requires a Mk-V Sifter or Smelter as an efficiency part (either work)
+Mobile and Module Bases now have attachment nodes
+Efficiency Parts can now span disconnected ships
+PDUs, when crewed by an engineer, can transmit power
+Scrap Parts can now either be scrapped into recycleables or cannibalized for SpecializedParts
+Removed Anchor/Dampener functionality as it is no longer needed with the disconnected base logistics
+Added fertilizer and mulch to the OKS AgModule 
+Added EL Workspace and KerbalStats configs
+Added Filter Extension support for the octagonal profile
+Added placeholder IVA for Akademy
+Added storage for Machinery,Recyclables,SpecializedParts and Fertilizer to Kontainers
+Changed Tank texture/model
+Added new parts:
+- Mini Rover - when crewed by a pilot enables disconnected resource transfers
+- Ag Module (replaces the old Ag Module) - can independently create organics
+- Airlock - serves as a vessel entry point
+- Auxiliary Control - adds a radial command pod
+- BallHub - structural connector
+- Mini-Lab/Comms - Small low efficiency science lab and antenna
+- Hab Module (replaces the old HabDome) - can convert organics to supplies
+- Mini-ILM (small radial ILM)
+- 'Koala' Lander (lighter than the module base, four MK-V attachment points)
+- Mount-Point - Battery and surface attachment point
+- 'Scout' pod - 2-man pod with built in avionics
+- Power Pak - Depletable RTG and power distribution module
+- Regolith Sifter - allows for basic resource harvesting, also an efficiency part
+- SmeltOMatic - converts resources to raw materials, also an efficiency part
+- Supply-Pak - Radial storage container
+- Workshop - Allows basic fabrication, also an efficiency part
+
+
 0.30.3 - 2015.05.02
 -------------------
 Added Changelog file
