@@ -1,10 +1,29 @@
-0.31.1 - 2015.06.19
+0.31.2 - 2015.06.21
+-------------------
+Updated CTT to reflect new modules
+Created custom categories for Colonization and Freight
+Lowered Power Pak fuel usage and fuel capacity by 90%
+Fixed TAC-LS configs... again.
+Defaulted tech node for all MK-V stuff to Advanced Construction if you're just using the stock tech tree (boo! use CTT!)
+Reduced capacity of supply pak by 50% (no bags of holding!)
+Tweaked down Ore storage capacities (5L v 1L)
+Bumped up the cost of the radial MK-V modules
+CommPak now has RT support
+Added liquid tanks in a MK-V form factor
+Fixed collision issue with inflating hab module
+Corrected invalid animation in AuxCon
+Fixed typo preventing Fertilizer from showing up in the supply paks
+Fixed incorrect workshop converter ratios
+
+
+0.31.1 - 2015.06.18
 -------------------
 Removed legacy folders since it turns out 0.31.x is save breaking.
 Added colored markers to the hab and workshop inflatables to aid in identification while deflated
 Tweaked the Agroponics converter vaules
 Fixed texture issue with reactors
-
+Updated TAC-LS configs
+Added KAS stortage to the Koala lander
 
 0.31.0 - 2015.06.18
 -------------------
