@@ -1,3 +1,16 @@
+0.31.3 - 2015.06.23
+-------------------
+For orbital bases, the OKS Workspace counts as an efficiency part for the MK-III Refinery and Fabricator.
+Automated Life Support distribution now includes Food, Water, and Oxygen for TAC-LS compatibility.
+The Akademy now includes a high-capacity research center.  Same stats as the MPL but three times the data and science storage, and requires two crew to operate.
+MKS Aeroponics had cultivator efficiency reduced to only slightly better than OKS cultivation.
+Fixed TAC-LS Kerbitat food conversion rate.
+Updated descriptions to include new efficiency parts.
+Fixed negative costs with 3.75m Kontainers.
+Corrected some of the TAC-LS converters.
+Logistics Rovers must be under 3 tons in order to be operational.
+
+
 0.31.2 - 2015.06.21
 -------------------
 Updated CTT to reflect new modules
