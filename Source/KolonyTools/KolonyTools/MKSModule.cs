@@ -234,13 +234,14 @@ namespace KolonyTools
             //Crew Happiness is a function of the ratio of living space to Kerbals.
             //These are COLONY-WIDE.
             var kShips = LogisticsTools.GetNearbyVessels(COLONY_RANGE, true, vessel, true);
-
             float ls = GetKolonyLivingSpace(kShips);
             //We can add in a limited number for crew capacity - 10%
             ls += GetKolonyCrewCap(kShips) * .1f;
 
             var totKerbs = GetKolonyInhabitants(kShips);
-            var hap = ls/totKerbs;
+            var hap = 0f;
+            if(totKerbs > 0)
+                hap = ls/totKerbs;
 
             //Range is 50% - 150% for crowding and extra space.
             //This is calculated before loneliness.
@@ -402,10 +403,17 @@ namespace KolonyTools
                     CheckLogistics(con.inputList);
             }
            
-            //Special for USI-LS
+            //Special for USI-LS/TAC-LS
             if(vessel.GetCrewCount() > 0)
             {
-                CheckLogistics(new List<ResourceRatio> { new ResourceRatio { ResourceName = "Supplies" }, new ResourceRatio { ResourceName = "ElectricCharge" } });
+                CheckLogistics(new List<ResourceRatio>
+                               {
+                                   new ResourceRatio { ResourceName = "Supplies" }, 
+                                   new ResourceRatio { ResourceName = "Food" }, 
+                                   new ResourceRatio { ResourceName = "Water" }, 
+                                   new ResourceRatio { ResourceName = "Oxygen" }, 
+                                   new ResourceRatio { ResourceName = "ElectricCharge" }
+                               });
             }
         }
 
@@ -471,7 +479,7 @@ namespace KolonyTools
         public bool LogisticsAvailable()
         {
             var vList = LogisticsTools.GetNearbyVessels(DEPOT_RANGE, true, vessel, true);
-            foreach (var v in vList)
+            foreach (var v in vList.Where(v=>v.GetTotalMass() <= 3f))
             {
                 if (v.Parts.Any(p => p.FindModuleImplementing<ModuleResourceDistributor>() != null && HasCrew(p, "Pilot")))
                     return true;
