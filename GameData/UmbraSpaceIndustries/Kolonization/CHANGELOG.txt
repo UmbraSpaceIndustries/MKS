@@ -1,3 +1,13 @@
+0.31.4 - 2015.06.26
+-------------------
+Reduced the insane SAS of the Logistics Rover (no more sick flips)
+Fixed issue with base mass of the supply pack
+AntennaRange compatibility for the comm lab
+Various bulkhead profile and temperature fixes
+MKS/OKS Workspaces and the MK-V Workshop now have EL Productivity of 2
+Fixed an NRE bug with the Akademy
+
+
 0.31.3 - 2015.06.23
 -------------------
 For orbital bases, the OKS Workspace counts as an efficiency part for the MK-III Refinery and Fabricator.
