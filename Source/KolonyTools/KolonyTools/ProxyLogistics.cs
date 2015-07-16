@@ -17,7 +17,7 @@ namespace KolonyTools
                 var vessels = new List<Vessel>();
                 foreach (var v in FlightGlobals.Vessels.Where(
                     x => x.mainBody == thisVessel.mainBody
-                    && (x.Landed || !landedOnly)))
+                    && (x.Landed || !landedOnly || x == thisVessel)))
                 {
                     if (v == thisVessel && !includeSelf) continue;
                     var posCur = thisVessel.GetWorldPos3D();
