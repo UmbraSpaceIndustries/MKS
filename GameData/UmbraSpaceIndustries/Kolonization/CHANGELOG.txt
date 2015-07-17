@@ -1,3 +1,18 @@
+0.31.5 - 2015.07.16
+-------------------
+Converted Kontainers to use scale vs rescaleFactor
+Added 5m Kontainers
+Added KIS Kontainers
+Reintroduced the MDS with a pair of attachment nodes
+Fixed issue where orbital stations needed to be 'landed'
+Added seven sizes of round tanks
+Added internal KIS access to Mk-II base modules
+Moved all MKS and Kontainer parts out of Utility as they now have custom tabs
+Added control capability to all MK-III modules
+Added KIS storage to the Koala lander
+Added biome scanner capability to the ScanOMatic
+
+
 0.31.4 - 2015.06.26
 -------------------
 Reduced the insane SAS of the Logistics Rover (no more sick flips)
