@@ -1,3 +1,13 @@
+0.31.6 - 2015.07.29
+-------------------
+Updated to CRP 0.4.4
+Made the MDS visible... again.
+Adjusted module order on the Akademy (should fix some right click menu issues)
+All MK-III's have internal access to KIS storage
+Drills moved under USI Kolonization Division so they should show up properly now
+Fixed round tank names
+Fixed fuel quantity in the 5m tank
+
 0.31.5 - 2015.07.16
 -------------------
 Converted Kontainers to use scale vs rescaleFactor
