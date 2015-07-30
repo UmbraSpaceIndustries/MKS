@@ -80,7 +80,7 @@ namespace KolonyTools
                 //  - Vessel Workspaces         [numWorkspaces]
                 //  - 25% Vessel Crew Capacity  [numWorkSpaces]
                 //  - Vessel MKS Module count   [numModules]
-                //  - Part Crew                 [modKerbalFactor]   (0.05 - 3.5 per Kerbal)
+                //  - Part Crew                 [modKerbalFactor]   (0.05 - 3.75 per Kerbal)
                 //  - Vessel crew               [numWeightedKerbals]
                 //  - Colony efficiency parts   [added to eff]
                 //          Bonus equal to 100 * number of units - 1
@@ -211,9 +211,9 @@ namespace KolonyTools
             // Level 2 Pilot:       0.50
             // Level 2 Engineer:    1.50
             // Level 5 Pilot:       1.25
-            // Level 5 engineer:    3.25
+            // Level 5 engineer:    3.75
 
-            //(0.025 - 3.25)
+            //(0.05 - 3.75)
             if (k.experienceTrait.Title == PrimarySkill)
             {
                 kerbalFactor *= 1.5f;
