@@ -163,7 +163,7 @@ namespace KolonyTools
             double dLong = (long2 - long1) / 180 * Math.PI;
 
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
-                        + Math.Cos(lat2) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
+                        + Math.Cos(lat2 / 180 * Math.PI) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
             //Calculate radius of planet
