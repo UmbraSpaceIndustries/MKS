@@ -589,6 +589,9 @@ namespace KolonyTools
             }
             GUILayout.EndHorizontal();
 
+            updateArrivalTime(_model);
+            GUILayout.Label("Transfer time: " + Utilities.DeliveryTimeString(_model.arrivaltime, Planetarium.GetUniversalTime()));
+
             GUILayout.Label(StrValidationMessage, MKSGui.redlabelStyle);
 
             GUILayout.BeginHorizontal();
