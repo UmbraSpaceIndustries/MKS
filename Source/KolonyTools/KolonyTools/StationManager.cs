@@ -53,6 +53,12 @@ namespace KolonyTools
         }
     }
 
+    public class LogisticsResource : MKSLresource
+    {
+        public double maxAmount = 0;
+        public double delta = 0;
+    }
+
     public class StationView : Window<StationView>
     {
         private readonly Vessel _model;
@@ -63,7 +69,7 @@ namespace KolonyTools
         private Vector2 _scrollPosition;
         private Vector2 _scrollResourcesPosition;
 
-        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources}
+        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources,LocalBase}
 
         public StationView(Vessel model) : base(model.vesselName, 500, 400)
         {
@@ -97,6 +103,10 @@ namespace KolonyTools
             if (GUIButton.LayoutButton("Resources"))
             {
                 _tab = OpenTab.Resources;
+            }
+            if (GUIButton.LayoutButton("Local Base"))
+            {
+                _tab = OpenTab.LocalBase;
             }
             GUILayout.EndHorizontal();
 
@@ -200,7 +210,183 @@ namespace KolonyTools
                 DrawResources(balance);
                 GUILayout.EndVertical();
             }
+            if (_tab == OpenTab.LocalBase)
+            {
+                GUILayout.BeginVertical();
+
+                DrawLogistics();
+                GUILayout.EndVertical();
+            }
             GUILayout.EndVertical();
+        }
+
+        private void DrawLogistics()
+        {
+            var vessels = LogisticsTools.GetNearbyVessels(2000, true, _model, true);
+            List<LogisticsResource> resources = new List<LogisticsResource>();
+            Dictionary<string, float> dr = new Dictionary<string, float>();
+            bool usils = false;
+            foreach (AssemblyLoader.LoadedAssembly Asm in AssemblyLoader.loadedAssemblies)
+            {
+                if (Asm.dllName == "USILifeSupport")
+                {
+                    usils = true;
+                }
+            }
+            int kerbals = 0;
+
+            foreach (Vessel v in vessels)
+            {
+                // Storage
+                var maxAmounts = v.GetStorage();
+                foreach (var r in maxAmounts)
+                {
+                    LogisticsResource nR = resources.Find(x => x.resourceName == r.resourceName);
+                    if (nR == null) {
+                        nR = new LogisticsResource();
+                        nR.resourceName = r.resourceName;
+                        resources.Add(nR);
+                    }
+                    nR.maxAmount += r.amount;
+                }
+
+                // Amount
+                var amounts = v.GetResourceAmounts();
+                foreach (var r in amounts)
+                {
+                    LogisticsResource nR = resources.Find(x => x.resourceName == r.resourceName);
+                    if (nR == null)
+                    {
+                        nR = new LogisticsResource();
+                        nR.resourceName = r.resourceName;
+                        resources.Add(nR);
+                    }
+                    nR.amount += r.amount;
+                }
+
+                // Production of converters
+                var prod = v.GetProduction().ToList();
+                foreach (var r in prod)
+                {
+                    LogisticsResource nR = resources.Find(x => x.resourceName == r.resourceName);
+                    if (nR == null)
+                    {
+                        nR = new LogisticsResource();
+                        nR.resourceName = r.resourceName;
+                        resources.Add(nR);
+                    }
+
+                    nR.delta += r.amount;
+                }
+
+                // Consumption of Converters
+                prod = v.GetProduction(false).ToList();
+                foreach (var r in prod)
+                {
+                    LogisticsResource nR = resources.Find(x => x.resourceName == r.resourceName);
+                    if (nR == null)
+                    {
+                        nR = new LogisticsResource();
+                        nR.resourceName = r.resourceName;
+                        resources.Add(nR);
+                    }
+                    nR.delta -= r.amount;
+                }
+
+                // Drills
+                foreach (var drill in v.Parts.Where(p => p.Modules.Contains("ModuleResourceHarvester")))
+                {
+                    foreach (ModuleResourceHarvester m in drill.FindModulesImplementing<ModuleResourceHarvester>().Where(mod => mod.IsActivated))
+                    {
+                        LogisticsResource nR = resources.Find(x => x.resourceName == m.ResourceName);
+                        if (nR == null)
+                        {
+                            nR = new LogisticsResource();
+                            nR.resourceName = m.ResourceName;
+                            resources.Add(nR);
+                        }
+                        AbundanceRequest ar = new AbundanceRequest
+                        {
+                            Altitude = v.altitude,
+                            BodyId = FlightGlobals.currentMainBody.flightGlobalsIndex,
+                            CheckForLock = false,
+                            Latitude = v.latitude,
+                            Longitude = v.longitude,
+                            ResourceType = HarvestTypes.Planetary,
+                            ResourceName = m.ResourceName
+                        };
+                        double ab = (double)ResourceMap.Instance.GetAbundance(ar);
+                        nR.delta += ab;
+                        nR = resources.Find(x => x.resourceName == "ElectricCharge");
+                        if (nR == null)
+                        {
+                            nR = new LogisticsResource();
+                            nR.resourceName = "ElectricCharge";
+                            resources.Add(nR);
+                        }
+                        nR.delta -= 6;
+                    }
+                }
+                // Life Support
+                kerbals += v.GetCrewCount();
+            }
+            if (usils)
+            {
+                LogisticsResource nR = resources.Find(x => x.resourceName == "Supplies");
+                if (nR == null)
+                {
+                    nR = new LogisticsResource();
+                    nR.resourceName = "Supplies";
+                    resources.Add(nR);
+                }
+                nR.delta -= kerbals * 0.00005;
+                
+                nR = resources.Find(x => x.resourceName == "Mulch");
+                if (nR == null)
+                {
+                    nR = new LogisticsResource();
+                    nR.resourceName = "Mulch";
+                    resources.Add(nR);
+                }
+                nR.delta += kerbals * 0.00005;
+
+                nR = resources.Find(x => x.resourceName == "ElectricCharge");
+                if (nR == null)
+                {
+                    nR = new LogisticsResource();
+                    nR.resourceName = "ElectricCharge";
+                    resources.Add(nR);
+                }
+                nR.delta -= kerbals * 0.01;
+            }
+
+            foreach (var r in resources)
+            {
+                GUILayout.Label(r.resourceName + ": " + numberToOut(r.amount, -1, false) + "/" + r.maxAmount + " (" + numberToOut(r.delta, r.delta > 0 ? r.maxAmount - r.amount : r.amount) + ")");
+            }
+        }
+
+        private string numberToOut(double x, double space = -1, bool sign = true)
+        {
+            if (Math.Abs(x) < 1e-14)
+            {
+                return "0";
+            }
+            string prefix = sign ? (x > 0 ? "+" : "-") : "";
+            x = Math.Abs(x);
+
+            string postfix = "";
+            if (space > 0)
+            {
+                postfix = " / " + Utilities.FormatTime(space / x);
+            }
+            if (x >= 0.1) {
+                return prefix + x.ToString("F3") + postfix;
+            }
+            else
+            {
+                return prefix + x.ToString("e3") + postfix;
+            }
         }
 
         private void DrawResources(List<MKSLresource> balance)
