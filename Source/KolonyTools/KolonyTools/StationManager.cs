@@ -256,7 +256,7 @@ namespace KolonyTools
                 {
                     getResourceFromList(resources, r.resourceName).change -= r.amount;
                 }
-                ResourceConverter ddd;
+
                 // Drills
                 foreach (Part drill in v.Parts.Where(p => p.Modules.Contains("ModuleResourceHarvester")))
                 {
@@ -290,13 +290,19 @@ namespace KolonyTools
                 getResourceFromList(resources, "Mulch").change += kerbals * 0.00005;
                 getResourceFromList(resources, "ElectricCharge").change -= kerbals * 0.01;
             }
-
-            foreach (var r in resources)
+            resources.Sort(new LogisticsResourceComparer());
+            foreach (LogisticsResource r in resources)
             {
                 GUILayout.Label(r.resourceName + ": " + numberToOut(r.amount, -1, false) + "/" + Math.Round(r.maxAmount,5) + " (" + numberToOut(r.change, r.change > 0 ? r.maxAmount - r.amount : r.amount) + ")");
             }
         }
-
+        private class LogisticsResourceComparer : IComparer<LogisticsResource>
+        {
+            public int Compare(LogisticsResource a, LogisticsResource b)
+            {
+                return a.resourceName.CompareTo(b.resourceName);
+            }
+        }
         private LogisticsResource getResourceFromList(List<LogisticsResource> resources, string resourceName)
         {
             LogisticsResource nR = resources.Find(x => x.resourceName == resourceName);
