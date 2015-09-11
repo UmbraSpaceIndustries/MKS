@@ -464,7 +464,7 @@ namespace KolonyTools
                 {
                     //Keep changes small - 10% per tick.  So we should hover between 50% and 60%
                     var deficit = Math.Floor(maxAmount * .1d);
-                    double receipt = FetchResources(deficit, pRes, fillPercent);
+                    double receipt = FetchResources(deficit, pRes, fillPercent, maxAmount);
                     //Put these in our vessel
                     StoreResources(receipt, pRes);
                 }
@@ -539,7 +539,7 @@ namespace KolonyTools
             }
         }
 
-        private double FetchResources(double amount, PartResourceDefinition resource, double fillPercent)
+        private double FetchResources(double amount, PartResourceDefinition resource, double fillPercent, double targetMaxAmount)
         {
             double demand = amount;
             double fetched = 0d;
@@ -554,7 +554,8 @@ namespace KolonyTools
                 {
                     if (demand <= ResourceUtilities.FLOAT_TOLERANCE) break;
                     //Is this a valid target?
-                   if(!HasResourcesToSpare(v, resource, fillPercent))
+                    var maxToSpare = GetAmountOfResourcesToSpare(v, resource, fillPercent, targetMaxAmount);
+                    if (maxToSpare < ResourceUtilities.FLOAT_TOLERANCE)
                        continue;
                     //Can we find what we're looking for?
                     var partList = v.Parts.Where(
@@ -565,18 +566,44 @@ namespace KolonyTools
                         if (resource.name == "ElectricCharge" && !p.Modules.Contains("ModulePowerDistributor"))
                             continue;
                         var pr = p.Resources[resource.name];
+                        // Ignore storages with a lower fillPercentage than at the target
+                        if (pr.amount <= pr.maxAmount * fillPercent)
+                            continue;
+
                         if (pr.amount >= demand)
                         {
-                            pr.amount -= demand;
-                            fetched += demand;
-                            demand = 0;
-                            break;
+                            if (maxToSpare >= demand)
+                            {
+                                pr.amount -= demand;
+                                fetched += demand;
+                                demand = 0;
+                                break;
+                            }
+                            else
+                            {
+                                pr.amount -= maxToSpare;
+                                fetched += maxToSpare;
+                                demand -= maxToSpare;
+                                break;
+                            }
                         }
                         else
                         {
-                            demand -= pr.amount;
-                            fetched += pr.amount;
-                            pr.amount = 0;
+                            if (maxToSpare >= pr.amount)
+                            {
+                                demand -= pr.amount;
+                                fetched += pr.amount;
+                                maxToSpare -= pr.amount;
+                                pr.amount = 0;
+                            }
+                            else
+                            {
+                                demand -= maxToSpare;
+                                fetched += maxToSpare;
+                                pr.amount -= maxToSpare;
+                                break;
+                            }
+                            
                         }
                     }
                 }
@@ -588,7 +615,7 @@ namespace KolonyTools
             return fetched;
         }
 
-        private bool HasResourcesToSpare(Vessel v, PartResourceDefinition resource, double targetPercent)
+        private double GetAmountOfResourcesToSpare(Vessel v, PartResourceDefinition resource, double targetPercent, double targetMaxAmount)
         {
             var maxAmount = 0d;
             var curAmount = 0d;
@@ -602,11 +629,13 @@ namespace KolonyTools
             if (fillPercent > targetPercent)
             {
                 //If we're in better shape, they can take some of our stuff.
-                return true;
+                var targetCurrentAmount = targetMaxAmount * targetPercent;
+                targetPercent = (curAmount + targetCurrentAmount) / (targetMaxAmount + maxAmount);
+                return curAmount - maxAmount * targetPercent;
             }
             else
             {
-                return false;
+                return 0;
             }
         }
 
