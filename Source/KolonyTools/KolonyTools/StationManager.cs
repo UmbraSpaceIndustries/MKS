@@ -101,7 +101,7 @@ namespace KolonyTools
             {
                 _tab = OpenTab.Resources;
             }
-            if (GUIButton.LayoutButton("Local Base"))
+            if (GUIButton.LayoutButton("Base Site"))
             {
                 _tab = OpenTab.LocalBase;
             }
