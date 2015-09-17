@@ -1,3 +1,41 @@
+0.31.7 - 2016.09.17
+-------------------
+First off - a ton of community fixes in this one.  Thanks so much for helping out!
+
+Fixes and updates from mhoran:
+- Updated the OctoLander's Connected Living Space config
+- Created Connected Living Space configs for the Mk-V modules
+- Removed references to no longer existing parts
+- Fixed an issue with the OctoLander CoM offset
+- Correct inconsistent FSFuelSwitch mass definitions.
+- Updates to the Resource Overview
+- Adjust Recyclables DumpExcess behaviour for TAC-LS
+- Remove Rover Logistics Resource Oscillation
+
+Fixes and Updates from geoffromer:
+- Fixed NaN bugs in Orbital Logistics
+- Added transfer time display to the new transfer window
+- Fix typos in logic for determining source and destination situations.
+- Fixed radian conversion bug in Orbital Logistics
+
+Fixes from fmatosqg:
+- Fix TAC-LS file for MKV: needed machinery must match available space
+
+Fixes from Kerbas-ad-astra:
+- Corrected bunlkeadProfiles
+
+I did a few things too :)
+- Updated USI Tools version
+- Added a new 'demolition pack' part, that allows you to destroy whole vessels, sub-trees of parts, or arbitrarily destroy any part.  KIS compatible.
+- Added a new set of nuclear reactors in 0.625/1.25/2.5/3.75 form factors.  HELP WANTED:  I would love to see a pull request with an MM config for NFE!
+- Added alternate configs for OSE Workshop that utilizes MKS style chains, and adds workshop capabilities to both the Mk-V and Mk-III workshops.
+- The Logistics Rover now has emissive effects
+- The original Mk-II Aeroponics, Kerbitat, and Pioneer modules have been replaced by the slick new 'Duna' series modules (I'll be deprecating the Mk-x designations over time because they are a bit confusing).  This newer module is meant to stack in-line with the Karibou, or be used *without* a module base.  The radial nodes are dual-sized, one for connecting to other parts, and an inset node for accepting Mk-V modules.  The Duna series modules can be put in a 3.75m fairing either horizontally or vertically!  This module also has dual flag transforms, and the floodlights (four light sources) have been replaced with a single light source to help reduce lag.
+- The Bahamuto style drills have been replaced with reskinned stock drills.  NOTE!!! THIS WILL CAUSE SHIPS WITH THE OLD DRILLS TO LEAP INTO THE AIR!!! DETACH OLD DRILLS OR HILARITY MAY ENSUE!
+- All of the MK-V inflatables now light up!
+- Modified the Module and Mobile base parts to be compatible with the Duna series modules.  
+
+
 0.31.6 - 2015.07.29
 -------------------
 Updated to CRP 0.4.4
