@@ -554,21 +554,18 @@ namespace KolonyTools
                 {
                     if (demand <= ResourceUtilities.FLOAT_TOLERANCE) break;
                     //Is this a valid target?
-                    var maxToSpare = GetAmountOfResourcesToSpare(v, resource, fillPercent, targetMaxAmount);
+                    var maxToSpare = GetAmountOfResourcesToSpare(v, resource, fillPercent + fetched / targetMaxAmount, targetMaxAmount);
                     if (maxToSpare < ResourceUtilities.FLOAT_TOLERANCE)
                        continue;
                     //Can we find what we're looking for?
-                    var partList = v.Parts.Where(
-                        p => p.Resources.Contains(resource.name));
+                    var partList = v.Parts.Where(p => p.Resources.Contains(resource.name));
                     foreach (var p in partList)
                     {
                         //Special case - EC can only come from a PDU
                         if (resource.name == "ElectricCharge" && !p.Modules.Contains("ModulePowerDistributor"))
                             continue;
                         var pr = p.Resources[resource.name];
-                        // Ignore storages with a lower fillPercentage than at the target
-                        if (pr.amount <= pr.maxAmount * fillPercent)
-                            continue;
+
 
                         if (pr.amount >= demand)
                         {
