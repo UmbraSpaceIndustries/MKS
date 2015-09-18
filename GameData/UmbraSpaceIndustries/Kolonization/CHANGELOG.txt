@@ -2,7 +2,7 @@
 -------------------
 First off - a ton of community fixes in this one.  Thanks so much for helping out!
 
-Fixes and updates from mhoran:
+Fixes and updates from mhoram:
 - Updated the OctoLander's Connected Living Space config
 - Created Connected Living Space configs for the Mk-V modules
 - Removed references to no longer existing parts
