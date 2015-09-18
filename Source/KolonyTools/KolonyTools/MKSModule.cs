@@ -554,7 +554,7 @@ namespace KolonyTools
                 {
                     if (demand <= ResourceUtilities.FLOAT_TOLERANCE) break;
                     //Is this a valid target?
-                    var maxToSpare = GetAmountOfResourcesToSpare(v, resource, fillPercent, targetMaxAmount);
+                    var maxToSpare = GetAmountOfResourcesToSpare(v, resource, fillPercent + fetched / targetMaxAmount, targetMaxAmount);
                     if (maxToSpare < ResourceUtilities.FLOAT_TOLERANCE)
                        continue;
                     //Can we find what we're looking for?
