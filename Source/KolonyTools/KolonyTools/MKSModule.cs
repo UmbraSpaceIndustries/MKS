@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using USITools;
 
@@ -414,6 +412,14 @@ namespace KolonyTools
                                    new ResourceRatio { ResourceName = "Oxygen" }, 
                                    new ResourceRatio { ResourceName = "ElectricCharge" }
                                });
+            }
+
+            // Special for ExtraPlanetary LaunchPads
+            if(part.Modules.Contains("ExWorkshop"))
+            {
+                CheckLogistics(new List<ResourceRatio> {
+                    new ResourceRatio { ResourceName = "RocketParts" }
+                });
             }
         }
 
