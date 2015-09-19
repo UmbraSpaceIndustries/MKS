@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using USITools;
@@ -479,7 +480,7 @@ namespace KolonyTools
 
         private const int LOG_RANGE = 750;
         private const int DEPOT_RANGE = 150;
-        private const int POWER_RANGE = 2000;
+        //private const int POWER_RANGE = 2000;
         private const int EFF_RANGE = 500;
 
         public bool LogisticsAvailable()
@@ -495,14 +496,62 @@ namespace KolonyTools
 
         public bool PowerAvailable()
         {
-            var vList = LogisticsTools.GetNearbyVessels(POWER_RANGE, true, vessel, true);
+            return GetPowerDistributors(vessel).Count > 0;
+        }
+
+
+        public List<Vessel> GetPowerDistributors(Vessel thisVessel)
+        {
+            bool hasRelay = false;
+            var pList = new List<Vessel>();
+            var vList = LogisticsTools.GetNearbyVessels(20000, true, thisVessel, true);
+
             foreach (var v in vList)
             {
-                if (v.Parts.Any(p => p.FindModuleImplementing<ModulePowerDistributor>() != null && HasCrew(p, "Engineer")))
-                    return true;
+                var gParts = v.parts.Where(p => p.FindModuleImplementing<ModulePowerDistributor>() != null && HasCrew(p, "Engineer"));
+                if (gParts != null)
+                {
+                    foreach (var p in gParts)
+                    {
+                        var mod = p.FindModuleImplementing<ModulePowerDistributor>();
+                        var posCur = vessel.GetWorldPos3D();
+                        var posNext = v.GetWorldPos3D();
+                        var distance = Vector3d.Distance(posCur, posNext);
+                        if (distance < mod.PowerDistributionRange)
+                        {
+                            pList.Add(v);
+                        }
+                    }
+                }
+
+                if (!hasRelay)
+                {
+                    var dParts = v.parts.Where(p => p.FindModuleImplementing<ModulePowerCoupler>() != null);
+                    if (dParts != null)
+                    {
+                        foreach (var p in dParts)
+                        {
+                            var mod = p.FindModuleImplementing<ModulePowerCoupler>();
+                            var posCur = vessel.GetWorldPos3D();
+                            var posNext = v.GetWorldPos3D();
+                            var distance = Vector3d.Distance(posCur, posNext);
+                            if (distance < mod.PowerCouplingRange)
+                            {
+                                hasRelay = true;
+                            }
+
+                        }
+                    }
+                }
             }
-            return false;
+
+            if (hasRelay)
+                return pList;
+
+            return null;
         }
+
+ 
 
         private bool HasCrew(Part p, string skill)
         {
@@ -552,10 +601,13 @@ namespace KolonyTools
             try
             {
                 var rangeFactor = LOG_RANGE;
-                if (resource.name == "ElectricCharge")
-                    rangeFactor = POWER_RANGE;
-
                 var nearVessels = LogisticsTools.GetNearbyVessels(rangeFactor, false, vessel, true);
+
+                if (resource.name == "ElectricCharge")
+                {
+                    nearVessels = GetPowerDistributors(vessel);
+                }
+
                 foreach (var v in nearVessels)
                 {
                     if (demand <= ResourceUtilities.FLOAT_TOLERANCE) break;
