@@ -463,7 +463,7 @@ namespace KolonyTools
                 if (fillPercent < 0.5d) //We will not attempt a fillup until we're at less than half capacity
                 {
                     //Keep changes small - 10% per tick.  So we should hover between 50% and 60%
-                    var deficit = Math.Floor(maxAmount * .1d);
+                    var deficit = maxAmount * .1d;
                     double receipt = FetchResources(deficit, pRes, fillPercent, maxAmount);
                     //Put these in our vessel
                     StoreResources(receipt, pRes);
