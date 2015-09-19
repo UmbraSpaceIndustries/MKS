@@ -622,7 +622,7 @@ namespace KolonyTools
                 maxAmount += rr.maxAmount;
                 curAmount += rr.amount;
             }
-            double fillPercent = curAmount/maxAmount;
+            double fillPercent = maxAmount < ResourceUtilities.FLOAT_TOLERANCE ? 0 : curAmount / maxAmount;
             if (fillPercent > targetPercent)
             {
                 //If we're in better shape, they can take some of our stuff.
