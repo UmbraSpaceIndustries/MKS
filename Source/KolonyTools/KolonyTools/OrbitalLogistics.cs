@@ -162,8 +162,8 @@ namespace KolonyTools
             double dLat = (lat2 - lat1) / 180 * Math.PI;
             double dLong = (long2 - long1) / 180 * Math.PI;
 
-            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
-                        + Math.Cos(lat2) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
+            double a = Math.Max(0.0, Math.Min(1.0, Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
+                        + Math.Cos(lat2 / 180 * Math.PI) * Math.Sin(dLong / 2) * Math.Sin(dLong / 2)));
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
             //Calculate radius of planet
@@ -589,6 +589,9 @@ namespace KolonyTools
             }
             GUILayout.EndHorizontal();
 
+            updateArrivalTime(_model);
+            GUILayout.Label("Transfer time: " + Utilities.DeliveryTimeString(_model.arrivaltime, Planetarium.GetUniversalTime()));
+
             GUILayout.Label(StrValidationMessage, MKSGui.redlabelStyle);
 
             GUILayout.BeginHorizontal();
@@ -915,7 +918,7 @@ namespace KolonyTools
             }
 
             if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.SPLASHED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.PRELAUNCH) &&
-                (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.PRELAUNCH))
+                (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED || trans.VesselTo.protoVessel.situation == Vessel.Situations.PRELAUNCH))
             {
                 double distance = _central.GetDistanceBetweenPoints(trans.VesselFrom.protoVessel.latitude, trans.VesselFrom.protoVessel.longitude, trans.VesselTo.protoVessel.latitude, trans.VesselTo.protoVessel.longitude);
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + (distance * TpD);
@@ -926,7 +929,7 @@ namespace KolonyTools
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
             }
             else if ((trans.VesselFrom.protoVessel.situation == Vessel.Situations.ORBITING) &&
-                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED || trans.VesselFrom.protoVessel.situation == Vessel.Situations.PRELAUNCH))
+                        (trans.VesselTo.protoVessel.situation == Vessel.Situations.LANDED || trans.VesselTo.protoVessel.situation == Vessel.Situations.SPLASHED || trans.VesselTo.protoVessel.situation == Vessel.Situations.PRELAUNCH))
             {
                 trans.arrivaltime = Planetarium.GetUniversalTime() + prepT + TtfLO;
             }

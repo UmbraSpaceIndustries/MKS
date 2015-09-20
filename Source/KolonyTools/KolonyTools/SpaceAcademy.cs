@@ -33,8 +33,6 @@ namespace KolonyTools
 
                     foreach (var flight in teacher.careerLog.GetFlights())
                     {
-                        crew.experience = KerbalRoster.CalculateExperience(crew.flightLog);
-                        crew.experienceLevel = KerbalRoster.CalculateExperienceLevel(crew.experience);
                         if (crew.experienceLevel < maxLevel)
                         {
                             foreach (var logEntry in flight.Entries)
@@ -44,8 +42,11 @@ namespace KolonyTools
                                     if (logEntry.type != FlightLog.EntryType.PlantFlag.ToString())
                                     {
                                         crew.flightLog.AddEntry(logEntry.type, logEntry.target);
+                                        crew.careerLog.AddEntry(logEntry.type, logEntry.target);
                                     }
                                 }
+                                crew.experience = KerbalRoster.CalculateExperience(crew.flightLog);
+                                crew.experienceLevel = KerbalRoster.CalculateExperienceLevel(crew.experience);
                             }
                         }
                     }

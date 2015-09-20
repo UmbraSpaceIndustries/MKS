@@ -17,8 +17,8 @@ namespace KolonyTools
                 var brokRes = part.Resources[BrokeredResource];
                 var needed = brokRes.maxAmount - brokRes.amount;
                 //Pull in from warehouses
-                
-                var whpList = vessel.parts.Where(p => p.Modules.Contains("USI_ModuleResourceWarehouse"));
+
+                var whpList = LogisticsTools.GetRegionalWarehouses(vessel,"USI_ModuleResourceWarehouse");
                 foreach (var whp in whpList)
                 {
                     if (whp.Resources.Contains(BrokeredResource))
@@ -85,5 +85,7 @@ namespace KolonyTools
             part.force_activate();
             base.OnStart(state);
         }
+
+        
     }
 }

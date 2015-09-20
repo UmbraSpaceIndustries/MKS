@@ -17,7 +17,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\Kolonization\</OutputPath>
+    <OutputPath>..\..\..\..\..\Users\Robert\Dropbox\KSP_DEV\GameData\UmbraSpaceIndustries\Kolonization\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,12 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Regolith, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\Regolith\Regolith.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\Robert\Dropbox\KSP_DEV\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -46,28 +41,30 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Toolbar">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\GameData\000_Toolbar\Toolbar.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\Robert\Dropbox\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="USITools">
-      <HintPath>..\..\..\..\UmbraSpaceIndustries\OUTPUT\USITools.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\Robert\Dropbox\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBox.cs" />
-    <Compile Include="KolonyConverter.cs" />
+    <Compile Include="ModuleLogisticsConsumer.cs" />
+    <Compile Include="ModulePowerDistributor.cs" />
+    <Compile Include="ModuleResourceDistributor.cs" />
     <Compile Include="MKSGui.cs" />
     <Compile Include="MKSLExtensions.cs" />
     <Compile Include="MKSLlocal.cs" />
     <Compile Include="MKSLresource.cs" />
     <Compile Include="MKSLtransfer.cs" />
     <Compile Include="MKSModule.cs" />
+    <Compile Include="ModulePowerCoupler.cs" />
     <Compile Include="SpaceAcademy.cs" />
+    <Compile Include="USI_ModuleRecycleablePart.cs" />
+    <Compile Include="USI_ModuleRecycleBin.cs" />
     <Compile Include="USI_ModuleResourceDistributor.cs" />
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

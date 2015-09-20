@@ -25,9 +25,9 @@ namespace KolonyTools
                 return;
             }
             ScreenMessages.PostScreenMessage("You perform routine maintenance...", 5f, ScreenMessageStyle.UPPER_CENTER);
-            GrabResources("SpareParts");
-            GrabResources("EnrichedUranium");
             GrabResources("Machinery");
+            GrabResources("EnrichedUranium");
+            PushResources("Recyclables");
             PushResources("DepletedUranium");
         }
 
@@ -41,10 +41,8 @@ namespace KolonyTools
         private void PushResources(string resourceName)
         {
             var brokRes = part.Resources[resourceName];
-            //Push to warehouses
-
             //Put remaining parts in warehouses
-            foreach (var p in vessel.parts.Where(vp => vp != part && vp.Modules.Contains("USI_ModuleCleaningBin")))
+            foreach (var p in LogisticsTools.GetRegionalWarehouses(vessel, "USI_ModuleCleaningBin"))
             {
                 if (p.Resources.Contains(resourceName))
                 {
@@ -72,7 +70,7 @@ namespace KolonyTools
             var needed = brokRes.maxAmount - brokRes.amount;
             //Pull in from warehouses
 
-            var whpList = vessel.parts.Where(p => p.Modules.Contains("USI_ModuleResourceWarehouse"));
+            var whpList = LogisticsTools.GetRegionalWarehouses(vessel, "USI_ModuleResourceWarehouse");
             foreach (var whp in whpList)
             {
                 if (whp.Resources.Contains(resourceName))
