@@ -8,19 +8,22 @@ Fom Gnurfos:
 
 From mhoram:
 - Fix small issues with rover logistics
+- Add ModuleFieldRepair to nukes to enable Maintenance
 
-Corected hatches and colliders on MKS Module
-Fixed ModuleBase feet
-Fixed missing light animations for inflatable parts
-Added light emmissive to docking port
-Changed demo blick's con text menus to avoid confusion
-Added box collider to the bubble hub
-Reduced drill mass to be inline with stock
-The Akademy is now a lot heavier - 6.5 tons - since most modules get their weight from added machinery.
-Separated senders and receivers for power generation.  A PowerDistributor can distribute power via a PowerCoupler.  Both have separate ranges and can be on the same part.
-The Power pack is a short range PowerDistributor and PowerCoupler.  So it can power up devices within 500m.
-The (new) PDU also has both PowerDistributor and PowerCoupler capabilities, but has a very long distribution range (15km).  PDUs should be the 'Hub' in a hub and spoke base design.  It als takes on the centrifuge and breeder functions of the fuel refinery.
-THE MKS AND OKS PDU MODULES SHOULD BE CONSIDERED LEGACY AND WILL BE DEPRECATED WITH KSP 1.1
+And other fixes!
+- Corected hatches and colliders on MKS Module
+- Fixed ModuleBase feet
+- Fixed missing light animations for inflatable parts
+- Added light emmissive to docking port
+- Changed demo blick's con text menus to avoid confusion
+- Added box collider to the bubble hub
+- Reduced drill mass to be inline with stock
+- The Akademy is now a lot heavier - 6.5 tons - since most modules get their weight from added machinery.
+- Separated senders and receivers for power generation.  A PowerDistributor can distribute power via a PowerCoupler.  Both have separate ranges and can be on the same part.
+- The Power pack is a short range PowerDistributor and PowerCoupler.  So it can power up devices within 500m.
+- The (new) PDU also has both PowerDistributor and PowerCoupler capabilities, but has a very long distribution range (15km).  PDUs should be the 'Hub' in a hub and spoke base design.  It als takes on the centrifuge and breeder functions of the fuel refinery.
+- THE MKS AND OKS PDU MODULES SHOULD BE CONSIDERED LEGACY AND WILL BE DEPRECATED WITH KSP 1.1
+- Separated logistics from MKS efficiency, so you can now easily have parts that are not MKS modules subscribe to rover logistics and power distribution.  This module is added to all MKS modules and stock drills.
 
 0.31.7 - 2015.09.17
 -------------------

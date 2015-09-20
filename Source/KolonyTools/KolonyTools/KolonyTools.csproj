@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBox.cs" />
+    <Compile Include="ModuleLogisticsConsumer.cs" />
     <Compile Include="ModulePowerDistributor.cs" />
     <Compile Include="ModuleResourceDistributor.cs" />
     <Compile Include="MKSGui.cs" />
