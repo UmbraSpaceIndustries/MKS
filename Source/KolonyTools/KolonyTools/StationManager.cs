@@ -62,13 +62,16 @@ namespace KolonyTools
         private double _highlightStart;
         private Vector2 _scrollPosition;
         private Vector2 _scrollResourcesPosition;
+        private bool _usils;
 
-        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources}
+        enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources,LocalBase}
 
         public StationView(Vessel model) : base(model.vesselName, 500, 400)
         {
             _model = model;
             _tab = OpenTab.None;
+
+            _usils = AssemblyLoader.loadedAssemblies.ToList().Exists(la => la.dllName == "USILifeSupport");
         }
 
         protected override void DrawWindowContents(int windowId)
@@ -97,6 +100,10 @@ namespace KolonyTools
             if (GUIButton.LayoutButton("Resources"))
             {
                 _tab = OpenTab.Resources;
+            }
+            if (GUIButton.LayoutButton("Base Site"))
+            {
+                _tab = OpenTab.LocalBase;
             }
             GUILayout.EndHorizontal();
 
@@ -200,7 +207,134 @@ namespace KolonyTools
                 DrawResources(balance);
                 GUILayout.EndVertical();
             }
+            if (_tab == OpenTab.LocalBase)
+            {
+                GUILayout.BeginVertical();
+
+                DrawLogistics();
+                GUILayout.EndVertical();
+            }
             GUILayout.EndVertical();
+        }
+
+        private class LogisticsResource : MKSLresource
+        {
+            public double maxAmount = 0;
+            public double change = 0;
+        }
+
+        private void DrawLogistics()
+        {
+            var vessels = LogisticsTools.GetNearbyVessels(2000, true, _model, true);
+            List<LogisticsResource> resources = new List<LogisticsResource>();
+            Dictionary<string, float> dr = new Dictionary<string, float>();
+
+            int kerbals = 0;
+
+            foreach (Vessel v in vessels)
+            {
+                // Storage
+                foreach (var r in v.GetStorage())
+                {
+                    getResourceFromList(resources, r.resourceName).maxAmount += r.amount;
+                }
+
+                // Amount
+                foreach (var r in v.GetResourceAmounts())
+                {
+                    getResourceFromList(resources, r.resourceName).amount += r.amount;
+                }
+
+                // Production of converters
+                foreach (var r in v.GetProduction())
+                {
+                    getResourceFromList(resources, r.resourceName).change += r.amount;
+                }
+
+                // Consumption of Converters
+                foreach (var r in v.GetProduction(false))
+                {
+                    getResourceFromList(resources, r.resourceName).change -= r.amount;
+                }
+
+                // Drills
+                foreach (Part drill in v.Parts.Where(p => p.Modules.Contains("ModuleResourceHarvester")))
+                {
+                    foreach (ModuleResourceHarvester m in drill.FindModulesImplementing<ModuleResourceHarvester>().Where(mod => mod.IsActivated))
+                    {
+                        if (v.Parts.Exists(p => p.Resources.list.Exists(r => r.resourceName == m.ResourceName && r.amount < r.maxAmount)))
+                            // test if storage for this resource on this vessel is not full
+                        {
+                            AbundanceRequest ar = new AbundanceRequest
+                            {
+                                Altitude = v.altitude,
+                                BodyId = FlightGlobals.currentMainBody.flightGlobalsIndex,
+                                CheckForLock = false,
+                                Latitude = v.latitude,
+                                Longitude = v.longitude,
+                                ResourceType = HarvestTypes.Planetary,
+                                ResourceName = m.ResourceName
+                            };
+                            getResourceFromList(resources, m.ResourceName).change += (double)ResourceMap.Instance.GetAbundance(ar);
+                            getResourceFromList(resources, "ElectricCharge").change -= 6;
+                        }
+                    }
+                }
+
+                // Life Support
+                kerbals += v.GetCrewCount();
+            }
+            if (_usils)
+            {
+                getResourceFromList(resources, "Supplies").change -= kerbals * 0.00005;
+                getResourceFromList(resources, "Mulch").change += kerbals * 0.00005;
+                getResourceFromList(resources, "ElectricCharge").change -= kerbals * 0.01;
+            }
+            resources.Sort(new LogisticsResourceComparer());
+            foreach (LogisticsResource r in resources)
+            {
+                GUILayout.Label(r.resourceName + ": " + numberToOut(r.amount, -1, false) + "/" + Math.Round(r.maxAmount,5) + " (" + numberToOut(r.change, r.change > 0 ? r.maxAmount - r.amount : r.amount) + ")");
+            }
+        }
+        private class LogisticsResourceComparer : IComparer<LogisticsResource>
+        {
+            public int Compare(LogisticsResource a, LogisticsResource b)
+            {
+                return a.resourceName.CompareTo(b.resourceName);
+            }
+        }
+        private LogisticsResource getResourceFromList(List<LogisticsResource> resources, string resourceName)
+        {
+            LogisticsResource nR = resources.Find(x => x.resourceName == resourceName);
+            if (nR == null)
+            {
+                nR = new LogisticsResource { resourceName = resourceName };
+                resources.Add(nR);
+            }
+            return nR;
+        }
+        
+        private string numberToOut(double x, double space = -1, bool sign = true)
+        {
+            if (Math.Abs(x) < 1e-14)
+            {
+                return "0";
+            }
+            string prefix = sign ? (x > 0 ? "+" : "-") : "";
+            x = Math.Abs(x);
+
+            string postfix = "";
+            if (space > 0)
+            {
+                postfix = " / " + Utilities.FormatTime(space / x);
+            }
+            if (x >= 0.1) {
+                return prefix + x.ToString("F3") + postfix;
+            }
+            else
+            {
+                return prefix + x.ToString("e3") + postfix;
+            }
         }
 
         private void DrawResources(List<MKSLresource> balance)
