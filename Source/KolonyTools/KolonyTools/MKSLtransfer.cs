@@ -108,32 +108,18 @@ namespace KolonyTools
             
             save = "transferName=" + transferName;
             save = save + "%" + "transferList=" + saveliststring(transferList);
-            //print("1");
             save = save + "%" + "costList=" + saveliststring(costList);
-            //print("2");
             save = save + "%" + "arrivaltime=" + arrivaltime.ToString();
-            //print("3");
             save = save + "%" + "delivered=" + delivered.ToString();
-            //print("4");
             save = save + "%" + "vesselFrom=" + vesselFrom.vesselName.Trim() +":" + vesselFrom.id.ToString();
-
-            //print("5");
             save = save + "%" + "vesselTo=" + vesselTo.vesselName.Trim() +":" + vesselTo.id.ToString();
-            //print("6");
             save = save + "%" + "orbit=" + orbit.ToString();
-            //print("7");
             save = save + "%" + "SMA=" + SMA.ToString();
-            //print("8");
             save = save + "%" + "ECC=" + ECC.ToString();
-            //print("9");
             save = save + "%" + "INC=" + INC.ToString();
-            //print("10");
             save = save + "%" + "surface=" + orbit.ToString();
-            //print("11");
             save = save + "%" + "LAT=" + LAT.ToString();
-            //print("12");
             save = save + "%" + "LON=" + LON.ToString();
-            //print("13");            
             return (save);
         }
 

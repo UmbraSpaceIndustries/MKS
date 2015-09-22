@@ -133,14 +133,12 @@ namespace KolonyTools
             bool hasRelay = false;
             var pList = new List<Vessel>();
             var vList = LogisticsTools.GetNearbyVessels(20000, true, thisVessel, true);
-            print("Checking " + vList.Count +" vessels...");
 
             foreach (var v in vList)
             {
                 var gParts = v.parts.Where(p => p.FindModuleImplementing<ModulePowerDistributor>() != null && HasCrew(p, "Engineer"));
                 if (gParts != null)
                 {
-                    print("Found " + gParts.Count() + " parts that are distributors!");
                     foreach (var p in gParts)
                     {
                         var mod = p.FindModuleImplementing<ModulePowerDistributor>();
@@ -149,12 +147,7 @@ namespace KolonyTools
                         var distance = Vector3d.Distance(posCur, posNext);
                         if (distance < mod.PowerDistributionRange)
                         {
-                            print("Adding PDU in range");
                             pList.Add(v);
-                        }
-                        else
-                        {
-                            print("PDU was not in range...");
                         }
                     }
                 }
@@ -164,7 +157,6 @@ namespace KolonyTools
                     var dParts = v.parts.Where(p => p.FindModuleImplementing<ModulePowerCoupler>() != null);
                     if (dParts != null)
                     {
-                        print("Found " + gParts.Count() + " parts that are couplers!"); 
                         foreach (var p in dParts)
                         {
                             var mod = p.FindModuleImplementing<ModulePowerCoupler>();
@@ -173,14 +165,8 @@ namespace KolonyTools
                             var distance = Vector3d.Distance(posCur, posNext);
                             if (distance < mod.PowerCouplingRange)
                             {
-                                print("Relay was in range!!!!");
                                 hasRelay = true;
                             }
-                            else
-                            {
-                                print("Relay was not in range");
-                            }
-
                         }
                     }
                 }

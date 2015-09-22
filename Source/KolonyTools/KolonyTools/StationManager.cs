@@ -20,7 +20,6 @@ namespace KolonyTools
         {
             var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
             var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "StationManager.png");
-            print("Loading " + textureFile);
             texture.LoadImage(System.IO.File.ReadAllBytes(textureFile));
             this.stationButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
                 ApplicationLauncher.AppScenes.ALWAYS, texture);
