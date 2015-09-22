@@ -1,3 +1,17 @@
+0.31.10 - 2015.09.22
+--------------------
+All Kontainers and mini-ILMs are now EVA repaintable
+Added numeric decals to the mini ILM to aid in repainting
+Added a handy KIS 'saddle bag' to Kontainers, hods 500L
+Converted Kontainer images to DDS
+Added alternate nodes to the rigid tube to better connect with ball hubs, etc.
+Added a new anchor hub - this small hub is KIS storable, can be anchored to the ground, and works very well if you want to make a base with 100% KIS components (this would be your root part)
+Adjusted the regolith sifter - the resource threshold has been removed at the expense of efficiency, making this a much more viable first harvesting part.
+Adjusted several colliders to add a bit more leeway for ground contact
+Added 6-way station hub (thanks Enceos!)
+
+
+
 0.31.9 - 2015.09.21
 -------------------
 Adjusted Duna Module collider to allow for easier selection of crew hatch

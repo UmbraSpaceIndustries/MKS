@@ -89,28 +89,16 @@ namespace KolonyTools
                 //  - Colony Living Space/Kerbal Happiness
 
                 float numWorkspaces = GetKolonyWorkspaces(vessel);
-                print("NumWorkspaces: " + numWorkspaces);
-
                 //Plus 25% of Crew Cap as low efficiency workspaces
                 numWorkspaces += vessel.GetCrewCapacity()*.25f; 
-                print("AdjNumWorkspaces: " + numWorkspaces);
-
                 //Number of active modules
                 var numModules = GetActiveKolonyModules(vessel);
-                print("numModules: " + numModules);
-
                 //Kerbals in the module
                 float modKerbalFactor = part.protoModuleCrew.Sum(k => GetKerbalFactor(k));
-                print("modKerbalFactor: " + modKerbalFactor);
                 modKerbalFactor *= GetCrewHappiness();
-                print("HappymodKerbalFactor: " + modKerbalFactor);
-
                 //Kerbals in the ship
                 float numWeightedKerbals = vessel.GetVesselCrew().Sum(k => GetKerbalFactor(k));
-                print("numWeightedKerbals: " + numWeightedKerbals);
                 numWeightedKerbals *= GetCrewHappiness();
-                print("HappynumWeightedKerbals: " + numWeightedKerbals);
-
                 //Worst case, 25% (if crewed).  Uncrewed vessels will be at 0%
                 //You need crew for these things, no robo ships.
                 float eff = .0f;
@@ -118,14 +106,11 @@ namespace KolonyTools
                 {
                     float WorkSpaceKerbalRatio = numWorkspaces / vessel.GetCrewCount();
                     if (WorkSpaceKerbalRatio > 3) WorkSpaceKerbalRatio = 3;
-                    print("WorkSpaceKerbalRatio: " + WorkSpaceKerbalRatio);
                     //A module gets 100% bonus from Kerbals inside of it,
                     //in addition to a 10% bonus for Kerbals in the entire station.
                     float WorkUnits = WorkSpaceKerbalRatio * modKerbalFactor;
                     WorkUnits += WorkSpaceKerbalRatio*numWeightedKerbals*CrewBonus;
-                    print("WorkUnits: " + WorkUnits);
                     eff = WorkUnits / numModules;
-                    print("eff: " + eff);
                     if (eff > MaxEfficiency) eff = MaxEfficiency;
                     if (eff < .25) eff = .25f;
                 }
@@ -133,7 +118,6 @@ namespace KolonyTools
                 //Add in efficiencyParts 
                 if (efficiencyPart != "")
                 {
-                    print("effpartname: " + efficiencyPart);
                     var validEffParts = new List<EffPart>();
                     var effPartBits = efficiencyPart.Split(',')
                         .Select(effPartName => effPartName.Trim().Replace('_', '.')).ToArray();
@@ -171,10 +155,7 @@ namespace KolonyTools
                             }
                         }
                     }
-                    print("effParts: " + effParts);
-                    print("oldEff: " + eff);
                     eff += effParts;
-                    print("newEff: " + eff); 
                     if (eff < 0.25)  
                         eff = 0.25f;  //We can go as low as 25% as these are almost mandatory.
                 }
