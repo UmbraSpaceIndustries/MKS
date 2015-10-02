@@ -62,6 +62,7 @@ namespace KolonyTools
         private Vector2 _scrollPosition;
         private Vector2 _scrollResourcesPosition;
         private bool _usils;
+        private bool _tacls;
 
         enum OpenTab{Parts,Converters,Production,Consumption,Balance,None,Resources,LocalBase}
 
@@ -71,6 +72,7 @@ namespace KolonyTools
             _tab = OpenTab.None;
 
             _usils = AssemblyLoader.loadedAssemblies.ToList().Exists(la => la.dllName == "USILifeSupport");
+            _tacls = AssemblyLoader.loadedAssemblies.ToList().Exists(la => la.dllName == "TacLifeSupport");
         }
 
         protected override void DrawWindowContents(int windowId)
@@ -289,6 +291,22 @@ namespace KolonyTools
                 getResourceFromList(resources, "Mulch").change += kerbals * 0.00005;
                 getResourceFromList(resources, "ElectricCharge").change -= kerbals * 0.01;
             }
+            if (_tacls)
+            {
+                // TAC-LS consumption rates are a bit complex to calculate, so here is an approximated calculation where
+                // - Kerbals on EVA are not handled
+                // - BaseElectricityConsumptionRate is not taken into account
+                getResourceFromList(resources, "Oxygen").change -= kerbals * 0.001713537562385;
+                getResourceFromList(resources, "Food").change -= kerbals * 0.000016927083333;
+                getResourceFromList(resources, "Water").change -= kerbals * 0.000011188078704;
+                getResourceFromList(resources, "CarbonDioxide").change += kerbals * 0.00148012889876;
+                getResourceFromList(resources, "Waste").change += kerbals * 0.000001539351852;
+                getResourceFromList(resources, "WasteWater").change += kerbals * 0.000014247685185;
+                getResourceFromList(resources, "ElectricCharge").change -= kerbals * 0.014166666666667;
+                // Values are based on TAC-LS Version 0.11.1.20
+            }
+            // Consumption rates for Snacks are not calculated
+
             resources.Sort(new LogisticsResourceComparer());
             foreach (LogisticsResource r in resources)
             {
