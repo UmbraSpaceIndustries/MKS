@@ -106,9 +106,7 @@ namespace KolonyTools
             foreach (var part in _demoParts)
             {
                 var res = PartResourceLibrary.Instance.GetDefinition(ResourceName);
-                print(String.Format("DEBUG {0} {1} {2}", part.mass, res.density, Efficiency));
                 double resAmount = part.mass / res.density * Efficiency;
-                print(String.Format("DEBUG {0}", resAmount));
                 part.decouple();
                 part.explode();
 
@@ -193,9 +191,7 @@ namespace KolonyTools
                 return;
             }
             var res = PartResourceLibrary.Instance.GetDefinition(ResourceName);
-            print(String.Format("DEBUG {0} {1} {2}", part.mass, res.density, Efficiency));
             double resAmount = part.mass / res.density * Efficiency;
-            print(String.Format("DEBUG {0}", resAmount));
 
             ScreenMessages.PostScreenMessage(String.Format("You disassemble the {0} into {1:0.00} units of {2}", part.name, resAmount, ResourceName), 5f, ScreenMessageStyle.UPPER_CENTER);
             PushResources(ResourceName, resAmount);
