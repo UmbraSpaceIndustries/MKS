@@ -9,7 +9,7 @@ You can find the official repo for this mod on [Github](http://github.com/BobPal
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
-* [USI Life Support] (http://http://forum.kerbalspaceprogram.com/threads/116790)
+* [USI Life Support] (http://forum.kerbalspaceprogram.com/threads/116790)
 * [TAC Life Support] (http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
 * [Snacks] (http://forum.kerbalspaceprogram.com/threads/90841-0-24-2-Snacks%21-Kerbal-simplified-life-support-v0-3-1) via the [E-Z Snack Oven] (http://forum.kerbalspaceprogram.com/threads/92309-0-24-2-EZ-Snack-Oven-Snacks%21-for-MKS-0-1-0-2014-08-29)
 * Extraplanetary Launchpads
