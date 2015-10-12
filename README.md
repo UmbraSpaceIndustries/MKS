@@ -12,7 +12,7 @@ You can find the official repo for this mod on [Github](http://github.com/BobPal
 * [USI Life Support] (http://forum.kerbalspaceprogram.com/threads/116790)
 * [TAC Life Support] (http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
 * [Snacks] (http://forum.kerbalspaceprogram.com/threads/90841) via the [E-Z Snack Oven] (http://forum.kerbalspaceprogram.com/threads/92309)
-* (Extraplanetary Launchpads)[http://forum.kerbalspaceprogram.com/threads/59545]
+* [Extraplanetary Launchpads](http://forum.kerbalspaceprogram.com/threads/59545)
 
 NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only pick one!  USI-LS is the default, and will afford the most support and integration, but TAC-LS and Snacks! are also fully supported.
 
