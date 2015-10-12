@@ -1,12 +1,23 @@
 0.31.11 - 2015.10.16
 --------------------
-Update core dependencies (USICore/MM)
-Inflatable Workshop now requires only one Kerbal to operate for OSE Workshop
-Removed Kontainers from CTT config as these are now part of USICore
-Updated tube, ISM, and anchor models (less explodey)
-Lowered KIS volume of various components
-Fixed misc typos, removed misc deprecated efficiency parts
-Replaced DepletedUranium with DepletedFuel
+From Mhoram:
+- Fixed several typos
+- Made fertilizer available in the OKS ILMs
+- Take TAC-LS resource consumption into account when displaying base stats
+
+From Seb E:
+- Fixed issue with efficiency part as root part
+
+From Jberkman
+- Fixed several typos 
+
+Other changes:
+- Update core dependencies (USICore/MM)
+- Inflatable Workshop now requires only one Kerbal to operate for OSE Workshop
+- Removed Kontainers from CTT config as these are now part of USICore
+- Updated tube, ISM, and anchor models (less explodey)
+- Lowered KIS volume of various components
+- Replaced DepletedUranium with DepletedFuel
 
 
 0.31.10 - 2015.09.22
