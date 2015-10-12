@@ -1,3 +1,14 @@
+0.31.11 - 2015.10.16
+--------------------
+Update core dependencies (USICore/MM)
+Inflatable Workshop now requires only one Kerbal to operate for OSE Workshop
+Removed Kontainers from CTT config as these are now part of USICore
+Updated tube, ISM, and anchor models (less explodey)
+Lowered KIS volume of various components
+Fixed misc typos, removed misc deprecated efficiency parts
+Replaced DepletedUranium with DepletedFuel
+
+
 0.31.10 - 2015.09.22
 --------------------
 All Kontainers and mini-ILMs are now EVA repaintable
