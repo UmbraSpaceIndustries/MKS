@@ -1,16 +1,16 @@
 {
-     "NAME":"MKS",
-	 "URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/GameData/UmbraSpaceIndustries/Kolonization/MKS.version",
-	 "DOWNLOAD":"https://github.com/BobPalmer/MKS/releases",
+     "NAME":"USI Tools",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/USI_Core/master/GameData/UmbraSpaceIndustries/USICore.version",
+	 "DOWNLOAD":"https://github.com/BobPalmer/USI_Core/releases",
      "GITHUB":{
          "USERNAME":"BobPalmer",
-         "REPOSITORY":"MKS",
+         "REPOSITORY":"UmbraSpaceIndustries",
          "ALLOW_PRE_RELEASE":false
      },
      "VERSION":{
          "MAJOR":0,
-         "MINOR":31,
-         "PATCH":11,
+         "MINOR":0,
+         "PATCH":1,
          "BUILD":0
      },
      "KSP_VERSION":{
