@@ -1,0 +1,8 @@
+0.1.0 - 2015.10.16
+------------------
+Broke USI_Core out from the USITools DLL
+Moved nuclear reactors to Advanced Science Tech in the stock tech tree, and Nuclear Power/ Large Nuclear Power in CTT
+Bundled container CTT configs from MKS
+Moved KIS kontainers into appropriate CTT nodes
+Swapped DepletedUranium for DepletedFuel in reactors and containers
+

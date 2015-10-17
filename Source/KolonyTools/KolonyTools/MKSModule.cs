@@ -138,7 +138,9 @@ namespace KolonyTools
                         var effPartList = new List<Part>();
                         foreach (var v in vList)
                         {
-                            effPartList.AddRange(v.Parts.Where(p => p.name == vep.Name));
+                            var nameWhenRootPart = vep.Name + " (" + v.GetName() + ")";
+                            var pList = v.Parts.Where(p => p.name == vep.Name || p.name == nameWhenRootPart);
+                            effPartList.AddRange(pList);
                         }
 
                         foreach (var ep in effPartList)

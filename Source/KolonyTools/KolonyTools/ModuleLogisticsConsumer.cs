@@ -114,7 +114,7 @@ namespace KolonyTools
         public bool LogisticsAvailable()
         {
             var vList = LogisticsTools.GetNearbyVessels(DEPOT_RANGE, true, vessel, true);
-            foreach (var v in vList.Where(v => v.GetTotalMass() <= 3f))
+            foreach (var v in vList) //.Where(v => v.GetTotalMass() <= 3f))
             {
                 if (v.Parts.Any(p => p.FindModuleImplementing<ModuleResourceDistributor>() != null && HasCrew(p, "Pilot")))
                     return true;
