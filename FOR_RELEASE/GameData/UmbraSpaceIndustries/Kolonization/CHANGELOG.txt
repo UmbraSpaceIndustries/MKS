@@ -1,16 +1,17 @@
+0.31.11.1.2015.10.18
+--------------------
+Quick patch to fix the attachment nodes on the anchor hub
+
 0.31.11 - 2015.10.16
 --------------------
 From Mhoram:
 - Fixed several typos
 - Made fertilizer available in the OKS ILMs
 - Take TAC-LS resource consumption into account when displaying base stats
-
 From Seb E:
 - Fixed issue with efficiency part as root part
-
 From Jberkman
 - Fixed several typos 
-
 Other changes:
 - Update core dependencies (USICore/MM)
 - Inflatable Workshop now requires only one Kerbal to operate for OSE Workshop
