@@ -1,3 +1,7 @@
+0.31.11.2 - 2015.10.18
+--------------------
+Fixed KIS config of the anchor hub
+
 0.31.11.1.2015.10.18
 --------------------
 Quick patch to fix the attachment nodes on the anchor hub
