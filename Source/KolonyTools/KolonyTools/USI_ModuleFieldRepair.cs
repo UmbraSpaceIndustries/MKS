@@ -28,7 +28,7 @@ namespace KolonyTools
             GrabResources("Machinery");
             GrabResources("EnrichedUranium");
             PushResources("Recyclables");
-            PushResources("DepletedUranium");
+            PushResources("DepletedFuel");
         }
 
         public override void OnStart(StartState state)
