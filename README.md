@@ -30,13 +30,15 @@ NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only p
 
 * [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/122126) (efficiency extensions)
 
-### FAQ, Documentation and issues
+### FAQ, Documentation, Issues and Pull Requests
 
 Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
 
 There is also a [Walkthrough](https://github.com/BobPalmer/MKS/wiki/Tutorial-August-2015-%280.31.6%29)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
+
+Pull Requests should be merged into the branch "DEVELOP".
 
 ### Download Link
 
