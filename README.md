@@ -9,31 +9,32 @@ You can find the official repo for this mod on [Github](http://github.com/BobPal
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
-* [USI Life Support] (http://http://forum.kerbalspaceprogram.com/threads/116790)
+* [USI Life Support] (http://forum.kerbalspaceprogram.com/threads/116790)
 * [TAC Life Support] (http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
-* [Snacks] (http://forum.kerbalspaceprogram.com/threads/90841-0-24-2-Snacks%21-Kerbal-simplified-life-support-v0-3-1) via the [E-Z Snack Oven] (http://forum.kerbalspaceprogram.com/threads/92309-0-24-2-EZ-Snack-Oven-Snacks%21-for-MKS-0-1-0-2014-08-29)
-* Extraplanetary Launchpads
+* [Snacks] (http://forum.kerbalspaceprogram.com/threads/90841) via the [E-Z Snack Oven] (http://forum.kerbalspaceprogram.com/threads/92309)
+* [Extraplanetary Launchpads](http://forum.kerbalspaceprogram.com/threads/59545)
 
 NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only pick one!  USI-LS is the default, and will afford the most support and integration, but TAC-LS and Snacks! are also fully supported.
 
 ### Included Plugins/Mods
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
+* [Firespitter Core](http://forum.kerbalspaceprogram.com/threads/24551)
 
 ### Recommended mods
 (These are absolutely not required, but have aspects that make gameplay easier)
 
-* [KAS](http://forum.kerbalspaceprogram.com/threads/53134) (for linking up MKS modules and anchoring to the surface)
-* [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/37707) (for assembling bases)
+* [KAS](http://forum.kerbalspaceprogram.com/threads/92514) (for linking up MKS modules and anchoring to the surface)
+* [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/116064) (for assembling bases)
 
 ### Compatible with
 
-* [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/70161) (efficiency extensions)
+* [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/122126) (efficiency extensions)
 
 ### FAQ, Documentation and issues
 
 Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
 
-There is also a [Walkthrough](https://github.com/BobPalmer/MKS/wiki/Tutorial_00)
+There is also a [Walkthrough](https://github.com/BobPalmer/MKS/wiki/Tutorial-August-2015-%280.31.6%29)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
