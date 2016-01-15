@@ -1,6 +1,17 @@
+0.5.5 - 2016.01.15
+------------------
+Inflatable fuel tank module
+Tweaks to the pulse engine module
+Bundled USI FX as part of USITools, as it is the best common denominator
+
+0.5.4 - 2015.12.08
+------------------
+New modules for aquatic stuff (Ballast, RCS, SAS, engines, and Intake)
+
 0.5.3 - 2015.11.09
 ------------------
 KSP 1.0.5 Compatibility
+New categories for rovers and MKS-Lite
 
 0.5.2 - 2015.10.16
 ------------------
