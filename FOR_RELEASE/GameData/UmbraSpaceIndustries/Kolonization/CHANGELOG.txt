@@ -1,9 +1,25 @@
+0.31.12.0 - 2015.11.10
+----------------------
+From jberkman:
+- Moved 6 way anchor hub to correct CTT node 
+From mhoram:
+- Added a helpful pull request note to the readme
+From pjwerneck:
+- Fixed texture issue on PDU
+From fmatosqg:
+- Fixed typos in drill descriptions
+From smjjames:
+- Added radiator recommendations to descriptions in USI-ReactorNFE
+Other changes:
+- KSP 1.0.5 compatibility
+- Broke out separate category tabs for MKS-LITe vs UKS
+
 0.31.11.2 - 2015.10.18
 --------------------
 Fixed KIS config of the anchor hub
 
-0.31.11.1.2015.10.18
---------------------
+0.31.11.1 - 2015.10.18
+----------------------
 Quick patch to fix the attachment nodes on the anchor hub
 
 0.31.11 - 2015.10.16

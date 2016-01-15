@@ -1,3 +1,8 @@
+0.4.6 - 2015.11.09
+------------------
+Added OSE/MKS-L common resources (Dirt, MaterialKits, ExoticMinerals, RareMetals)
+KSP 1.0.5 Compatibility
+
 0.4.5 - 2015.10.16
 ------------------
 Fixed density LqdDeteurium and LqdTritium

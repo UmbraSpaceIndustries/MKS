@@ -1,3 +1,7 @@
+0.5.3 - 2015.11.09
+------------------
+KSP 1.0.5 Compatibility
+
 0.5.2 - 2015.10.16
 ------------------
 Moved out reactors and tanks to the USI_Core repo

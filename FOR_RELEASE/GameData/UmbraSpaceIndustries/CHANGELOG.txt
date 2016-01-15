@@ -1,3 +1,11 @@
+0.1.1 - 2015.11.09
+------------------
+KSP 1.0.5. compatibility
+Added CRP dependency
+Corrected ypos/case issues in CTT and Version files
+Reactors no longer trickle charge, but do have double resource storage
+Reactors now use core heat!  Required coolant for the various reactors is 200kw/400kw/800kw/1600kw
+
 0.1.0 - 2015.10.16
 ------------------
 Broke USI_Core out from the USITools DLL
