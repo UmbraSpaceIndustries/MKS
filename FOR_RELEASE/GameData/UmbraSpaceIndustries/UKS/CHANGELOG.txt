@@ -1,4 +1,4 @@
-0.32.0.0 - 2016.01.15
+0.32.0.0 - 2016.01.18
 ---------------------
 Added USI-LS habitation support to relevant modules. 
 Added several new components to aid in base setup:
@@ -39,6 +39,9 @@ The Aeroponics Module has been trimmed down to a single module (cultivation), al
 The MKS and OKS Agriculture Modules now only have the Agroponics Module (Mulch+Fertilizer=Supplies).  Organics are depredated.  Also includes a basic life support recycler, and still works as efficiency parts for the aeroponics modules.
 The MKS and OKS Hab Module/Hab Ring no longer has a converter, but instead works to extend the habitation capacity of your base.
 A rudimentary TAC-LS config is included.  This config is probably wrong.  Hopefully someone with more TAC-LS experience can send a pull request :)
+Inflatable Ag Modules now have crew capacity, so you can transfer crew to work in them.  Also, for best efficiency in agriculture modules, use a Scientist not an Engineer (though Engineers are a decent second choice).
+Fixed the top node of the Duna class colony modules
+De-bundled all of the core dependencies - these are now bundled with the Kolonization parent mod.  This should make MKS-specific updates a lot easier to download.
 
 0.31.12.0 - 2015.11.10
 ----------------------
