@@ -1,0 +1,29 @@
+0.4.8 - 2015.12.08
+------------------
+Added 'IntakeLqd' - an oceanic resource to help with oceanic-only parts.
+Modified Asteroid config to include 'Rock'
+Added 'Lead' as a resource (same stats as LeadBallast, but visible/tweakable)
+Adjusted density of 'Rock' to be more like rock, and less like cotton balls
+
+0.4.7 - 2015.11.14
+------------------
+Merged MKS and MKS-L resources into CRP
+
+0.4.6 - 2015.11.09
+------------------
+Added OSE/MKS-L common resources (Dirt, MaterialKits, ExoticMinerals, RareMetals)
+KSP 1.0.5 Compatibility
+
+0.4.5 - 2015.10.16
+------------------
+Fixed density LqdDeteurium and LqdTritium
+
+0.4.4 - 2015.07.29
+------------------
+Various HSP/flow changes 
+
+0.4.3 - 2015.07.06
+------------------
+Moved the Karborundum band around the sun out a bit.
+Various HST configs
+Fixed an issue with the cost of RocketParts
