@@ -1,16 +1,16 @@
 {
-     "NAME":"UKS",
-	 "URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/UKS/UKS.version",
-	 "DOWNLOAD":"https://github.com/BobPalmer/MKS/releases",
+     "NAME":"USI Core",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/USI_Core/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/USICore.version",
+	 "DOWNLOAD":"https://github.com/BobPalmer/USI_Core/releases",
      "GITHUB":{
          "USERNAME":"BobPalmer",
-         "REPOSITORY":"MKS",
+         "REPOSITORY":"UmbraSpaceIndustries",
          "ALLOW_PRE_RELEASE":false
      },
      "VERSION":{
          "MAJOR":0,
-         "MINOR":32,
-         "PATCH":1,
+         "MINOR":1,
+         "PATCH":3,
          "BUILD":0
      },
      "KSP_VERSION":{

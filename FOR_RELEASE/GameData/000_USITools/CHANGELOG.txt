@@ -1,0 +1,29 @@
+0.5.5 - 2016.01.18
+------------------
+Inflatable fuel tank module
+Tweaks to the pulse engine module
+Bundled USI FX as part of USITools, as it is the best common denominator
+
+0.5.4 - 2015.12.08
+------------------
+New modules for aquatic stuff (Ballast, RCS, SAS, engines, and Intake)
+
+0.5.3 - 2015.11.09
+------------------
+KSP 1.0.5 Compatibility
+New categories for rovers and MKS-Lite
+
+0.5.2 - 2015.10.16
+------------------
+Moved out reactors and tanks to the USI_Core repo
+
+0.5.1 - 2015.10.06
+-------------------
+Consolidated tanks and added alternate textures
+
+0.5.0 - 2015.10.06
+------------------
+Merged nuke reactors and kontainers into the core USI mod
+Increased LH2 amnount in all containers
+Added containers for Karborundum, Xenon, and Argon
+Increased nuke output and mass

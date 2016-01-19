@@ -1,0 +1,30 @@
+0.1.3 - 2016.01.18
+------------------
+Fixed issue with kontainer texture switching
+Bundled USITools (for nuclear refueling) and shared FX
+Fixed several cost discrepancies (thanks fat-lobyte!) 
+Deprecated Organics
+Replaced RocketParts with MaterialKits - NOTE:  Texture has NOT been redone yet!
+USI Core is bundled with an Extraplanetary Launchpads config that replaces RocketParts with MaterialKits and SpecializedParts.  This is provided for compatibility with the USI mod constellation.
+
+0.1.2 - 2015.11.14
+------------------
+Put trickle charge back in for reactors
+Updated CRP to 0.4.7
+
+0.1.1 - 2015.11.09
+------------------
+KSP 1.0.5. compatibility
+Added CRP dependency
+Corrected ypos/case issues in CTT and Version files
+Reactors no longer trickle charge, but do have double resource storage
+Reactors now use core heat!  Required coolant for the various reactors is 200kw/400kw/800kw/1600kw
+
+0.1.0 - 2015.10.16
+------------------
+Broke USI_Core out from the USITools DLL
+Moved nuclear reactors to Advanced Science Tech in the stock tech tree, and Nuclear Power/ Large Nuclear Power in CTT
+Bundled container CTT configs from MKS
+Moved KIS kontainers into appropriate CTT nodes
+Swapped DepletedUranium for DepletedFuel in reactors and containers
+
