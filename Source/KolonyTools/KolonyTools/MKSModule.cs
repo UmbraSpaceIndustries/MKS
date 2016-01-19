@@ -44,6 +44,7 @@ namespace KolonyTools
 
         private bool _showGUI = true;
         private int _numConverters;
+        private int _numCrew;
         private float _efficiencyRate;
         private const int COLONY_RANGE = 100;
         private const int EFF_RANGE = 500;
@@ -342,9 +343,10 @@ namespace KolonyTools
         public virtual float GetEfficiencyRate()
         {
             var curConverters = GetActiveKolonyModules(vessel);
-            if (curConverters != _numConverters)
+            if (curConverters != _numConverters || part.protoModuleCrew.Count != _numCrew)
             {
                 _numConverters = curConverters;
+                _numCrew = part.protoModuleCrew.Count;
                 EfficiencySetup();
             }
             return _efficiencyRate;

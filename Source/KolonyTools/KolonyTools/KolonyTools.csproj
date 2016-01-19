@@ -52,27 +52,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBox.cs" />
-    <Compile Include="ModuleLogisticsConsumer.cs" />
-    <Compile Include="ModulePowerDistributor.cs" />
-    <Compile Include="ModuleResourceDistributor.cs" />
     <Compile Include="MKSGui.cs" />
     <Compile Include="MKSLExtensions.cs" />
     <Compile Include="MKSLlocal.cs" />
     <Compile Include="MKSLresource.cs" />
     <Compile Include="MKSLtransfer.cs" />
     <Compile Include="MKSModule.cs" />
-    <Compile Include="ModulePowerCoupler.cs" />
     <Compile Include="SpaceAcademy.cs" />
-    <Compile Include="USI_ModuleRecycleablePart.cs" />
-    <Compile Include="USI_ModuleRecycleBin.cs" />
-    <Compile Include="USI_ModuleResourceDistributor.cs" />
     <Compile Include="OrbitalLogistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyLogistics.cs" />
     <Compile Include="StationManager.cs" />
-    <Compile Include="USI_ModuleCleaningBin.cs" />
-    <Compile Include="USI_ModuleFieldRepair.cs" />
-    <Compile Include="USI_ModuleResourceWarehouse.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>

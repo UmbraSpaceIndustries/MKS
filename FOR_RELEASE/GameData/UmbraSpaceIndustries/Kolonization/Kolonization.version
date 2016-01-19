@@ -1,0 +1,31 @@
+{
+     "NAME":"Kolonization Core",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/Kolonization/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/Kolonization/Kolonization.version",
+	 "DOWNLOAD":"https://github.com/BobPalmer/Kolonization/releases",
+     "GITHUB":{
+         "USERNAME":"BobPalmer",
+         "REPOSITORY":"Kolonization",
+         "ALLOW_PRE_RELEASE":false
+     },
+     "VERSION":{
+         "MAJOR":0,
+         "MINOR":1,
+         "PATCH":0,
+         "BUILD":0
+     },
+     "KSP_VERSION":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":5
+     },
+     "KSP_VERSION_MIN":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":0
+     },
+     "KSP_VERSION_MAX":{
+         "MAJOR":1,
+         "MINOR":0,
+         "PATCH":5
+     }
+ } 

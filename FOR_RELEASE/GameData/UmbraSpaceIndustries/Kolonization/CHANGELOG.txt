@@ -1,6 +1,29 @@
 0.32.0.0 - 2016.01.15
 ---------------------
-Added USI-LS habitation support to relevant modules.  
+Added USI-LS habitation support to relevant modules. 
+Added several new components to aid in base setup:
+- A portable light kit
+- Landing stabilizers
+- A retractable sky crane
+- Inflatable fuel tanks
+- A small caster wheel to aid in moving modules 
+Updated various shared components
+Fixed several cost discrepancies (thanks fat-lobyte!)
+Added a small starter reactor to the MKS PDU
+Removed the MKS and OKS legacy PDUs
+There has been a major cleanup of the logistics logic.  Older mechanics have been consolidated or replaced with Scavanging, Power Distribution, Resource Distribution, and Distributed Warehouses.  See the forum thread for details.
+All logistics logic has been moved over to USITools so it can be shared with some of the other non-core mods.
+Default logistics times are 5 seconds for resources and power, and 10 seconds for warehouse distribution
+MKS-Lite will not be shown if UKS is installed.
+The shared Kolonization DLL and associated configs has been moved to make sharing it easier.
+UKS now installs in a 'UKS' folder - separate from Kolonization.  This will make sharing the core colony stuff a bit easier.
+Efficiency now updates when you move crew - no need to restart converters.
+Deprecated Tweakscale support
+Cleaned up a few assets
+The PDU and Fuel Refinery now allow their EnrichedUranium to be transferred out during maintenance, and will try to pull in DepletedFuel for their fuel recyclers.
+The saddle tank has had it's mass reduced from 0.4 to 0.15 tons
+When Extraplanetary Launchpads is present, RocketParts are replaced by a combination of SpecializedParts and MaterialKits in the resource chain.
+When USI-LS is used, recyclers and habitation rules are in effect.  Supply consumption is also drastically increased.  Penalties for EVA loss and starvation have also been increased.  You can alter these by changing USI-LS.cfg in the Kolonization folder.
 
 0.31.12.0 - 2015.11.10
 ----------------------

@@ -2,6 +2,7 @@
 ------------------
 Fixed issue with kontainer texture switching
 Bundled USITools (for nuclear refueling) and shared FX
+Fixed several cost discrepancies (thanks fat-lobyte!) 
 
 0.1.2 - 2015.11.14
 ------------------
