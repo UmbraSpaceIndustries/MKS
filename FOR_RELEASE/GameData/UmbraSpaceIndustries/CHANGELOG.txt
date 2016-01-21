@@ -1,3 +1,7 @@
+0.1.4 - 2016.01.20
+------------------
+Fixed texture issue on liquid tanks
+
 0.1.3 - 2016.01.18
 ------------------
 Fixed issue with kontainer texture switching
@@ -5,7 +9,7 @@ Bundled USITools (for nuclear refueling) and shared FX
 Fixed several cost discrepancies (thanks fat-lobyte!) 
 Deprecated Organics
 Replaced RocketParts with MaterialKits - NOTE:  Texture has NOT been redone yet!
-USI Core is bundled with an Extraplanetary Launchpads config that replaces RocketParts with MaterialKits and SpecializedParts.  This is provided for compatibility with the USI mod constellation.
+Removed extra texture that was causing some issues with the liquid tanks (round, cylinder, and saddle)
 
 0.1.2 - 2015.11.14
 ------------------

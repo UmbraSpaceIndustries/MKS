@@ -1,3 +1,7 @@
+0.1.1 - 2016.10.20
+------------------
+Config updates for USI-LS and EL
+
 0.1.0.0 - 2016.01.18
 --------------------
 Initial Release!  This has been split from the MKS repo so that it can more easily be used by both MKS-Lite and UKS
