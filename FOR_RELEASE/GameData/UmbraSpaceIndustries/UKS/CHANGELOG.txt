@@ -1,3 +1,14 @@
+0.32.2 - 2016.01.20
+-------------------
+Updated TAC-LS configs to swap out USI-LS recyclers and fix an issue with the OKS Ag Module (Thanks jd284!)
+Fixed issue where negative supply values were not displaying.
+Wear and tear is disabled by default unless a mod opts to have it on.  The multiplier for this is also now included in the bundled configs.
+Corrected a typo on the Sunflower lighting kit
+Made OKS Ag Module resources visible in the VAB
+Removed extra texture that was causing some issues with the liquid tanks (round, cylinder, and saddle)
+Made salvaging have the same SpecializedParts ratio as those required by Extraplanetary Launchpads for ship construction
+Fixed issues with the EL config that resulted in RocketParts still being required.  
+
 0.32.1 - 2016.01.19
 --------------------
 Updated archive to include missing files
