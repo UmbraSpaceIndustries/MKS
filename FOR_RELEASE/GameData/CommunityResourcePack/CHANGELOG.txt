@@ -1,3 +1,9 @@
+0.4.9 - 2016.02.01
+------------------
+Added Hydrates as a resource and also to the resource map (represents regolith with captive water)
+Added Gypsum (an excellent raw material for fertilizer) as a resource and to the resource map
+ExoticMinerals and RareMetals can now be directly harvested
+
 0.4.8 - 2015.12.08
 ------------------
 Added 'IntakeLqd' - an oceanic resource to help with oceanic-only parts.

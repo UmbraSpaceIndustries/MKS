@@ -1,3 +1,7 @@
+0.1.5 - 2016.02.01
+------------------
+Hydrates, Gypsum, and Dirt have been added to kontainers, and the RocketParts texture has been replaced with one for MaterialKits.
+
 0.1.4 - 2016.01.20
 ------------------
 Fixed texture issue on liquid tanks

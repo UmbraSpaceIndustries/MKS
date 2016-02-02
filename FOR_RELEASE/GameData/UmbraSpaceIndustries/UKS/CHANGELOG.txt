@@ -1,3 +1,26 @@
+0.33.0 - 2016.01.31
+-------------------
+Planetary Logistics is now available.  This allows shared storage and retrieval of resources via the large MKS ILMs.  This is surface only.
+Kolonization Rewards are now available.  Active MKS colonies will now automatically provide funds, rep, and science based on the corresponding number of engineers, pilots, and scientists in your base and in MKS-enabled modules.
+Koloniation Bonuses are now available.  Visible via the new Kolonization icon, the longer your crew are on a planet (or in orbit, but at a reduced point), the further along kolonization will proceed.
+- Engineers grant bonuses to drills and engineering-based converters.
+- Scientitst grant bonuses to greenhouses and science-based converters.
+- Pilots grant a global habitation bonus (USI-LS only).
+Hydrates, Gypsum, and Dirt have been added to kontainers, and the RocketParts texture has been replaced with one for MaterialKits.
+Right-click scrapping now only has one option - Recyclables.
+Recyclables now produce SpecializedParts in addition to Metals, Chemicals, and Polymers.
+The Fuel Cell Array now acts as a power coupler.
+The stock ISRU module can now produce LH2 from Water
+Several textures have been converted to DDS
+The Fabricator now produces SpecializedParts instead of MaterialKits (the inflatable workshop can handle doing MaterialKits)
+A new Nuclear Fuel Processor module has been added, and incorproates the centrifuge and breeder functions of the old PDU.
+All Duna-class and Mark III modules are automatically power couplers (less parts!)
+Fixed a typo in the landing stabilizer's name
+Optimized the Duna-class model for some slight perf increases
+Added a probe core with EC usage to the anchor hub
+Reduced hab wear rate by 90%
+
+
 0.32.2 - 2016.01.20
 -------------------
 Updated TAC-LS configs to swap out USI-LS recyclers and fix an issue with the OKS Ag Module (Thanks jd284!)
@@ -8,6 +31,15 @@ Made OKS Ag Module resources visible in the VAB
 Removed extra texture that was causing some issues with the liquid tanks (round, cylinder, and saddle)
 Made salvaging have the same SpecializedParts ratio as those required by Extraplanetary Launchpads for ship construction
 Fixed issues with the EL config that resulted in RocketParts still being required.  
+the refinery no longer produces RareMetals and ExoticMinerals as byproducts, these can now be directly mined.
+A new module, the Industrial Regolith Sifter, has been added.  This module can take Dirt and extract small quantities of all resources found on a planet.  It can also creat Fertilizer from Gypsum, and Water from Hydrates.  
+A new drill capable of extracting Hydrates, Gypsum, and Dirt has been added.
+The Kerbitat's Life Support recycler has been replaced with a Water Purifier.  When provided with water, it acts as a 90% Life Support recycler for USI-LS, making it the best one available.
+The PDU no longer has the breeder and centrifuge functions
+The larger ILMs now act as warehouses for Planetary Logistics.
+The smaller ISMs now act as Distribution Warehouses.
+Crew no longer need to be present inside of an MKS or OKS ag module for it to function at top efficiency.  Their efficiency caps have also been removed.
+All Duna modules, Mk-III modules, and the Scout command pod have built in power couplers.
 
 0.32.1 - 2016.01.19
 --------------------
