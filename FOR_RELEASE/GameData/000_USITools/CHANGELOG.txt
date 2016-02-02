@@ -1,3 +1,10 @@
+0.6.0 - 2016.02.01
+------------------
+Added new module for structural supports (versus horribly abusing fairings)
+Auto-Repairer part module added (for use with USI-LS and UKS)
+Added the concept of global bonuses to prevent circular references (i.e. between kolonization and life support)
+Added custom layers to USI Animation
+
 0.5.5 - 2016.01.18
 ------------------
 Inflatable fuel tank module

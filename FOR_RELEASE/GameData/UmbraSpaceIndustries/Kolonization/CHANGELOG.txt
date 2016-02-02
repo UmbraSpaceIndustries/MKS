@@ -1,4 +1,8 @@
-0.1.1 - 2016.10.20
+0.1.2 - 2016.02.01
+------------------
+Added in rewards and planetary logistics, tweaked some default configs
+
+0.1.1 - 2016.01.20
 ------------------
 Config updates for USI-LS and EL
 
