@@ -1,3 +1,7 @@
+0.6.1 - 2016.02.02
+------------------
+Fixed an issue where distributed warehouses were excessively greedy
+
 0.6.0 - 2016.02.01
 ------------------
 Added new module for structural supports (versus horribly abusing fairings)
