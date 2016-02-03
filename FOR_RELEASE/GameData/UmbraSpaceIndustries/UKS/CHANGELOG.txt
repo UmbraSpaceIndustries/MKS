@@ -1,3 +1,14 @@
+0.33.2 - 2016.02.02
+-------------------
+Fixed an issue where warehouses were a bit greedy, resulting in ILMs pulling too many resources
+Kolony Rewards are now exponential and look at the entire vessel's crew
+Broke EL config into two configs - parts vs. resources
+Increased funds reward for kolonization
+Reverted the Duna-class model (sorry for any kraken'd fuel tanks!)
+Reduced the inflation tank crash tolerance to a reasonable level
+Moved the fuel refinery to 'Legacy'
+Reduced the Kerbitat recycler to a much more sane value for water
+
 0.33.1 - 2016.02.02
 -------------------
 Fixed Kerbitat node issues

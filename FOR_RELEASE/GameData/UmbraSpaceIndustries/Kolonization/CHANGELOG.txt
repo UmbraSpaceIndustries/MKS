@@ -1,3 +1,9 @@
+0.1.3 - 2016.02.02
+------------------
+Rewards are now exponential and look at the entire vessel's crew
+Broke EL config into two configs - parts vs. resources
+Increased funds reward for kolonization
+
 0.1.2 - 2016.02.01
 ------------------
 Added in rewards and planetary logistics, tweaked some default configs
