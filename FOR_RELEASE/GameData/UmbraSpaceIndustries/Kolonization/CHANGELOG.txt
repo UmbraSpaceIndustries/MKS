@@ -1,3 +1,7 @@
+0.1.4 - 2016.02.03
+------------------
+Reset default life support options to 'grouchiness'
+
 0.1.3 - 2016.02.02
 ------------------
 Rewards are now exponential and look at the entire vessel's crew

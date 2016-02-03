@@ -1,3 +1,7 @@
+0.33.3 - 2016.02.03
+-------------------
+Reset default life support options to 'grouchiness'
+
 0.33.2 - 2016.02.02
 -------------------
 Fixed an issue where warehouses were a bit greedy, resulting in ILMs pulling too many resources
