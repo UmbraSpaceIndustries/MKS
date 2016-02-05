@@ -1,3 +1,29 @@
+0.33.4 - 2016.02.05
+-------------------
+Added support for Blizzy's Toolbar (thanks nanathan!)
+Updated the Octolander (thanks LouisB3!):
+- Added USI_ModuleRecycleBin. 
+- Added Fertilizer to Supplies setup. 
+- Added second RawMaterials setup with Dirt, Gypsum, Hydrates, Uraninite. 
+- Added RareMetals and ExoticMinerals to Refined Goods setup. 
+- Added SpecializedParts to Equipment Setup. 
+- Reduced capacities of LFO and Monopropellant setups (600 units = 3000 liters)
+The 'Ranger' series Regolith Sifter acts as much smaller (and less efficient) version of the industrial sifter, but can only sift out more common resources (concentrations above 2.5%).
+The Smelt-O-Matic has been joined by the Refine-O-Matic, which can handle Hydrates and Gypsum (i.e. better suited to life support)
+The Akademy now has a vessel type to fix a bug with tourism contracts
+Bumped up the funds kolonization rewards
+Updated description of demolition charge for better accuracy :)
+Removed research lab from the Pioneer Module due to issues with more than one lab on a vessel (and it is inferior to a stock sci lab)
+Upgraded the 'Ranger' comm lab's multiplier to compensate (it is now more in line with a stock lab, but less data storage and only one crew).  
+The Sunflower Portable Light Kit has both its proper spelling and its light...
+Deprecated MMIVA.cfg as it is no longer needed
+Gave a nice buff to the production of both surface and orbital ag modules
+Slight buff to the cultivator module's output.  Note that the cultivator is significantly more efficient with it's use of fertilizer!
+For OSE, removed all overrides other than changing the converter's resource chain to match the UKS chain.
+Added SpecializedParts to the EL Launchpad and Orbital Dock
+Removed Water/Substrate from the OKS Ag Module
+Added an auto-repair function to the OKS and MKS Workshops - just make sure they are staffed with an engineer, and maintenance will be performed daily!
+
 0.33.3 - 2016.02.03
 -------------------
 Reset default life support options to 'grouchiness'
