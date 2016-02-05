@@ -1,0 +1,381 @@
+0.33.2 - 2016.02.02
+-------------------
+Fixed an issue where warehouses were a bit greedy, resulting in ILMs pulling too many resources
+Kolony Rewards are now exponential and look at the entire vessel's crew
+Broke EL config into two configs - parts vs. resources
+Increased funds reward for kolonization
+Reverted the Duna-class model (sorry for any kraken'd fuel tanks!)
+Reduced the inflation tank crash tolerance to a reasonable level
+Moved the fuel refinery to 'Legacy'
+Reduced the Kerbitat recycler to a much more sane value for water
+
+0.33.1 - 2016.02.02
+-------------------
+Fixed Kerbitat node issues
+TAC-LS Recyclers no longer require machinery or replacement parts
+Added a probe core to the Light Globe part (to prevent it being culled)
+Added an OKS version of the inflatable workshop (texture decal is temporary)
+
+0.33.0 - 2016.02.01
+-------------------
+Planetary Logistics is now available.  This allows shared storage and retrieval of resources via the large MKS ILMs.  This is surface only.
+Kolonization Rewards are now available.  Active MKS colonies will now automatically provide funds, rep, and science based on the corresponding number of engineers, pilots, and scientists in your base and in MKS-enabled modules.
+Koloniation Bonuses are now available.  Visible via the new Kolonization icon, the longer your crew are on a planet (or in orbit, but at a reduced point), the further along kolonization will proceed.
+- Engineers grant bonuses to drills and engineering-based converters.
+- Scientitst grant bonuses to greenhouses and science-based converters.
+- Pilots grant a global habitation bonus (USI-LS only).
+Hydrates, Gypsum, and Dirt have been added to kontainers, and the RocketParts texture has been replaced with one for MaterialKits.
+Right-click scrapping now only has one option - Recyclables.
+Recyclables now produce SpecializedParts in addition to Metals, Chemicals, and Polymers.
+The Fuel Cell Array now acts as a power coupler.
+The stock ISRU module can now produce LH2 from Water
+Several textures have been converted to DDS
+The Fabricator now produces SpecializedParts instead of MaterialKits (the inflatable workshop can handle doing MaterialKits)
+A new Nuclear Fuel Processor module has been added, and incorproates the centrifuge and breeder functions of the old PDU.
+All Duna-class and Mark III modules are automatically power couplers (less parts!)
+Fixed a typo in the landing stabilizer's name
+Optimized the Duna-class model for some slight perf increases
+Added a probe core with EC usage to the anchor hub
+Reduced hab wear rate by 90%
+
+
+0.32.2 - 2016.01.20
+-------------------
+Updated TAC-LS configs to swap out USI-LS recyclers and fix an issue with the OKS Ag Module (Thanks jd284!)
+Fixed issue where negative supply values were not displaying.
+Wear and tear is disabled by default unless a mod opts to have it on.  The multiplier for this is also now included in the bundled configs.
+Corrected a typo on the Sunflower lighting kit
+Made OKS Ag Module resources visible in the VAB
+Removed extra texture that was causing some issues with the liquid tanks (round, cylinder, and saddle)
+Made salvaging have the same SpecializedParts ratio as those required by Extraplanetary Launchpads for ship construction
+Fixed issues with the EL config that resulted in RocketParts still being required.  
+the refinery no longer produces RareMetals and ExoticMinerals as byproducts, these can now be directly mined.
+A new module, the Industrial Regolith Sifter, has been added.  This module can take Dirt and extract small quantities of all resources found on a planet.  It can also creat Fertilizer from Gypsum, and Water from Hydrates.  
+A new drill capable of extracting Hydrates, Gypsum, and Dirt has been added.
+The Kerbitat's Life Support recycler has been replaced with a Water Purifier.  When provided with water, it acts as a 90% Life Support recycler for USI-LS, making it the best one available.
+The PDU no longer has the breeder and centrifuge functions
+The larger ILMs now act as warehouses for Planetary Logistics.
+The smaller ISMs now act as Distribution Warehouses.
+Crew no longer need to be present inside of an MKS or OKS ag module for it to function at top efficiency.  Their efficiency caps have also been removed.
+All Duna modules, Mk-III modules, and the Scout command pod have built in power couplers.
+
+0.32.1 - 2016.01.19
+--------------------
+Updated archive to include missing files
+
+0.32.0.0 - 2016.01.18
+---------------------
+Added USI-LS habitation support to relevant modules. 
+Added several new components to aid in base setup:
+- A portable light kit
+- Landing stabilizers
+- A retractable sky crane
+- Inflatable fuel tanks (with option to jettison contents)
+- A small caster wheel to aid in moving modules 
+Updated various shared components
+Fixed several cost discrepancies (thanks fat-lobyte!)
+Added a small starter reactor to the MKS PDU
+Removed the MKS and OKS legacy PDUs
+There has been a major cleanup of the logistics logic.  Older mechanics have been consolidated or replaced with Scavanging, Power Distribution, Resource Distribution, and Distributed Warehouses.  See the forum thread for details.
+All logistics logic has been moved over to USITools so it can be shared with some of the other non-core mods.
+Default logistics times are 5 seconds for resources and power, and 10 seconds for warehouse distribution
+MKS-Lite will not be shown if UKS is installed.
+The shared Kolonization DLL and associated configs has been moved to make sharing it easier.
+UKS now installs in a 'UKS' folder - separate from Kolonization.  This will make sharing the core colony stuff a bit easier.
+Efficiency now updates when you move crew - no need to restart converters.
+Deprecated Tweakscale support
+Cleaned up a few assets
+The PDU and Fuel Refinery now allow their EnrichedUranium to be transferred out during maintenance, and will try to pull in DepletedFuel for their fuel recyclers.
+The saddle tank has had it's mass reduced from 0.4 to 0.15 tons
+When Extraplanetary Launchpads is present, RocketParts are replaced by a combination of SpecializedParts and MaterialKits in the resource chain.
+When USI-LS is used, recyclers and habitation rules are in effect.  Supply consumption is also drastically increased.  Penalties for EVA loss and starvation have also been increased.  You can alter these by changing USI-LS.cfg in the Kolonization folder.
+Inflatables now set to no crew capacity when deflated.  You cannot deflate a module that contains Kerbals.
+Module/Mobile bases have had their KIS storage reduced to 2500.  No more bags of holding.
+Inflatables have had their KIS volume trimmed from 1250 to 1000 to make using KIS storage boxes easier
+Hab modules, Ag modules, and the Scout lander pod act as basic life support recyclers.
+Aeroponic and Kerbitat modules act as advanced life support recyclers.
+The Pioneer module comes with a colony-grade life support recycler.
+Note that all life support recyclers have cumulative effects - it's always good to add more, and there is no penalty for mixing types.
+Habs can be repaired via the perform maintenance option.  This requires MaterialKits.
+Organics have been deprecated.  All converters now go straight to supplies.
+The Kerbitat now serves as the best Habitation Multiplier for USI_LS, and a mid-range recycler.  
+The Pioneer Module now serves as the best life support recycler, and also acts as a resource distributor for resource logistics (if a pilot is on board).
+The Aeroponics Module has been trimmed down to a single module (cultivation), allowing for the conversion of substrate, water, and fertilizer directly into supplies.  It also includes some habitat bonuses (plants are good!) and a mid-range life support recycler.
+The MKS and OKS Agriculture Modules now only have the Agroponics Module (Mulch+Fertilizer=Supplies).  Organics are depredated.  Also includes a basic life support recycler, and still works as efficiency parts for the aeroponics modules.
+The MKS and OKS Hab Module/Hab Ring no longer has a converter, but instead works to extend the habitation capacity of your base.
+A rudimentary TAC-LS config is included.  This config is probably wrong.  Hopefully someone with more TAC-LS experience can send a pull request :)
+Inflatable Ag Modules now have crew capacity, so you can transfer crew to work in them.  Also, for best efficiency in agriculture modules, use a Scientist not an Engineer (though Engineers are a decent second choice).
+Fixed the top node of the Duna class colony modules
+De-bundled all of the core dependencies - these are now bundled with the Kolonization parent mod.  This should make MKS-specific updates a lot easier to download.
+
+0.31.12.0 - 2015.11.10
+----------------------
+From jberkman:
+- Moved 6 way anchor hub to correct CTT node 
+From mhoram:
+- Added a helpful pull request note to the readme
+From pjwerneck:
+- Fixed texture issue on PDU
+From fmatosqg:
+- Fixed typos in drill descriptions
+From smjjames:
+- Added radiator recommendations to descriptions in USI-ReactorNFE
+Other changes:
+- KSP 1.0.5 compatibility
+- Broke out separate category tabs for MKS-LITe vs UKS
+
+0.31.11.2 - 2015.10.18
+--------------------
+Fixed KIS config of the anchor hub
+
+0.31.11.1 - 2015.10.18
+----------------------
+Quick patch to fix the attachment nodes on the anchor hub
+
+0.31.11 - 2015.10.16
+--------------------
+From Mhoram:
+- Fixed several typos
+- Made fertilizer available in the OKS ILMs
+- Take TAC-LS resource consumption into account when displaying base stats
+From Seb E:
+- Fixed issue with efficiency part as root part
+From Jberkman
+- Fixed several typos 
+Other changes:
+- Update core dependencies (USICore/MM)
+- Inflatable Workshop now requires only one Kerbal to operate for OSE Workshop
+- Removed Kontainers from CTT config as these are now part of USICore
+- Updated tube, ISM, and anchor models (less explodey)
+- Lowered KIS volume of various components
+- Replaced DepletedUranium with DepletedFuel
+
+
+0.31.10 - 2015.09.22
+--------------------
+All Kontainers and mini-ILMs are now EVA repaintable
+Added numeric decals to the mini ILM to aid in repainting
+Added a handy KIS 'saddle bag' to Kontainers, hods 500L
+Converted Kontainer images to DDS
+Added alternate nodes to the rigid tube to better connect with ball hubs, etc.
+Added a new anchor hub - this small hub is KIS storable, can be anchored to the ground, and works very well if you want to make a base with 100% KIS components (this would be your root part)
+Adjusted the regolith sifter - the resource threshold has been removed at the expense of efficiency, making this a much more viable first harvesting part.
+Adjusted several colliders to add a bit more leeway for ground contact
+Added 6-way station hub (thanks Enceos!)
+
+
+
+0.31.9 - 2015.09.21
+-------------------
+Adjusted Duna Module collider to allow for easier selection of crew hatch
+Correctly moved the OKS PDU to Legacy
+Lowered mass and cost of the Mk-V ILM
+Corrected missing decals on the Duna base module
+
+0.31.8 - 2015.09.19
+-------------------
+More community fixes!
+
+Fom Gnurfos:
+- Allow EPL workshops to drain RocketParts through logistics
+- Minor fix to the description of MK3 refinery
+
+From mhoram:
+- Fix small issues with rover logistics
+- Add ModuleFieldRepair to nukes to enable Maintenance
+
+And other fixes!
+- Corected hatches and colliders on MKS Module
+- Fixed ModuleBase feet
+- Fixed missing light animations for inflatable parts
+- Added light emmissive to docking port
+- Changed demo block's context menus to avoid confusion
+- Added box collider to the bubble hub
+- Reduced drill mass to be inline with stock
+- The Akademy is now a lot heavier - 6.5 tons - since most modules get their weight from added machinery.
+- Separated senders and receivers for power generation.  A PowerDistributor can distribute power via a PowerCoupler.  Both have separate ranges and can be on the same part.
+- The Power pack is a short range PowerDistributor and PowerCoupler.  So it can power up devices within 500m.
+- The (new) PDU also has both PowerDistributor and PowerCoupler capabilities, but has a very long distribution range (15km).  PDUs should be the 'Hub' in a hub and spoke base design.  It als takes on the centrifuge and breeder functions of the fuel refinery.
+- THE MKS AND OKS PDU MODULES SHOULD BE CONSIDERED LEGACY AND WILL BE DEPRECATED WITH KSP 1.1
+- Separated logistics from MKS efficiency, so you can now easily have parts that are not MKS modules subscribe to rover logistics and power distribution.  This module is added to all MKS modules and stock drills.
+
+0.31.7 - 2015.09.17
+-------------------
+First off - a ton of community fixes in this one.  Thanks so much for helping out!
+
+Fixes and updates from mhoram:
+- Updated the OctoLander's Connected Living Space config
+- Created Connected Living Space configs for the Mk-V modules
+- Removed references to no longer existing parts
+- Fixed an issue with the OctoLander CoM offset
+- Correct inconsistent FSFuelSwitch mass definitions.
+- Updates to the Resource Overview
+- Adjust Recyclables DumpExcess behaviour for TAC-LS
+- Remove Rover Logistics Resource Oscillation
+
+Fixes and Updates from geoffromer:
+- Fixed NaN bugs in Orbital Logistics
+- Added transfer time display to the new transfer window
+- Fix typos in logic for determining source and destination situations.
+- Fixed radian conversion bug in Orbital Logistics
+
+Fixes from fmatosqg:
+- Fix TAC-LS file for MKV: needed machinery must match available space
+
+Fixes from Kerbas-ad-astra:
+- Corrected bunlkeadProfiles
+
+I did a few things too :)
+- Updated USI Tools version
+- Added a new 'demolition pack' part, that allows you to destroy whole vessels, sub-trees of parts, or arbitrarily destroy any part.  KIS compatible.
+- Added a new set of nuclear reactors in 0.625/1.25/2.5/3.75 form factors.  HELP WANTED:  I would love to see a pull request with an MM config for NFE!
+- Added alternate configs for OSE Workshop that utilizes MKS style chains, and adds workshop capabilities to both the Mk-V and Mk-III workshops.
+- The Logistics Rover now has emissive effects
+- The original Mk-II Aeroponics, Kerbitat, and Pioneer modules have been replaced by the slick new 'Duna' series modules (I'll be deprecating the Mk-x designations over time because they are a bit confusing).  This newer module is meant to stack in-line with the Karibou, or be used *without* a module base.  The radial nodes are dual-sized, one for connecting to other parts, and an inset node for accepting Mk-V modules.  The Duna series modules can be put in a 3.75m fairing either horizontally or vertically!  This module also has dual flag transforms, and the floodlights (four light sources) have been replaced with a single light source to help reduce lag.
+- The Bahamuto style drills have been replaced with reskinned stock drills.  NOTE!!! THIS WILL CAUSE SHIPS WITH THE OLD DRILLS TO LEAP INTO THE AIR!!! DETACH OLD DRILLS OR HILARITY MAY ENSUE!
+- All of the MK-V inflatables now light up!
+- Modified the Module and Mobile base parts to be compatible with the Duna series modules.  
+
+
+0.31.6 - 2015.07.29
+-------------------
+Updated to CRP 0.4.4
+Made the MDS visible... again.
+Adjusted module order on the Akademy (should fix some right click menu issues)
+All MK-III's have internal access to KIS storage
+Drills moved under USI Kolonization Division so they should show up properly now
+Fixed round tank names
+Fixed fuel quantity in the 5m tank
+
+0.31.5 - 2015.07.16
+-------------------
+Converted Kontainers to use scale vs rescaleFactor
+Added 5m Kontainers
+Added KIS Kontainers
+Reintroduced the MDS with a pair of attachment nodes
+Fixed issue where orbital stations needed to be 'landed'
+Added seven sizes of round tanks
+Added internal KIS access to Mk-II base modules
+Moved all MKS and Kontainer parts out of Utility as they now have custom tabs
+Added control capability to all MK-III modules
+Added KIS storage to the Koala lander
+Added biome scanner capability to the ScanOMatic
+
+
+0.31.4 - 2015.06.26
+-------------------
+Reduced the insane SAS of the Logistics Rover (no more sick flips)
+Fixed issue with base mass of the supply pack
+AntennaRange compatibility for the comm lab
+Various bulkhead profile and temperature fixes
+MKS/OKS Workspaces and the MK-V Workshop now have EL Productivity of 2
+Fixed an NRE bug with the Akademy
+
+
+0.31.3 - 2015.06.23
+-------------------
+For orbital bases, the OKS Workspace counts as an efficiency part for the MK-III Refinery and Fabricator.
+Automated Life Support distribution now includes Food, Water, and Oxygen for TAC-LS compatibility.
+The Akademy now includes a high-capacity research center.  Same stats as the MPL but three times the data and science storage, and requires two crew to operate.
+MKS Aeroponics had cultivator efficiency reduced to only slightly better than OKS cultivation.
+Fixed TAC-LS Kerbitat food conversion rate.
+Updated descriptions to include new efficiency parts.
+Fixed negative costs with 3.75m Kontainers.
+Corrected some of the TAC-LS converters.
+Logistics Rovers must be under 3 tons in order to be operational.
+
+
+0.31.2 - 2015.06.21
+-------------------
+Updated CTT to reflect new modules
+Created custom categories for Colonization and Freight
+Lowered Power Pak fuel usage and fuel capacity by 90%
+Fixed TAC-LS configs... again.
+Defaulted tech node for all MK-V stuff to Advanced Construction if you're just using the stock tech tree (boo! use CTT!)
+Reduced capacity of supply pak by 50% (no bags of holding!)
+Tweaked down Ore storage capacities (5L v 1L)
+Bumped up the cost of the radial MK-V modules
+CommPak now has RT support
+Added liquid tanks in a MK-V form factor
+Fixed collision issue with inflating hab module
+Corrected invalid animation in AuxCon
+Fixed typo preventing Fertilizer from showing up in the supply paks
+Fixed incorrect workshop converter ratios
+
+
+0.31.1 - 2015.06.18
+-------------------
+Removed legacy folders since it turns out 0.31.x is save breaking.
+Added colored markers to the hab and workshop inflatables to aid in identification while deflated
+Tweaked the Agroponics converter vaules
+Fixed texture issue with reactors
+Updated TAC-LS configs
+Added KAS stortage to the Koala lander
+
+0.31.0 - 2015.06.18
+-------------------
+Fixed most of the log spam with the colony overview window. 
+ScanOMatic Soil Sampler shows surface concentrations of all MKS resources
+Rebalanced the greenhouse module:
+- A USI-LS greenhouse or pioneer module operates at 50% efficiency
+- A Mk-V Ag Module operates at 75% efficiency
+- An Aeroponics Module operates at 90% efficiency
+MK-V Ag Modules and the Aeroponics Module have a new converter called 'Agroponics'.  This adds fertilizer as an input (25% of the mulch amount) but in return grants a lossless conversion.
+Added Fertilizer to various containers
+Added Mulch storage to the Pioneer modules
+Added Monoprop and LiquidFuel storage tanks
+Fixed mass issue with water conversion
+Fixed various cost issues
+Temprarily removed the MDS part as it needs a rework
+The HabDome, Agriculture Module, and Radial tank have been deprecated to 'Legacy'.  The Hab and Ag modules are replaced by Mk-V equivelants, and the radial tank is replaced by Kontainers.
+The Fuel refinery now requires a Mk-V Mini-Lab as an efficiency part.
+The Fabricator now requires a Mk-V Workshop as an efficiency part.
+The Refinery now requires a Mk-V Sifter or Smelter as an efficiency part (either work)
+Mobile and Module Bases now have attachment nodes
+Efficiency Parts can now span disconnected ships
+PDUs, when crewed by an engineer, can transmit power
+Scrap Parts can now either be scrapped into recycleables or cannibalized for SpecializedParts
+Removed Anchor/Dampener functionality as it is no longer needed with the disconnected base logistics
+Added fertilizer and mulch to the OKS AgModule 
+Added EL Workspace and KerbalStats configs
+Added Filter Extension support for the octagonal profile
+Added placeholder IVA for Akademy
+Added storage for Machinery,Recyclables,SpecializedParts and Fertilizer to Kontainers
+Changed Tank texture/model
+Added new parts:
+- Mini Rover - when crewed by a pilot enables disconnected resource transfers
+- Ag Module (replaces the old Ag Module) - can independently create organics
+- Airlock - serves as a vessel entry point
+- Auxiliary Control - adds a radial command pod
+- BallHub - structural connector
+- Mini-Lab/Comms - Small low efficiency science lab and antenna
+- Hab Module (replaces the old HabDome) - can convert organics to supplies
+- Mini-ILM (small radial ILM)
+- 'Koala' Lander (lighter than the module base, four MK-V attachment points)
+- Mount-Point - Battery and surface attachment point
+- 'Scout' pod - 2-man pod with built in avionics
+- Power Pak - Depletable RTG and power distribution module
+- Regolith Sifter - allows for basic resource harvesting, also an efficiency part
+- SmeltOMatic - converts resources to raw materials, also an efficiency part
+- Supply-Pak - Radial storage container
+- Workshop - Allows basic fabrication, also an efficiency part
+
+
+0.30.3 - 2015.05.02
+-------------------
+Added Changelog file
+Fixed some log spam
+Bundled new Kontainers/Tanks
+Removed surface attach from Oct-3.75 adapter
+Fixed various cost issues
+Fixed missing textures for OKS ILM
+Fuel refinery now has Uraninite and DepletedUranium conversion capabilities
+
+Advanced Logistics:
+* A PDU with an engineer can now transfer EC for the use of converters
+  to disconnected ships within 2KM.
+* If a converter module is within 150m of an MKS workspace module with a pilot, 
+  converter inputs will be retrieved from disconnected ships up to 750km away.
+* When using the context menu to perform maintenance, ships within 500m will be 
+  considered when looking for resources to store or retrieve.
+
