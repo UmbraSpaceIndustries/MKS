@@ -1,3 +1,8 @@
+0.1.5 - 2016.02.05
+------------------
+Added support for Blizzy's Toolbar (thanks nanathan!)
+Bumped up the funds kolonization rewards
+
 0.1.4 - 2016.02.03
 ------------------
 Reset default life support options to 'grouchiness'
