@@ -1,3 +1,18 @@
+0.33.5 - 2016.02.08
+-------------------
+Added Added three new setups: Raw Materials 2 (Ore, Uraninite); Industrial Goods (RareMetals, ExoticMinerals, SpecializedParts); Nuclear Fuels (EnrichedUranium, DepletedFuel) (thanks LouisB3!)
+Fixed typo on fabricator buttons
+Beefed up joints on all MK-3 Modules
+Machinery now only takes 10% specialized parts
+Fabricator's Recycler module adjusted to new ratio (3/3/3/1)
+MaterialKits no longer require specialized parts to make
+Added new resources to the Scan-O-Matic
+The large drills can now harvest exoticMinerals and rareMetals - if the abundance is 5% or greater (otherwise you will need to use a sifter).
+Module Delivery System is now available in career
+Fixed issue with 0% efficiency drills
+Planetary Storage should properly store now
+Added two new dirt drills - a mini one suitable for the Ranger series, and a large strip miner
+
 0.33.4 - 2016.02.05
 -------------------
 Added support for Blizzy's Toolbar (thanks nanathan!)
