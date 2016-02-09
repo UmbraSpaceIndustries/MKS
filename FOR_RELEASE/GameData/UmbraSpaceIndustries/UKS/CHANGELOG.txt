@@ -1,3 +1,12 @@
+0.33.6 - 2016.02.08
+-------------------
+Updated the kolonization GUI to show percentages vs. raw numbers
+Increased the rate at which efficiency multipliers are gained
+Moved USI-LS config file so we can have separate configs for UKS vs MKS-Lite
+Consolidated UKS/MKS-Lite TAC-LS and Scrapping configs between MKS-Lite and UKS
+Moved the original UKS saddle and supply tanks to legacy
+The 'Ranger' series workshop is no longer a warehouse, to prevent it's machinery from being 'borrowed'
+
 0.33.5 - 2016.02.08
 -------------------
 Added Added three new setups: Raw Materials 2 (Ore, Uraninite); Industrial Goods (RareMetals, ExoticMinerals, SpecializedParts); Nuclear Fuels (EnrichedUranium, DepletedFuel) (thanks LouisB3!)
