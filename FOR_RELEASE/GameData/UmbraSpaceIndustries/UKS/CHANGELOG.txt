@@ -1,3 +1,20 @@
+0.33.7 - 2016.02.13
+-------------------
+Fixed texture reference in cylindrical tanks (Thanks LouisB3!)
+Added a surface attach option for all reactors
+Adjusted mass and crash tolerance of all containers for consistency
+Increased LqdHydrogen storage to be more in line with stock tank mass ratios
+Fixed missing radial tank textures
+Fixed OKS Kerbitat water consumption ratio (Thanks fat-lobyte!)
+Fixed issue where some modules were not counting life support
+Removed ReplacementParts (i.e. wear and tear) from recyclers
+Logistics Rover now includes a power coupler
+Fixed KIS volume for the ball hub
+Added new resource to the scan-o-matic and planetary scanner
+Fixed some issues with the 'Ranger' size regolith sifter
+Removed flag decals from Duna modules
+Fixed the KIS settings for the FlexOTube
+
 0.33.6 - 2016.02.08
 -------------------
 Updated the kolonization GUI to show percentages vs. raw numbers

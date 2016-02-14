@@ -1,3 +1,11 @@
+0.1.7 - 2016.02.13
+------------------
+Fixed texture reference in cylindrical tanks (Thanks LouisB3!)
+Added a surface attach option for all reactors
+Adjusted mass and crash tolerance of all containers for consistency
+Increased LqdHydrogen storage to be more in line with stock tank mass ratios
+Fixed missing radial tank textures
+
 0.1.6 - 2016.02.08
 ------------------
 Added the mini radial tanks from UKS/MKS-Lite to Core
