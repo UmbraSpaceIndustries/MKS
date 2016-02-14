@@ -1,3 +1,8 @@
+0.1.8 - 2016.02.13
+------------------
+Updated dependencies
+Added dirt drills, landing wheels, landing stabilizers, the light globe, inflation tank, and skycrane to Kolonization for sharing between MKS-Lite and UKS.
+
 0.1.7 - 2016.02.08
 ------------------
 Updated the kolonization GUI to show percentages vs. raw numbers
