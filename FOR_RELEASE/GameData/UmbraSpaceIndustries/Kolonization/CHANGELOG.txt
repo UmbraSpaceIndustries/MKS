@@ -1,3 +1,32 @@
+0.1.8 - 2016.02.13
+------------------
+Updated dependencies
+Added dirt drills, landing wheels, landing stabilizers, the light globe, inflation tank, and skycrane to Kolonization for sharing between MKS-Lite and UKS.
+
+0.1.7 - 2016.02.08
+------------------
+Updated the kolonization GUI to show percentages vs. raw numbers
+Increased the rate at which efficiency multipliers are gained
+Moved USI-LS config file so we can have separate configs for UKS vs MKS-Lite
+Consolidated UKS/MKS-Lite TAC-LS and Scrapping configs
+Added the mini radial tanks from UKS/MKS-Lite to Core
+Added Karborundum, XenonGas, ArgonGas to cylindrical kontainer tanks (thanks LouisB3!)
+
+0.1.6 - 2016.02.08
+------------------
+Fixed issue with 0% efficiency drills
+Planetary Storage should properly store now
+Added two new dirt drills - a mini one suitable for the Ranger series, and a large strip miner
+
+0.1.5 - 2016.02.05
+------------------
+Added support for Blizzy's Toolbar (thanks nanathan!)
+Bumped up the funds kolonization rewards
+
+0.1.4 - 2016.02.03
+------------------
+Reset default life support options to 'grouchiness'
+
 0.1.3 - 2016.02.02
 ------------------
 Rewards are now exponential and look at the entire vessel's crew
