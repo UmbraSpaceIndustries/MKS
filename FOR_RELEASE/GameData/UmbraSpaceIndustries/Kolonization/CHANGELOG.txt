@@ -1,3 +1,7 @@
+0.1.9 - 2016.02.14
+-------------------
+Fixed the location of several models
+
 0.1.8 - 2016.02.13
 ------------------
 Updated dependencies
