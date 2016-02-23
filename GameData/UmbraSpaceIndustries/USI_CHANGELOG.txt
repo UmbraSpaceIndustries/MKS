@@ -1,0 +1,16 @@
+0.5.2 - 2015.10.16
+Moved nuclear reactors to Advanced Science Tech in the stock tech tree, and Nuclear Power/ Large Nuclear Power in CTT
+Bundled container CTT configs from MKS
+Moved KIS kontainers into appropriate CTT nodes
+Swapped DepletedUranium for DepletedFuel in reactors and containers
+
+0.5.1 - 2015.10.06
+-------------------
+Consolidated tanks and added alternate textures
+
+0.5.0 - 2015.10.06
+------------------
+Merged nuke reactors and kontainers into the core USI mod
+Increased LH2 amnount in all containers
+Added containers for Karborundum, Xenon, and Argon
+Increased nuke output and mass
