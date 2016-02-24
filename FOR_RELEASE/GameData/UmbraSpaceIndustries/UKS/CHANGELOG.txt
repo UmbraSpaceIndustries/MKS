@@ -1,3 +1,11 @@
+0.33.9 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Field Repair added to the OKS Ag Module and Hab Ring (thanks bennord!)
+Kontainer price fixes (thanks zajc3w!)
+
 0.33.8 - 2016.02.14
 -------------------
 Fixed the location of several models

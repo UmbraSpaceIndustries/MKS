@@ -1,3 +1,9 @@
+0.1.8 - 2016.03.02
+------------------
+Dependency Updates
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Kontainer price fixes (thanks zajc3w!)
+
 0.1.7 - 2016.02.13
 ------------------
 Fixed texture reference in cylindrical tanks (Thanks LouisB3!)
