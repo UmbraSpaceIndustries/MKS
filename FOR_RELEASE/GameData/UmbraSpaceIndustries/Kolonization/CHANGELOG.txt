@@ -1,3 +1,11 @@
+0.1.10 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Kontainer price fixes (thanks zajc3w!)
+Various fixes to EL resources (thanks jd284!)
+
 0.1.9 - 2016.02.14
 -------------------
 Fixed the location of several models
