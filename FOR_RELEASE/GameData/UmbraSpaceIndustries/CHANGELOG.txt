@@ -1,3 +1,8 @@
+0.2.0 - TBD
+-----------
+Compatibility with KSP 1.1
+Updated NFE configs (thanks Businfu!)
+
 0.1.8 - 2016.03.02
 ------------------
 Dependency Updates

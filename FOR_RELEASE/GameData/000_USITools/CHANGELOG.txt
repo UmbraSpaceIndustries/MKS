@@ -1,3 +1,9 @@
+0.7.0 - TBD
+------------------
+Compatibility with KSP 1.1
+Moved out DynamicTanks DLL to ART
+Info text / GUI text for Power Distributors, Couplers, and Warehouses (thanks bennord!)
+
 0.6.3 - 2016.03.02
 ------------------
 Logistics pulls are now restricted to warehouses

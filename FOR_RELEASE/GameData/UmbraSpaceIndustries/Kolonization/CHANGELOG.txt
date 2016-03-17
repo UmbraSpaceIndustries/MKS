@@ -1,3 +1,9 @@
+0.2.0 - TBD
+-----------
+Compatibility with KSP 1.1
+Dependency Updates
+With the advent of part search, moved all USI parts back to standard categories
+
 0.1.10 - 2016.03.02
 ------------------
 Logistics pulls are now restricted to warehouses
