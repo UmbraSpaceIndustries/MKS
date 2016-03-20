@@ -3,6 +3,14 @@
 Compatibility with KSP 1.1
 Dependency Updates
 With the advent of part search, moved all USI parts back to standard categories
+Planetary Storage and Warehouse Distribution now respect disabled warehouses
+Warehouses are disabled by default
+LightGlobe is now a logistics consumer
+Fixed PDU reactor to not produce too much depleted fuel
+Dirt auto-jettison is now based on a positive Periapsis
+PDU now includes ModuleFieldRepair for refueling it's reactor
+Added ReplacementParts recipe for EL
+Fixed an issue where overflow was not properly transfering into planetary logistics during long catch-up mechanics
 
 0.33.9 - 2016.03.02
 ------------------
