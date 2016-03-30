@@ -1,4 +1,4 @@
-0.2.0 - TBD
+0.2.0 - 2016.03.29
 -----------
 Compatibility with KSP 1.1
 Updated NFE configs (thanks Businfu!)
