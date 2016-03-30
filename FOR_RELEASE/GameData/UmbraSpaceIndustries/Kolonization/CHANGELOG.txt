@@ -1,3 +1,15 @@
+0.2.0 - 2016.03.29
+-----------
+Compatibility with KSP 1.1
+Dependency Updates
+With the advent of part search, moved all USI parts back to standard categories
+Planetary Storage and Warehouse Distribution now respect disabled warehouses
+Warehouses are disabled by default
+LightGlobe is now a logistics consumer
+Dirt auto-jettison is now based on a positive Periapsis
+Added ReplacementParts recipe for EL
+Fixed an issue where overflow was not properly transfering into planetary logistics during long catch-up mechanics
+
 0.1.10 - 2016.03.02
 ------------------
 Logistics pulls are now restricted to warehouses
