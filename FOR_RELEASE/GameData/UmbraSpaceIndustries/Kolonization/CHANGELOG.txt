@@ -1,3 +1,47 @@
+0.2.0 - 2016.03.29
+-----------
+Compatibility with KSP 1.1
+Dependency Updates
+With the advent of part search, moved all USI parts back to standard categories
+Planetary Storage and Warehouse Distribution now respect disabled warehouses
+Warehouses are disabled by default
+LightGlobe is now a logistics consumer
+Dirt auto-jettison is now based on a positive Periapsis
+Added ReplacementParts recipe for EL
+Fixed an issue where overflow was not properly transfering into planetary logistics during long catch-up mechanics
+
+0.1.10 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Kontainer price fixes (thanks zajc3w!)
+Various fixes to EL resources (thanks jd284!)
+
+0.1.9 - 2016.02.14
+-------------------
+Fixed the location of several models
+
+0.1.8 - 2016.02.13
+------------------
+Updated dependencies
+Added dirt drills, landing wheels, landing stabilizers, the light globe, inflation tank, and skycrane to Kolonization for sharing between MKS-Lite and UKS.
+
+0.1.7 - 2016.02.08
+------------------
+Updated the kolonization GUI to show percentages vs. raw numbers
+Increased the rate at which efficiency multipliers are gained
+Moved USI-LS config file so we can have separate configs for UKS vs MKS-Lite
+Consolidated UKS/MKS-Lite TAC-LS and Scrapping configs
+Added the mini radial tanks from UKS/MKS-Lite to Core
+Added Karborundum, XenonGas, ArgonGas to cylindrical kontainer tanks (thanks LouisB3!)
+
+0.1.6 - 2016.02.08
+------------------
+Fixed issue with 0% efficiency drills
+Planetary Storage should properly store now
+Added two new dirt drills - a mini one suitable for the Ranger series, and a large strip miner
+
 0.1.5 - 2016.02.05
 ------------------
 Added support for Blizzy's Toolbar (thanks nanathan!)

@@ -1,3 +1,73 @@
+0.40.0 - 2016.03.29
+---------------
+Compatibility with KSP 1.1
+Dependency Updates
+With the advent of part search, moved all USI parts back to standard categories
+Planetary Storage and Warehouse Distribution now respect disabled warehouses
+Warehouses are disabled by default
+LightGlobe is now a logistics consumer
+Fixed PDU reactor to not produce too much depleted fuel
+Dirt auto-jettison is now based on a positive Periapsis
+PDU now includes ModuleFieldRepair for refueling it's reactor
+Added ReplacementParts recipe for EL
+Fixed an issue where overflow was not properly transfering into planetary logistics during long catch-up mechanics
+
+0.33.9 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Field Repair added to the OKS Ag Module and Hab Ring (thanks bennord!)
+Kontainer price fixes (thanks zajc3w!)
+Fixed a typo in the antenna config (thanks frango9000!)
+Renamed the small Inflatable Logistics Module to Inflatable Storage Module
+Various fixes to EL resources (thanks jd284!)
+
+0.33.8 - 2016.02.14
+-------------------
+Fixed the location of several models
+
+0.33.7 - 2016.02.13
+-------------------
+Fixed texture reference in cylindrical tanks (Thanks LouisB3!)
+Added a surface attach option for all reactors
+Adjusted mass and crash tolerance of all containers for consistency
+Increased LqdHydrogen storage to be more in line with stock tank mass ratios
+Fixed missing radial tank textures
+Fixed OKS Kerbitat water consumption ratio (Thanks fat-lobyte!)
+Fixed issue where some modules were not counting life support
+Removed ReplacementParts (i.e. wear and tear) from recyclers
+Logistics Rover now includes a power coupler
+Fixed KIS volume for the ball hub
+Added new resource to the scan-o-matic and planetary scanner
+Fixed some issues with the 'Ranger' size regolith sifter
+Removed flag decals from Duna modules
+Fixed the KIS settings for the FlexOTube
+
+0.33.6 - 2016.02.08
+-------------------
+Updated the kolonization GUI to show percentages vs. raw numbers
+Increased the rate at which efficiency multipliers are gained
+Moved USI-LS config file so we can have separate configs for UKS vs MKS-Lite
+Consolidated UKS/MKS-Lite TAC-LS and Scrapping configs between MKS-Lite and UKS
+Moved the original UKS saddle and supply tanks to legacy
+The 'Ranger' series workshop is no longer a warehouse, to prevent it's machinery from being 'borrowed'
+
+0.33.5 - 2016.02.08
+-------------------
+Added Added three new setups: Raw Materials 2 (Ore, Uraninite); Industrial Goods (RareMetals, ExoticMinerals, SpecializedParts); Nuclear Fuels (EnrichedUranium, DepletedFuel) (thanks LouisB3!)
+Fixed typo on fabricator buttons
+Beefed up joints on all MK-3 Modules
+Machinery now only takes 10% specialized parts
+Fabricator's Recycler module adjusted to new ratio (3/3/3/1)
+MaterialKits no longer require specialized parts to make
+Added new resources to the Scan-O-Matic
+The large drills can now harvest exoticMinerals and rareMetals - if the abundance is 5% or greater (otherwise you will need to use a sifter).
+Module Delivery System is now available in career
+Fixed issue with 0% efficiency drills
+Planetary Storage should properly store now
+Added two new dirt drills - a mini one suitable for the Ranger series, and a large strip miner
+
 0.33.4 - 2016.02.05
 -------------------
 Added support for Blizzy's Toolbar (thanks nanathan!)

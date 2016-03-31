@@ -1,3 +1,28 @@
+0.2.0 - 2016.03.29
+-----------
+Compatibility with KSP 1.1
+Updated NFE configs (thanks Businfu!)
+Fixed 0.625m reactor to not produce too much depleted fuel
+
+0.1.8 - 2016.03.02
+------------------
+Dependency Updates
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Kontainer price fixes (thanks zajc3w!)
+
+0.1.7 - 2016.02.13
+------------------
+Fixed texture reference in cylindrical tanks (Thanks LouisB3!)
+Added a surface attach option for all reactors
+Adjusted mass and crash tolerance of all containers for consistency
+Increased LqdHydrogen storage to be more in line with stock tank mass ratios
+Fixed missing radial tank textures
+
+0.1.6 - 2016.02.08
+------------------
+Added the mini radial tanks from UKS/MKS-Lite to Core
+Added Karborundum, XenonGas, ArgonGas to cylindrical kontainer tanks (thanks LouisB3!)
+
 0.1.5 - 2016.02.01
 ------------------
 Hydrates, Gypsum, and Dirt have been added to kontainers, and the RocketParts texture has been replaced with one for MaterialKits.
