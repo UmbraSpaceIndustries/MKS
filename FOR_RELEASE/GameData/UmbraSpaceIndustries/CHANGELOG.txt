@@ -1,3 +1,8 @@
+0.2.2 - 2016.04.30
+------------------
+Dependency Updates
+Nuke fuel tank and Depleted Fuel Tank are now under nuclear fuel systems in CTT
+
 0.2.1 - 2016.04.16
 ------------------
 Improved CryoTanks Compatibility (Thanks LouisB3!)

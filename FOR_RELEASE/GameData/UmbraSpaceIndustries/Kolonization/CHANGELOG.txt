@@ -1,3 +1,8 @@
+0.2.2 - 2016.04.30
+------------------
+Dependency Updates
+Microwave antenna now has appropriate distributor/coupler modules
+
 0.2.1 - 2016.04.16
 ------------------
 Updated EL config (thanks carbotaniuman!)
