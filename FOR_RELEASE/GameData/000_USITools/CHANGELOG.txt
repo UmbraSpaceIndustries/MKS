@@ -1,3 +1,28 @@
+0.7.2.1 - 2016.04.30
+--------------------
+KSP 1.1.2 compatibility
+
+0.7.2 - 2016.04.30
+------------------
+Dependency Updates
+Maintenance no longer sees the maintained part as a potential warehouse
+Empty part categories no longer displayed
+
+0.7.1 - 2016.4.16
+-----------------
+Compatibility fixes for KSP 1.1
+
+0.7.0 - 2016.03.29
+------------------
+Compatibility with KSP 1.1
+Moved out DynamicTanks DLL to ART
+Info text / GUI text for Power Distributors, Couplers, and Warehouses (thanks bennord!)
+
+0.6.3 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+
 0.6.2 - 2016.02.05
 ------------------
 Added support for Blizzy's Toolbar (thanks nanathan!)

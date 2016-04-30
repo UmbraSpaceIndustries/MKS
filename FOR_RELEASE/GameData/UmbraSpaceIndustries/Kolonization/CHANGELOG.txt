@@ -1,3 +1,37 @@
+0.2.2.1 - 2016.04.30
+--------------------
+KSP 1.1.2 compatibility
+
+0.2.2 - 2016.04.30
+------------------
+Dependency Updates
+Microwave antenna now has appropriate distributor/coupler modules
+
+0.2.1 - 2016.04.16
+------------------
+Updated EL config (thanks carbotaniuman!)
+Better ISRU LH2 conversions (thanks LouisB3!)
+
+0.2.0 - 2016.03.29
+-----------
+Compatibility with KSP 1.1
+Dependency Updates
+With the advent of part search, moved all USI parts back to standard categories
+Planetary Storage and Warehouse Distribution now respect disabled warehouses
+Warehouses are disabled by default
+LightGlobe is now a logistics consumer
+Dirt auto-jettison is now based on a positive Periapsis
+Added ReplacementParts recipe for EL
+Fixed an issue where overflow was not properly transfering into planetary logistics during long catch-up mechanics
+
+0.1.10 - 2016.03.02
+------------------
+Logistics pulls are now restricted to warehouses
+Warehouses can be toggled
+3.75m and 5m kontainers and tanks are now distributed warehouses and participate in planetary logistics
+Kontainer price fixes (thanks zajc3w!)
+Various fixes to EL resources (thanks jd284!)
+
 0.1.9 - 2016.02.14
 -------------------
 Fixed the location of several models
