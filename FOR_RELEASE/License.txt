@@ -1,0 +1,7 @@
+(c) 2016, Robert Palmer
+
+Umbra Space Industries(tm), nor the name of this project may be used in a derivative work without permission.
+
+Configuration files and code are licensed under the GPL v3 license (included separately).
+
+Assets, including Models (*.mu) and Textures *.png/*.dds) are All Rights Reserved. If you wish to use any of these assets in your project, just ask nicely :)
