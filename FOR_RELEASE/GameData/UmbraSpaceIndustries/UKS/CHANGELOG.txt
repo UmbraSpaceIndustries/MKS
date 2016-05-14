@@ -1,3 +1,13 @@
+0.40.3 - 2016.05.14
+------------------
+Dependency Updates
+Small dirt drill moved to Advanced Construction 
+Adjusted living space parameter for the hab module
+Deprecated the Logistics Rover.  Pioneer Modules and other parts have the logistics capability.
+All parts no longer have duplicate catalog entries, and are only available in the kolonization category.
+EL parts are no longer hidden.  They will be a bit wonky tho, so you probably want to delete them.
+Nuke fuel processor had it's price fixed
+
 0.40.2.1 - 2016.04.30
 --------------------
 KSP 1.1.2 compatibility
