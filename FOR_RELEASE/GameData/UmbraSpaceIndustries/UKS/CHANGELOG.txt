@@ -1,3 +1,35 @@
+0.40.4 - 2016.05.28
+------------------
+Updates for KSP 1.1.3
+Ensured all parts with command capabilities are resource consumers
+Resource Distributors benefit from their own extended range when self-supplying
+Some normalization regarding power transmission range.  
+- The power pack is both a distributor and a coupler, with a 500 meter range.
+- The Auxiliary Command module is both a distributor and a coupler with a 500 meter range.
+- A new Power Box acts as both a distributor and coupler with a 500 meter range.
+- The PDU acts as both a distributor and coupler, with a 2000 meter range.
+- The Power Antenna acts as both a distributor and coupler, with a 2000 meter range.
+All Kontainers have had their prices fixed.
+Nuclear Fuels Kontainers and Supply Packs have been deprecated.  Use the dedicated nuclear fuel / depleted fuel tanks.
+New low-profile containers!  Stock-Alike for dry goods, and spherical clusters for liquids.  In sizes from 1.25m to 5m
+Bulk harvesters (i.e. sifters) now work without requiring other converters to be active.
+Removed some solid gold ingots that seem to have been left in the OKS hubs, and have significantly reduced their cost as a result.
+Fixed an issue where nuclear waste tanks started full.
+All transfer warehouses now default to ENABLED.
+The legacy Supply Pack and Saddle Tank (the ones I previously moved to USI Core) have been officially deprecated.
+The legacy Mini Rover has been officially deprecated.  Logistics capabilities have been provided in other modules.
+The following parts now count as colony parts for rewards purposes:
+- Training Akademy
+- MKS/OKS Pioneer Modules
+- Orbital Dock and Launchpad
+- MKS/OKS Kerbitats
+- MKS PDU
+- 'Ranger' Aux Con
+- 'Ranger' Crusher
+- 'Ranger' Comm-Lab
+- 'Scout' Pod
+
+
 0.40.3 - 2016.05.14
 ------------------
 Dependency Updates
