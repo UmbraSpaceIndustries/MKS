@@ -1,3 +1,11 @@
+0.2.4 - (KSP 1.1.3)
+------------------
+All Kontainers have had their prices fixed.
+Nuclear Fuels Kontainers and Supply Packs have been deprecated.  Use the dedicated nuclear fuel / depleted fuel tanks.
+New low-profile containers!  Stock-Alike for dry goods, and spherical clusters for liquids.  In sizes from 1.25m to 5m
+Fixed an issue where nuclear waste tanks started full.
+All transfer warehouses now default to ENABLED.
+
 0.2.3 - 2016.05.14
 ------------------
 Dependency Updates
