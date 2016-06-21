@@ -1,3 +1,14 @@
+0.5.4 - (KSP 1.1.3)
+------------------
+Update for KSP 1.1.3
+Updated cost of Plutonium
+Added Lithium6, Carbon, and Monazite
+Karborundum is now tweakable, and 4000 funds per unit (versus 400).
+The Kerbol Karburundum harvesting zone is back... now go find it :)
+Alumina and Monazite are now planetary resources.
+Hydrates are a bit more common.
+Added Glykerol (curated by DeepFreeze).
+
 0.5.2 - 2016.05.14
 ------------------
 Added Volume and reverted UF4 and ThF4 to original KSPI density & cost

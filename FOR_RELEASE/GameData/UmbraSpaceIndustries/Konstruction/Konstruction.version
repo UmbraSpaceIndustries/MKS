@@ -1,16 +1,16 @@
 {
-     "NAME":"USI Tools",
-	 "URL":"https://raw.githubusercontent.com/BobPalmer/UmbraSpaceIndustries/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/USICore.version",
-	 "DOWNLOAD":"https://github.com/BobPalmer/UmbraSpaceIndustries/releases",
+     "NAME":"Konstruction",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/Konstruction/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/Konstruction/Konstruction.version",
+	 "DOWNLOAD":"https://github.com/BobPalmer/Konstruction/releases",
      "GITHUB":{
          "USERNAME":"BobPalmer",
-         "REPOSITORY":"UmbraSpaceIndustries",
+         "REPOSITORY":"Konstruction",
          "ALLOW_PRE_RELEASE":false
      },
      "VERSION":{
          "MAJOR":0,
-         "MINOR":7,
-         "PATCH":4,
+         "MINOR":1,
+         "PATCH":0,
          "BUILD":0
      },
      "KSP_VERSION":{
@@ -20,8 +20,8 @@
      },
      "KSP_VERSION_MIN":{
          "MAJOR":1,
-         "MINOR":0,
-         "PATCH":0
+         "MINOR":1,
+         "PATCH":3
      },
      "KSP_VERSION_MAX":{
          "MAJOR":1,
