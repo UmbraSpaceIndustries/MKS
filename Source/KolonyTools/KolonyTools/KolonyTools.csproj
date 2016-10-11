@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{202CB284-B893-4B8A-B677-7658125CDBC9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KolonyTools</RootNamespace>
+    <AssemblyName>KolonyTools</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\MKS\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\OUTPUT\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="USITools">
+      <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddScenarioModules.cs" />
+    <Compile Include="Kolonization\KolonizationConfig.cs" />
+    <Compile Include="Kolonization\KolonizationSetup.cs" />
+    <Compile Include="MksAutoRepair.cs" />
+    <Compile Include="ModuleColonyRewards.cs" />
+    <Compile Include="OrbitalLogistics\ComboBox.cs" />
+    <Compile Include="OrbitalLogistics\MKSGui.cs" />
+    <Compile Include="OrbitalLogistics\MKSLExtensions.cs" />
+    <Compile Include="OrbitalLogistics\MKSLlocal.cs" />
+    <Compile Include="OrbitalLogistics\MKSLresource.cs" />
+    <Compile Include="OrbitalLogistics\MKSLtransfer.cs" />
+    <Compile Include="ModuleAutoJettisonTank.cs" />
+    <Compile Include="ModuleBulkConverter.cs" />
+    <Compile Include="Kolonization\KolonizationEntry.cs" />
+    <Compile Include="Kolonization\KolonizationManager.cs" />
+    <Compile Include="Kolonization\KolonizationMonitor.cs" />
+    <Compile Include="Kolonization\KolonizationPersistance.cs" />
+    <Compile Include="Kolonization\KolonizationScenario.cs" />
+    <Compile Include="MKSModule.cs" />
+    <Compile Include="OrbitalLogistics\MKSMainGui.cs" />
+    <Compile Include="OrbitalLogistics\MKSTransferCreateView.cs" />
+    <Compile Include="OrbitalLogistics\OrbitalLogistics.cs" />
+    <Compile Include="PlanetaryLogistics\ModulePlanetaryLogistics.cs" />
+    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsEntry.cs" />
+    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsManager.cs" />
+    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsMonitor.cs" />
+    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsPersistance.cs" />
+    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsScenario.cs" />
+    <Compile Include="ModuleEfficiencyPart.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StationManager\StationManager.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="OrbitalLogistics\Window.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="KolonySettings\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"D:\Games\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+Other similar extension points exist, see Microsoft.Common.targets.
+<Target Name="BeforeBuild">
+</Target>
+<Target Name="AfterBuild">
+</Target>
+-->
+</Project>

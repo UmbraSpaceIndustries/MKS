@@ -1,3 +1,10 @@
+0.3.0 - (KSP 1.2)
+------------------
+All Kontainers moved to the Logistics division (to support new category icons)
+All tanks now have a standard crash tolerance of 8m/s and are set to stock dry mass / volume ratios.
+Corrected volume of the containers (no more kontainers of holding)
+Dry Kontainers and Tanks now have five more resources - Silicates, Silicon, RefinedExotics, Organics, and ColonySupplies.
+
 0.2.4 - (KSP 1.1.3)
 ------------------
 All Kontainers have had their prices fixed.
