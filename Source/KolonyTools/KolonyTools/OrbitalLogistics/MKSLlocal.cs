@@ -23,27 +23,28 @@ namespace KolonyTools
 
         private MKSLogisticsMasterView _logisticsMasterView;
 
-        void Awake()
-        {
-            if (ToolbarManager.ToolbarAvailable)
-            {
-                this.orbLogTButton = ToolbarManager.Instance.add("UKS", "orbLog");
-                orbLogTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/OrbitalLogistics24";
-                orbLogTButton.ToolTip = "USI Orbital Logistics";
-                orbLogTButton.Enabled = true;
-                orbLogTButton.OnClick += (e) => { if (windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
-            }
-            else
-            {
-                var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
-                var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "OrbitalLogistics.png");
-                texture.LoadImage(File.ReadAllBytes(textureFile));
-                this.orbLogButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
-                    ApplicationLauncher.AppScenes.ALWAYS, texture);
-            }
-            KnownTransfers = new MKSLTranferList();
-            nextchecktime = Planetarium.GetUniversalTime() + 2;
-        }
+        //************** DISABLED FOR NOW
+        //void Awake()
+        //{
+        //    if (ToolbarManager.ToolbarAvailable)
+        //    {
+        //        this.orbLogTButton = ToolbarManager.Instance.add("UKS", "orbLog");
+        //        orbLogTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/OrbitalLogistics24";
+        //        orbLogTButton.ToolTip = "USI Orbital Logistics";
+        //        orbLogTButton.Enabled = true;
+        //        orbLogTButton.OnClick += (e) => { if (windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
+        //    }
+        //    else
+        //    {
+        //        var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
+        //        var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "OrbitalLogistics.png");
+        //        texture.LoadImage(File.ReadAllBytes(textureFile));
+        //        this.orbLogButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
+        //            ApplicationLauncher.AppScenes.ALWAYS, texture);
+        //    }
+        //    KnownTransfers = new MKSLTranferList();
+        //    nextchecktime = Planetarium.GetUniversalTime() + 2;
+        //}
 
         private void GuiOn()
         {

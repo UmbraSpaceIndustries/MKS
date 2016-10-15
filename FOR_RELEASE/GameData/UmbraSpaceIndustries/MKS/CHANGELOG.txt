@@ -1,3 +1,18 @@
+0.50.1 - 2016.10.15
+-------------------
+Corrected an issue where some modules were not auto-transferring resources
+Corrected an issue where modules were deactivating on scene change
+Corrected an issue where efficiency converters were not working properly
+Fixed several icon transparency issues
+The Salamander and Scout Lander are now in correct default tech tree nodes
+Fixed resource typo for minerals
+The Ranger Crusher and Smelter now have better colliders
+Modules that can take advantage of an Efficiency Part have their efficiency group listed in the VAB (i.e. Greenhouse, Crusher, Smelter).  these correspond to the efficiency converter on other parts (by convention shown in brackets - i.e. [Greenhouse])
+Station Manager and Orbital Logistics icons are gone for now while I work on their replacements.
+Fixed an issue that was causing a stack overflow crash when the HabRing was selected and USI-LS was not present.
+Added Salamander and Scout-II CTT Updates
+Globally reduced EC costs for swapping modules in flight
+
 0.50.0 - (KSP 1.2)
 ------------------
 Dependency Updates, and recompilation for KSP 1.2

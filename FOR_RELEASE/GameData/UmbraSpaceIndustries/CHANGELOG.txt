@@ -1,3 +1,7 @@
+0.3.1 - 2016.10.15
+------------------
+Fixes texture switch missing parameters (Thanks goldenpsp!)
+
 0.3.0 - (KSP 1.2)
 ------------------
 All Kontainers moved to the Logistics division (to support new category icons)
