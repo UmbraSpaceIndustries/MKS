@@ -1,3 +1,7 @@
+0.6.1 - 2016.10.15
+------------------
+Resorted KSPI resources alphabeticly, added abbreviation and Added LqdArgon, LqdFluorine, LqdNitrogen15, LqdOxygen18
+
 0.6.0 - (KSP 1.2)
 -------------------
 Added ARP icon data for RealFuels

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Kolonization;
 
 namespace KolonyTools
@@ -41,9 +42,9 @@ namespace KolonyTools
             {
                 _colonyConverterEff = curConverters;
                 _effPartTotal = curEParts;
-                GetEfficiency();
+                _efficiencyRate = GetEfficiency();
             }
-            return _efficiencyRate;
+            return 1d + _efficiencyRate;
         }
 
         private double GetActiveEParts()
@@ -76,20 +77,13 @@ namespace KolonyTools
                 LogisticsTools.GetNearbyVessels(EFF_RANGE, true, vessel, true)
                     .Where(v => v.FindPartModulesImplementing<MKSModule>().Any(m => m.eTag == eTag));
 
-            var validMods = new List<String>
-            {
-                "ModuleResourceConverter",
-                "ModuleResourceHarvester",
-                "ModuleBulkHarvester"
-            };
-
             foreach (var vsl in vList)
             {
-                var pList = vsl.FindPartModulesImplementing<BaseConverter>().Where(m => validMods.Contains(m.name));
+                var pList = vsl.FindPartModulesImplementing<BaseConverter>();
                 foreach (var p in pList)
                 {
                     var m = p.part.FindModuleImplementing<MKSModule>();
-                    if (m != null)
+                    if (m != null && m.eTag == eTag)
                     {
                         if (p.IsActivated)
                             totEff += (p.Efficiency * m.eMultiplier);
@@ -214,9 +208,21 @@ namespace KolonyTools
 
         private double GetEfficiency()
         {
-            var thisEff = part.FindModulesImplementing<BaseConverter>().Sum(p => p.Efficiency) * eMultiplier;
+            var thisEff = part.FindModulesImplementing<BaseConverter>().Where(m=>m.IsActivated).Sum(p => p.Efficiency) * eMultiplier;
             var alloc = _effPartTotal * thisEff / _colonyConverterEff;
             return alloc;
+        }
+
+
+        public override string GetInfo()
+        {
+            if (string.IsNullOrEmpty(eTag))
+                return string.Empty;
+
+            var output = new StringBuilder("");
+            output.Append(string.Format("Efficiency Tag: {0}\n", eTag));
+            output.Append(string.Format("Multiplier: {0:0.00}\n", eMultiplier));
+            return output.ToString();
         }
     }
 }

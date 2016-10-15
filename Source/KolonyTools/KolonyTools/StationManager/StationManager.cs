@@ -20,26 +20,26 @@ namespace KolonyTools
         //public static bool renderDisplay = false;
 
         private StationView _stationView;
-
-        void Awake()
-        {
-            if (ToolbarManager.ToolbarAvailable)
-            {
-                this.stationTButton = ToolbarManager.Instance.add("UKS", "stationManager");
-                stationTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/StationManager24";
-                stationTButton.ToolTip = "USI Station Manager";
-                stationTButton.Enabled = true;
-                stationTButton.OnClick += (e) => { if(windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
-            }
-            else
-            {
-                var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
-                var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "StationManager.png");
-                texture.LoadImage(System.IO.File.ReadAllBytes(textureFile));
-                this.stationButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
-                    ApplicationLauncher.AppScenes.ALWAYS, texture);
-            }
-        }
+        //*********************TURNING OFF FOR NOW
+        //void Awake()
+        //{
+        //    if (ToolbarManager.ToolbarAvailable)
+        //    {
+        //        this.stationTButton = ToolbarManager.Instance.add("UKS", "stationManager");
+        //        stationTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/StationManager24";
+        //        stationTButton.ToolTip = "USI Station Manager";
+        //        stationTButton.Enabled = true;
+        //        stationTButton.OnClick += (e) => { if(windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
+        //    }
+        //    else
+        //    {
+        //        var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
+        //        var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "StationManager.png");
+        //        texture.LoadImage(System.IO.File.ReadAllBytes(textureFile));
+        //        this.stationButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
+        //            ApplicationLauncher.AppScenes.ALWAYS, texture);
+        //    }
+        //}
 
         private void GuiOn()
         {
