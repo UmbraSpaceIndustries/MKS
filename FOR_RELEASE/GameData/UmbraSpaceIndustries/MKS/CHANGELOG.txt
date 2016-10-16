@@ -1,3 +1,10 @@
+0.50.2 - 2016.10.16
+-------------------
+Added a Ranger-style 6K battery 
+Added Mulch to the supply pack
+CTT Update!  (Thanks theRagingIrisman!)
+Fixed missing ResourceDistributor configs for the Pioneer and Logistics Centers
+
 0.50.1 - 2016.10.15
 -------------------
 Corrected an issue where some modules were not auto-transferring resources
