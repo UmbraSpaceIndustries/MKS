@@ -44,7 +44,7 @@ namespace PlanetaryLogistics
                         return;
 
                     var rCount = mod.part.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var res = mod.part.Resources[i];
                         LevelResources(mod.part, res.resourceName);

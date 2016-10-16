@@ -27,7 +27,7 @@ namespace KolonyTools
                 foreach (var p in vessel.Parts)
                 {
                     var rCount = p.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var res = p.Resources[i];
                         vResList.Add(res);
@@ -58,7 +58,7 @@ namespace KolonyTools
                 foreach (var p in vessel.Parts)
                 {
                     var rCount = p.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var res = p.Resources[i];
                         vResList.Add(res);
@@ -79,7 +79,7 @@ namespace KolonyTools
             foreach (var p in vessel.Parts)
             {
                 var rCount = p.Resources.Count;
-                for (int i = 0; 0 < rCount; ++i)
+                for (int i = 0; i < rCount; ++i)
                 {
                     var res = p.Resources[i];
                     vResList.Add(res);
@@ -189,7 +189,7 @@ namespace KolonyTools
                         break;
                     }
                     var rCount = p.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var r = p.Resources[i];
                         if (done)

@@ -1,3 +1,7 @@
+0.50.3 - 2016.10.16
+-------------------
+Fixed a lot of logistics-related log spam and possibly other shenanigans
+
 0.50.2 - 2016.10.16
 -------------------
 Added a Ranger-style 6K battery 
