@@ -609,7 +609,7 @@ namespace KolonyTools
                 foreach (Part p in ves.parts)
                 {
                     var rCount = p.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var r = p.Resources[i];
                         if (r.resourceName == ResourceName)
