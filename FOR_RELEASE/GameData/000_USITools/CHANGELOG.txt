@@ -1,3 +1,7 @@
+0.8.2 - 2016.10.16
+------------------
+Made the nuclear pulse engine atmospheric nerf optional
+
 0.8.1 - 2016.10.15
 ------------------
 Fixed an issue that was causing swappable converters to shut down

@@ -1,6 +1,11 @@
+0.3.2 - 2016.10.16
+------------------
+Added Mulch to the supply pack
+CTT Update!  (Thanks theRagingIrisman!)
+
 0.3.1 - 2016.10.15
 ------------------
-Fixes texture switch missing parameters (Thanks goldenpsp!)
+Fixed texture switch missing parameters (Thanks goldenpsp!)
 
 0.3.0 - (KSP 1.2)
 ------------------

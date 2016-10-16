@@ -39,6 +39,9 @@ namespace KolonyTools
 
         protected override ConversionRecipe PrepareRecipe(double deltatime)
         {
+            if (!IsActivated)
+                return new ConversionRecipe();
+
             var recipe = base.PrepareRecipe(deltatime);
             recipe.Outputs.AddRange(GetPlanetResourceList(recipe.Outputs.Select(o=>o.ResourceName).ToList()));
             return recipe;

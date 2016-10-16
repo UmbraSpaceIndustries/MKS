@@ -1,3 +1,7 @@
+0.1.5 - 2016.10.16
+------------------
+Dependency Updates
+
 0.1.4 - 2016.10.15
 ------------------
 Fixed issue where some parts would shift on compression (Thanks DefiantZombie!)
