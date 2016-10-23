@@ -1,3 +1,8 @@
+0.8.3 - 2016.10.22
+------------------
+Fixed a bug causing NRE spam with toolbar (thanks Kerbas-ad-astra!)
+Added swap costs to the part info for swappable parts.
+
 0.8.2 - 2016.10.16
 ------------------
 Made the nuclear pulse engine atmospheric nerf optional

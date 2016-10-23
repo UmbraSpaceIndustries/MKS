@@ -1,3 +1,7 @@
+0.3.3 - 2016.10.22
+------------------
+Dependency Updates
+
 0.3.2 - 2016.10.16
 ------------------
 Added Mulch to the supply pack

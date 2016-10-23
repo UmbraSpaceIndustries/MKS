@@ -1,3 +1,13 @@
+0.1.6 - 2016.10.22
+------------------
+Two new parts - Lateral and Inline adjustable legs
+You can now assing groups with master/slave servos
+You can now highlight konstruction servo parts as needed
+Lots of revisions to construction ports - toggle for angle snap, and some other PAW changes
+CTT configs!  (Thanks theRagingIrishman!)
+Akita Tags!  (Thanks DavidRWilliamsJr!)
+Moved all fallback categories for Konstruction to SpecializedConstruction
+
 0.1.5 - 2016.10.16
 ------------------
 Dependency Updates
