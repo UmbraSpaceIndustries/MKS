@@ -1,3 +1,15 @@
+0.50.4 - 2016.10.22
+-------------------
+Fixed an issue involving the dynamic mass of expanded modules
+Fixed EPL config (Thanks Aelfhe1m and everyone for helping!)
+Part Tags!  (Thanks DavidRWilliamsJr!)
+Fixed FlexOTube texture (Thanks	mattpolicastro!)
+Added a new short version of the 250 Hub with 2.5m end caps vs. 1.25m end caps.
+Added swap costs to the part info for swappable parts.
+Pioneer Modules now let you collect your Colony Rewards via the PAW
+For all ranger modules over 2 tons, moved a portion of their mass into MaterialKits.
+Added a new module - a Geothermal Heat Pump.  This module lets you use geothermal wells to provide cooling for your various modules.  Works as an active vessel wide radiator with the added benefit of being able to bleed off significant thermal flux.
+
 0.50.3 - 2016.10.16
 -------------------
 Fixed a lot of logistics-related log spam and possibly other shenanigans
