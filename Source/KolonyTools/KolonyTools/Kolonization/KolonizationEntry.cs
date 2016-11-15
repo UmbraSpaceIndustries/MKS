@@ -1,4 +1,4 @@
-﻿namespace Kolonization
+﻿namespace KolonyTools
 {
     public class KolonizationEntry
     {

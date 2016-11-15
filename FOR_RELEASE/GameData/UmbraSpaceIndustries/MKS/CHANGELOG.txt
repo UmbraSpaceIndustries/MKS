@@ -1,3 +1,33 @@
+0.50.5 - (KSP 1.2.1)
+--------------------
+Fixed an issue where disabling one warehouse disabled all planetary logistics
+Updated the efficiency part and swappable bay logic to fix several efficiency issues
+Updated all converters and harvesters to properly reflect dynamic load
+Increased cost of the Salamander (Thanks LeLeon!)
+Corrected fertilizer consumption on the Duna Agroponics Module (Thanks andreszlima!)
+Moved stabilizers, etc. to the 'Ground' category (Thanks SixDasher!)
+Fixed node points for the short Tundra Hub (Thanks Tarheel1999!)
+Various CTT / Category fixes (Thanks SirCharizard17!)
+Fixed mass of the 4x Kontainer Tank (Thanks kkdredd!)
+Added some new code to support experience effects for resource converters.  Note that as this is based on stock, your Kerbal must be in the same vessel to ge the specialty bonus.  But they do not need to be inside of the part.
+Moved Ranger battery pack to specializedElectrics
+Drill separators now properly separate and stack
+Pilots can be anywhere within 500m of a base to provide logistics
+Planetary Logistics now properly requires a pilot
+Recyclers and Habs will work even with reduced efficiency, and properly scale down effecacy.
+Fixed the cost / balance of the various airlocks
+Moved Skycrane to the Engine category
+Corrected descriptions for the Tundra agriculture modules
+Added EC to a number of modules that were missing it
+The Space Akademy training function is open for business again!
+Fixed the workshop CTT node
+Fixed various USI-LS issues (see that changelog) that impacted life support modules
+The assembly plant now includes the auto repair function
+Updated the mass of several parts
+Updated costs for various modules
+The nuclear fuel processor no longer has storage for Enridhed Uranium and Depleted Fuel.  But its converters can now properly feed containers for these resources on the same vessel.  So attach Nuclear and depleted fuel containers, whicn are configured as warehouses then perform maintenance to use the fuel.
+
+
 0.50.4 - 2016.10.22
 -------------------
 Fixed an issue involving the dynamic mass of expanded modules
