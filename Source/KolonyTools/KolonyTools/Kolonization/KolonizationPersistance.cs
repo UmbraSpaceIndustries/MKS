@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Kolonization
+namespace KolonyTools
 {
 
     using System.Linq;

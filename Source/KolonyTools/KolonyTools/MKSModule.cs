@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Kolonization;
+using USITools;
 
 namespace KolonyTools
 {
-    public class MKSModule : PartModule
+    public class MKSModule : PartModule, IEfficiencyBonusProvider
     {
         [KSPField]
         public string BonusSkill = "Engineer";
@@ -21,8 +21,8 @@ namespace KolonyTools
         private double checkTime = 5f;
 
         private float _colonyConverterEff;
-        private double _effPartTotal;
-        private double _efficiencyRate;
+        private float _effPartTotal;
+        private float _efficiencyRate;
         private const int EFF_RANGE = 500;
 
         public string GeteTag()
@@ -30,10 +30,10 @@ namespace KolonyTools
             return eTag;
         }
 
-        public virtual double GetEfficiencyRate()
+        public virtual float GetEfficiencyRate()
         {
             if (eTag == "")
-                return 1;
+                return 1f;
 
             var curConverters = GetActiveConverters();
             var curEParts = GetActiveEParts();
@@ -44,12 +44,12 @@ namespace KolonyTools
                 _effPartTotal = curEParts;
                 _efficiencyRate = GetEfficiency();
             }
-            return 1d + _efficiencyRate;
+            return 1f + _efficiencyRate;
         }
 
-        private double GetActiveEParts()
+        private float GetActiveEParts()
         {
-            var totEff = 0d;
+            var totEff = 0f;
             var vList =
                 LogisticsTools.GetNearbyVessels(EFF_RANGE, true, vessel, true)
                     .Where(v => v.FindPartModulesImplementing<ModuleEfficiencyPart>().Any(m => m.eTag == eTag));
@@ -60,7 +60,7 @@ namespace KolonyTools
                 foreach (var p in pList)
                 {
                     if (p.IsActivated)
-                        totEff += (p.CurrentEfficiency * p.eMultiplier);
+                        totEff += (float)(p.CurrentEfficiency * p.eMultiplier);
                 }
             }
             return totEff;
@@ -103,19 +103,7 @@ namespace KolonyTools
 
             lastCheck = Planetarium.GetUniversalTime();
 
-            var conEff = GetEfficiencyRate();
             UpdateKolonizationStats();
-            var kBonus = Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, GetPlanetaryBonus());
-            conEff *= (float)kBonus;
-
-            foreach (var con in part.FindModulesImplementing<ModuleResourceConverter>())
-            {
-                con.EfficiencyBonus = (float)conEff;
-            }
-            foreach (var con in part.FindModulesImplementing<ModuleBulkConverter>())
-            {
-                con.EfficiencyBonus = (float)conEff;
-            }
         }
 
 
@@ -169,16 +157,7 @@ namespace KolonyTools
             habBonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
             USI_GlobalBonuses.Instance.SaveHabBonus(vessel.mainBody.flightGlobalsIndex, habBonus);
 
-            //Update the drill bonus
-            foreach (var d in vessel.FindPartModulesImplementing<BaseDrill>())
-            {
-                var geoBonus = thisBodyInfo.Sum(b => b.GeologyResearch);
-                geoBonus = Math.Sqrt(habBonus);
-                geoBonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
 
-                geoBonus += KolonizationSetup.Instance.Config.StartingBaseBonus;
-                d.EfficiencyBonus = (float)Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, geoBonus);
-            }
         }
 
         private double GetVesselCrewByTrait(string trait)
@@ -206,7 +185,7 @@ namespace KolonyTools
         }
 
 
-        private double GetEfficiency()
+        private float GetEfficiency()
         {
             var thisEff = part.FindModulesImplementing<BaseConverter>().Where(m=>m.IsActivated).Sum(p => p.Efficiency) * eMultiplier;
             var alloc = _effPartTotal * thisEff / _colonyConverterEff;
@@ -223,6 +202,27 @@ namespace KolonyTools
             output.Append(string.Format("Efficiency Tag: {0}\n", eTag));
             output.Append(string.Format("Multiplier: {0:0.00}\n", eMultiplier));
             return output.ToString();
+        }
+
+        public float GetEfficiencyBonus()
+        {
+            return 1f;
+
+            var totBonus = 1f;
+            var thisBodyInfo = KolonizationManager.Instance.KolonizationInfo.Where(b => b.BodyIndex == vessel.mainBody.flightGlobalsIndex);
+            var geoBonus = thisBodyInfo.Sum(b => b.GeologyResearch);
+            geoBonus = Math.Sqrt(geoBonus);
+            geoBonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
+            geoBonus += KolonizationSetup.Instance.Config.StartingBaseBonus;
+            totBonus *= (float)Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, geoBonus);
+
+
+            var conEff = GetEfficiencyRate();
+            var kBonus = Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, GetPlanetaryBonus());
+            conEff *= (float)kBonus;
+            totBonus *= conEff;
+
+            return totBonus;
         }
     }
 }

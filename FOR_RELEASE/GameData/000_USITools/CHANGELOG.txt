@@ -1,3 +1,7 @@
+0.8.4 - (KSP 1.2.1)
+-------------------
+Dependency Updates
+
 0.8.3 - 2016.10.22
 ------------------
 Fixed a bug causing NRE spam with toolbar (thanks Kerbas-ad-astra!)

@@ -9,7 +9,7 @@ using USITools;
 using Random = System.Random;
 using KSP.UI.Screens;
 
-namespace Kolonization
+namespace KolonyTools
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class KolonizationMonitor_Flight : KolonizationMonitor

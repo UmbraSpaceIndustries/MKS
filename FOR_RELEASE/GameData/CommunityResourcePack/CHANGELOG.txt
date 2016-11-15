@@ -1,3 +1,8 @@
+0.6.3 - (KSP 1.2.1)
+-------------------
+Adjusted cost Fluorine  (KSPI-E) to cost LqdFluorine (Realfuels)
+Removed double definition of LqdFluorine
+
 0.6.2 - 2016.10.15
 ------------------
 Various KSPI resource updates

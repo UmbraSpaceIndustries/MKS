@@ -1,3 +1,9 @@
+0.1.7 - (KSP 1.2.1)
+-------------------
+Add support for parts being KIS-helpers (enabling them to carry weight for KIS actions) - Thanks DStaal and Boiler1!
+All PAL parts are now in SpecializedConstruction
+Updated the suspension of the PAL wheels a bit to fix jitters
+
 0.1.6 - 2016.10.22
 ------------------
 Two new parts - Lateral and Inline adjustable legs
