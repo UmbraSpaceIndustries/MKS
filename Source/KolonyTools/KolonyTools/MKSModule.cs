@@ -6,14 +6,14 @@ using USITools;
 
 namespace KolonyTools
 {
-    public class MKSModule : PartModule, IEfficiencyBonusProvider
+    public class MKSModule : PartModule
     {
         [KSPField]
         public string BonusSkill = "Engineer";
 
         [KSPField]
         public string eTag = "";
-
+        
         [KSPField]
         public float eMultiplier = 1f;
 
@@ -24,10 +24,12 @@ namespace KolonyTools
         private float _effPartTotal;
         private float _efficiencyRate;
         private const int EFF_RANGE = 500;
+        private List<IEfficiencyBonusConsumer> _con;
 
-        public string GeteTag()
+        public override void OnStart(StartState state)
         {
-            return eTag;
+            _con = new List<IEfficiencyBonusConsumer>();
+            _con.AddRange(part.FindModulesImplementing<IEfficiencyBonusConsumer>());
         }
 
         public virtual float GetEfficiencyRate()
@@ -36,6 +38,9 @@ namespace KolonyTools
                 return 1f;
 
             var curConverters = GetActiveConverters();
+            if (curConverters < ResourceUtilities.FLOAT_TOLERANCE)
+                return 1f;
+
             var curEParts = GetActiveEParts();
             if (Math.Abs(curConverters - _colonyConverterEff) > ResourceUtilities.FLOAT_TOLERANCE
                 || Math.Abs(curEParts - _effPartTotal) > ResourceUtilities.FLOAT_TOLERANCE)
@@ -60,7 +65,7 @@ namespace KolonyTools
                 foreach (var p in pList)
                 {
                     if (p.IsActivated)
-                        totEff += (float)(p.CurrentEfficiency * p.eMultiplier);
+                        totEff += (float)(p.EfficiencyMultiplier * p.eMultiplier);
                 }
             }
             return totEff;
@@ -86,7 +91,7 @@ namespace KolonyTools
                     if (m != null && m.eTag == eTag)
                     {
                         if (p.IsActivated)
-                            totEff += (p.Efficiency * m.eMultiplier);
+                            totEff += m.eMultiplier;
                     }
                 }
             }
@@ -104,12 +109,11 @@ namespace KolonyTools
             lastCheck = Planetarium.GetUniversalTime();
 
             UpdateKolonizationStats();
+            UpdateEfficiencyBonus();
         }
-
 
         private void UpdateKolonizationStats()
         {
-
             //No kolonization on Kerbin!
             if (vessel.mainBody == FlightGlobals.GetHomeBody())
                 return;
@@ -166,7 +170,14 @@ namespace KolonyTools
             return crew.Count();
         }
 
-
+        private void UpdateEfficiencyBonus()
+        {
+            var rate = GetEfficiencyBonus();
+            foreach (var con in _con)
+            {
+                con.SetEfficiencyBonus("MKS",rate);
+            }
+        }
 
 
         private double GetPlanetaryBonus()
@@ -184,14 +195,11 @@ namespace KolonyTools
             return Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, bonus);
         }
 
-
         private float GetEfficiency()
         {
-            var thisEff = part.FindModulesImplementing<BaseConverter>().Where(m=>m.IsActivated).Sum(p => p.Efficiency) * eMultiplier;
-            var alloc = _effPartTotal * thisEff / _colonyConverterEff;
+            var alloc = _effPartTotal / _colonyConverterEff;
             return alloc;
         }
-
 
         public override string GetInfo()
         {
@@ -206,8 +214,6 @@ namespace KolonyTools
 
         public float GetEfficiencyBonus()
         {
-            return 1f;
-
             var totBonus = 1f;
             var thisBodyInfo = KolonizationManager.Instance.KolonizationInfo.Where(b => b.BodyIndex == vessel.mainBody.flightGlobalsIndex);
             var geoBonus = thisBodyInfo.Sum(b => b.GeologyResearch);
@@ -215,7 +221,6 @@ namespace KolonyTools
             geoBonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
             geoBonus += KolonizationSetup.Instance.Config.StartingBaseBonus;
             totBonus *= (float)Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, geoBonus);
-
 
             var conEff = GetEfficiencyRate();
             var kBonus = Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, GetPlanetaryBonus());
