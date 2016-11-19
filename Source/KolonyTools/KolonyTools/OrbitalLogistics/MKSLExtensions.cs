@@ -261,7 +261,8 @@ namespace KolonyTools
                 return list.Select(resRatio => new MKSLresource
                 {
                     resourceName = resRatio.ResourceName,
-                    amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.Ratio
+                    //amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.Ratio
+                    amount = resRatio.Ratio
                 });
             }).GroupBy(x => x.resourceName, x => x.amount, (key,grp) => new MKSLresource { amount = grp.Sum(), resourceName = key });
             return res;

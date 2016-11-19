@@ -1,3 +1,7 @@
+0.50.6 - 2016.11.19
+-------------------
+Various fixes to the efficiency system
+
 0.50.5 - (KSP 1.2.1)
 --------------------
 Fixed an issue where disabling one warehouse disabled all planetary logistics

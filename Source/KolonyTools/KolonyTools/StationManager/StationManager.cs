@@ -491,11 +491,11 @@ namespace KolonyTools
                 
                 if (string.IsNullOrEmpty(inputRatio.ResourceName))
                 {
-                    production = " consumes " + inputRatio.Ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                    production = " consumes " + inputRatio.Ratio*Utilities.SECONDS_PER_DAY; // mksmodule.GetEfficiencyRate();
                 }
                 else
                 {
-                    production = " produces " + outputRatio.Ratio * Utilities.SECONDS_PER_DAY * mksmodule.GetEfficiencyRate();
+                    production = " produces " + outputRatio.Ratio*Utilities.SECONDS_PER_DAY; //* mksmodule.GetEfficiencyRate();
                 }
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(converter.ConverterName +" status: "+ converter.status + production);
