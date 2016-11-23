@@ -1,3 +1,7 @@
+0.50.7 - 2016.11.23
+-------------------
+Fixed converter nullref spam
+
 0.50.6 - 2016.11.19
 -------------------
 Various fixes to the efficiency system

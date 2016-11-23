@@ -1,3 +1,7 @@
+0.8.6 - 2016.11.23
+------------------
+Fixed conversion nullrefs
+
 0.8.5 - 2016.11.19
 ------------------
 Supporting fixes for the efficiency system
