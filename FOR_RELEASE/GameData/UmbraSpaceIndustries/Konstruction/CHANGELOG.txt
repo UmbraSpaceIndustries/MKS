@@ -1,3 +1,7 @@
+0.1.8 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+
 0.1.7 - (KSP 1.2.1)
 -------------------
 Add support for parts being KIS-helpers (enabling them to carry weight for KIS actions) - Thanks DStaal and Boiler1!

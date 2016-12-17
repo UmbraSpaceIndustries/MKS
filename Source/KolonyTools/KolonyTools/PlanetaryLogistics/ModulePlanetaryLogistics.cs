@@ -41,7 +41,7 @@ namespace PlanetaryLogistics
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
                 foreach (var mod in _warehouseList)
                 {
-                    if (!LogisticsTools.NearbyCrew(vessel, 500, "Pilot"))
+                    if (!LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill"))
                         return;
 
                     if (!mod.transferEnabled)

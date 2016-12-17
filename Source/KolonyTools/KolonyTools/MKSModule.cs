@@ -9,7 +9,7 @@ namespace KolonyTools
     public class MKSModule : PartModule
     {
         [KSPField]
-        public string BonusSkill = "Engineer";
+        public string BonusEffect = "FundsBoost";
 
         [KSPField]
         public string eTag = "";
@@ -125,18 +125,18 @@ namespace KolonyTools
                 return;
             }
 
-            var numPilots = GetVesselCrewByTrait("Pilot");
-            var numEngineers = GetVesselCrewByTrait("Engineer");
-            var numScientists = GetVesselCrewByTrait("Scientist");
+            var repBoosters = GetVesselCrewByEffect("RepBoost");
+            var fundsBoosters = GetVesselCrewByEffect("FundsBoost");
+            var scienceBoosters = GetVesselCrewByEffect("ScienceBoost");
 
             var elapsedTime = Planetarium.GetUniversalTime() - k.LastUpdate;
             var orbitMod = 1d;
             if (!vessel.LandedOrSplashed)
                 orbitMod = KolonizationSetup.Instance.Config.OrbitMultiplier;
 
-            var scienceBase = numScientists * elapsedTime * orbitMod;
-            var repBase = numPilots * elapsedTime * orbitMod;
-            var fundsBase = numEngineers * elapsedTime * orbitMod;
+            var scienceBase = scienceBoosters * elapsedTime * orbitMod;
+            var repBase = repBoosters * elapsedTime * orbitMod;
+            var fundsBase = fundsBoosters * elapsedTime * orbitMod;
 
             k.LastUpdate = Planetarium.GetUniversalTime();
             k.BotanyResearch += scienceBase;
@@ -164,10 +164,18 @@ namespace KolonyTools
 
         }
 
-        private double GetVesselCrewByTrait(string trait)
+        private double GetVesselCrewByEffect(string effect)
         {
-            var crew = vessel.GetVesselCrew().Where(c => c.experienceTrait.Title == trait);
-            return crew.Count();
+            var count = vessel.GetCrewCount();
+            var crew = vessel.GetVesselCrew();
+            var numCrew = 0;
+            for (int i = 0; i < count; ++i)
+            {
+                var c = crew[i];
+                if (c.HasEffect(effect))
+                    numCrew++;
+            }
+            return numCrew;
         }
 
         private void UpdateEfficiencyBonus()
@@ -184,9 +192,9 @@ namespace KolonyTools
         {
             var thisBodyInfo = KolonizationManager.Instance.KolonizationInfo.Where(k => k.BodyIndex == vessel.mainBody.flightGlobalsIndex);
             var bonus = thisBodyInfo.Sum(k => k.GeologyResearch);
-            if (BonusSkill == "Pilot")
+            if (BonusEffect == "RepBoost")
                 bonus = thisBodyInfo.Sum(k => k.KolonizationResearch);
-            else if (BonusSkill == "Scientist")
+            else if (BonusEffect == "ScienceBoost")
                 bonus = thisBodyInfo.Sum(k => k.BotanyResearch);
 
             bonus = Math.Sqrt(bonus);
