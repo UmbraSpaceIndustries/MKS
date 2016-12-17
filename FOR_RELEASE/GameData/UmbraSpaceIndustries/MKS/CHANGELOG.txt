@@ -1,3 +1,15 @@
+0.50.8 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+The Karibou Rover has been merged into MKS.
+Added Weight Distribution to the Ranger Battery Pack and Mini Hab (Thanks Dboi88)
+Since MKS does change the behavior of EL reactions, in the short term, we're moving back to part supression.  
+Several new Kerbal types have been added!  They can be recruited directly from the Kolonization Dashboard at a significant discount (as well as recruiting Pilots, Engineers, and Scientists.)
+All converters have had their effects updated.  Note that Scientists, Engineers, and Pilots will encompass relevant (new) effects, so this change is backwards compatible.  But you now have the option of using low-cost Kolonists for crewing your colonies.
+Bundled MKS KSPedia!  Thanks Dboi88!
+The heat pump will no longer deactivate, but instead will simply cease working if your ship does a physics 'hop' on load.
+Ranger workshop moved earlier in the CTT tech tree
+
 0.50.7 - 2016.11.23
 -------------------
 Fixed converter nullref spam
