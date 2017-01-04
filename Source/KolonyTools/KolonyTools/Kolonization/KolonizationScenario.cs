@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Kolonization
+namespace KolonyTools
 {
     public class KolonizationScenario : ScenarioModule
     {

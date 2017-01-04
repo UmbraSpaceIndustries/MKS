@@ -1,3 +1,28 @@
+0.8.7 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+
+0.8.6 - 2016.11.23
+------------------
+Fixed conversion nullrefs
+
+0.8.5 - 2016.11.19
+------------------
+Supporting fixes for the efficiency system
+
+0.8.4 - (KSP 1.2.1)
+-------------------
+Dependency Updates
+
+0.8.3 - 2016.10.22
+------------------
+Fixed a bug causing NRE spam with toolbar (thanks Kerbas-ad-astra!)
+Added swap costs to the part info for swappable parts.
+
+0.8.2 - 2016.10.16
+------------------
+Made the nuclear pulse engine atmospheric nerf optional
+
 0.8.1 - 2016.10.15
 ------------------
 Fixed an issue that was causing swappable converters to shut down

@@ -25,6 +25,7 @@ namespace PlanetaryLogistics
 
         private double lastCheck;
         private List<USI_ModuleResourceWarehouse> _warehouseList;
+
         public void FixedUpdate()
         {
             try
@@ -40,11 +41,14 @@ namespace PlanetaryLogistics
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
                 foreach (var mod in _warehouseList)
                 {
-                    if (!mod.transferEnabled)
+                    if (!LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill"))
                         return;
 
+                    if (!mod.transferEnabled)
+                        continue;
+
                     var rCount = mod.part.Resources.Count;
-                    for (int i = 0; 0 < rCount; ++i)
+                    for (int i = 0; i < rCount; ++i)
                     {
                         var res = mod.part.Resources[i];
                         LevelResources(mod.part, res.resourceName);

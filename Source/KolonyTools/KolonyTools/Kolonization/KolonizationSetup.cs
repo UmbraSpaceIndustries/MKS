@@ -3,7 +3,7 @@ using System.Linq;
 using KolonyTools.Kolonization;
 using UnityEngine;
 
-namespace Kolonization
+namespace KolonyTools
 {
     public class KolonizationSetup : MonoBehaviour
     {

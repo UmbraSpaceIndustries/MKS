@@ -1,3 +1,78 @@
+0.50.8 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+The Karibou Rover has been merged into MKS.
+Added Weight Distribution to the Ranger Battery Pack and Mini Hab (Thanks Dboi88)
+Since MKS does change the behavior of EL reactions, in the short term, we're moving back to part supression.  
+Several new Kerbal types have been added!  They can be recruited directly from the Kolonization Dashboard at a significant discount (as well as recruiting Pilots, Engineers, and Scientists.)
+All converters have had their effects updated.  Note that Scientists, Engineers, and Pilots will encompass relevant (new) effects, so this change is backwards compatible.  But you now have the option of using low-cost Kolonists for crewing your colonies.
+Bundled MKS KSPedia!  Thanks Dboi88!
+The heat pump will no longer deactivate, but instead will simply cease working if your ship does a physics 'hop' on load.
+Ranger workshop moved earlier in the CTT tech tree
+
+0.50.7 - 2016.11.23
+-------------------
+Fixed converter nullref spam
+
+0.50.6 - 2016.11.19
+-------------------
+Various fixes to the efficiency system
+
+0.50.5 - (KSP 1.2.1)
+--------------------
+Fixed an issue where disabling one warehouse disabled all planetary logistics
+Updated the efficiency part and swappable bay logic to fix several efficiency issues
+Updated all converters and harvesters to properly reflect dynamic load
+Increased cost of the Salamander (Thanks LeLeon!)
+Corrected fertilizer consumption on the Duna Agroponics Module (Thanks andreszlima!)
+Moved stabilizers, etc. to the 'Ground' category (Thanks SixDasher!)
+Fixed node points for the short Tundra Hub (Thanks Tarheel1999!)
+Various CTT / Category fixes (Thanks SirCharizard17!)
+Fixed mass of the 4x Kontainer Tank (Thanks kkdredd!)
+Added some new code to support experience effects for resource converters.  Note that as this is based on stock, your Kerbal must be in the same vessel to ge the specialty bonus.  But they do not need to be inside of the part.
+Moved Ranger battery pack to specializedElectrics
+Drill separators now properly separate and stack
+Pilots can be anywhere within 500m of a base to provide logistics
+Planetary Logistics now properly requires a pilot
+Recyclers and Habs will work even with reduced efficiency, and properly scale down effecacy.
+Fixed the cost / balance of the various airlocks
+Moved Skycrane to the Engine category
+Corrected descriptions for the Tundra agriculture modules
+Added EC to a number of modules that were missing it
+The Space Akademy training function is open for business again!
+Fixed the workshop CTT node
+Fixed various USI-LS issues (see that changelog) that impacted life support modules
+The assembly plant now includes the auto repair function
+Updated the mass of several parts
+Updated costs for various modules
+The nuclear fuel processor no longer has storage for Enridhed Uranium and Depleted Fuel.  But its converters can now properly feed containers for these resources on the same vessel.  So attach Nuclear and depleted fuel containers, whicn are configured as warehouses then perform maintenance to use the fuel.
+
+
+0.50.4 - 2016.10.22
+-------------------
+Fixed an issue involving the dynamic mass of expanded modules
+Fixed EPL config (Thanks Aelfhe1m and everyone for helping!)
+Part Tags!  (Thanks DavidRWilliamsJr!)
+Fixed FlexOTube texture (Thanks	mattpolicastro!)
+Added a new short version of the 250 Hub with 2.5m end caps vs. 1.25m end caps.
+Added swap costs to the part info for swappable parts.
+Pioneer Modules now let you collect your Colony Rewards via the PAW
+For all ranger modules over 2 tons, moved a portion of their mass into MaterialKits.
+Added a new module - a Geothermal Heat Pump.  This module lets you use geothermal wells to provide cooling for your various modules.  Works as an active vessel wide radiator with the added benefit of being able to bleed off significant thermal flux.
+
+0.50.3 - 2016.10.16
+-------------------
+Fixed a lot of logistics-related log spam and possibly other shenanigans
+Fixed the EL config
+Beefed up Tundra nodes
+
+0.50.2 - 2016.10.16
+-------------------
+Added a Ranger-style 6K battery 
+Added Mulch to the supply pack
+CTT Update!  (Thanks theRagingIrisman!)
+Fixed missing ResourceDistributor configs for the Pioneer and Logistics Centers
+
 0.50.1 - 2016.10.15
 -------------------
 Corrected an issue where some modules were not auto-transferring resources

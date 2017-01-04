@@ -34,6 +34,12 @@ using UnityEngine;
 
 namespace KolonyTools
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Xml;
+
+
     public static class Utilities
     {
         const double SECONDS_PER_MINUTE = 60.0;

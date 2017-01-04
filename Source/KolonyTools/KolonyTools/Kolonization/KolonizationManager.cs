@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-namespace Kolonization
+namespace KolonyTools
 {
     public class KolonizationManager : MonoBehaviour
     {
