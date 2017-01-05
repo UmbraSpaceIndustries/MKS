@@ -68,6 +68,8 @@
     <Compile Include="Kolonization\KolonizationSetup.cs" />
     <Compile Include="MksAutoRepair.cs" />
     <Compile Include="ModuleColonyRewards.cs" />
+    <Compile Include="ModuleResourceLode.cs" />
+    <Compile Include="ModuleResourceSurveyor.cs" />
     <Compile Include="OrbitalLogistics\ComboBox.cs" />
     <Compile Include="OrbitalLogistics\MKSGui.cs" />
     <Compile Include="OrbitalLogistics\MKSLExtensions.cs" />
@@ -88,7 +90,6 @@
     <Compile Include="PlanetaryLogistics\ModulePlanetaryLogistics.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsEntry.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsManager.cs" />
-    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsMonitor.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsPersistance.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsScenario.cs" />
     <Compile Include="ModuleEfficiencyPart.cs" />

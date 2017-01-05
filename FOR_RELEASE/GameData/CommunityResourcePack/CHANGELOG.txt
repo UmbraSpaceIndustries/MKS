@@ -1,3 +1,7 @@
+0.6.5 - (2017.01.01)
+--------------------
+Updated asteroid and scanner settings
+
 0.6.4 - (KSP 1.2.2)
 -------------------
 Added Decaborane as a resource

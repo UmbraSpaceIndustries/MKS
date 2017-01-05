@@ -39,10 +39,10 @@ namespace PlanetaryLogistics
                 //PlanLog grabs all things attached to this vessel.
                 if(_warehouseList == null)
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
+
                 foreach (var mod in _warehouseList)
                 {
-                    if (!LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill"))
-                        return;
+                    bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
 
                     if (!mod.transferEnabled)
                         continue;
@@ -51,7 +51,7 @@ namespace PlanetaryLogistics
                     for (int i = 0; i < rCount; ++i)
                     {
                         var res = mod.part.Resources[i];
-                        LevelResources(mod.part, res.resourceName);
+                        LevelResources(mod.part, res.resourceName,hasSkill);
                     }
                 }
             }
@@ -62,16 +62,16 @@ namespace PlanetaryLogistics
         }
 
 
-        private void LevelResources(Part rPart, string resource)
+        private void LevelResources(Part rPart, string resource, bool hasSkill)
         {
             var res = rPart.Resources[resource];
             var body = vessel.mainBody.flightGlobalsIndex;
 
             if (!res.flowState)
             {
-                if (res.amount <= 0)
+                if (res.amount <= ResourceUtilities.FLOAT_TOLERANCE)
                     return;
-                
+
                 if (!PlanetaryLogisticsManager.Instance.DoesLogEntryExist(resource, body))
                     return;
                 
@@ -87,6 +87,9 @@ namespace PlanetaryLogistics
             var fillPercent = res.amount / res.maxAmount;
             if (fillPercent < LowerTrigger)
             {
+                if (!hasSkill)
+                    return;
+
                 var amtNeeded = (res.maxAmount * FillGoal) - res.amount;
                 if (!(amtNeeded > 0)) 
                     return;
