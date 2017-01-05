@@ -9,40 +9,58 @@ namespace KolonyTools
         {
             if (!HighLogic.LoadedSceneIsFlight)
                 return;
+            var sci = 0d;
+            var rep = 0d;
+            var fun = 0d;
+            var entries = KolonizationManager.Instance.FetchEntriesForPlanet(vessel.mainBody.flightGlobalsIndex);
+            foreach (var e in entries)
+            {
+                if (e.Science > 1)
+                {
+                    sci += e.Science;
+                    e.Science = 0;
+                }
+                if (e.Rep > 1)
+                {
+                    rep += e.Rep;
+                    e.Rep = 0;
+                }
+                if (e.Funds > 1)
+                {
+                    fun += e.Funds;
+                    e.Funds = 0;
+                }
+                KolonizationManager.Instance.TrackLogEntry(e);
+            }
 
-            var k = KolonizationManager.Instance.FetchLogEntry(vessel.id.ToString(), vessel.mainBody.flightGlobalsIndex);
             if (ResearchAndDevelopment.Instance != null)
             {
-                if (k.Science > 1)
+                if (sci > 1)
                 {
-                    ResearchAndDevelopment.Instance.AddScience((float)k.Science, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Science", k.Science);
+                    ResearchAndDevelopment.Instance.AddScience((float)sci, TransactionReasons.ContractReward);
+                    var msg = String.Format("Added {0:n2} Science", sci);
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-                    k.Science = 0d;
                 }
+
             }
             if (Funding.Instance != null)
             {
-                if (k.Funds > 1)
+                if (fun > 1)
                 {
-                    Funding.Instance.AddFunds(k.Funds, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Funds", k.Funds);
+                    Funding.Instance.AddFunds(fun, TransactionReasons.ContractReward);
+                    var msg = String.Format("Added {0:n2} Funds", fun);
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-                    k.Funds = 0d;
                 }
             }
             if (Reputation.Instance != null)
             {
-                if (k.Rep > 1)
+                if (rep > 1)
                 {
-                    Reputation.Instance.AddReputation((float)k.Rep, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Reputation", k.Rep);
+                    Reputation.Instance.AddReputation((float)rep, TransactionReasons.ContractReward);
+                    var msg = String.Format("Added {0:n2} Reputation", rep);
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-                    k.Rep = 0d;
                 }
             }
-
-            KolonizationManager.Instance.TrackLogEntry(k);
         }
 
     }

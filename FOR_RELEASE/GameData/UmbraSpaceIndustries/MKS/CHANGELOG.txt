@@ -1,3 +1,26 @@
+0.50.9 - 2017.01.01
+-------------------
+Add Silicates, Silicon, RefinedExotics, ColonySupplies, and Organics to Karabou storage modules. (thanks boiler1!)
+Updated OSE Workshop support (thanks dboi88!)
+Local Logistics:  Resources may now be manually transferred between any two craft within 150m provided crew are present on at least one of the two vessels.  This GUI may be accessed from the Kolonization Dashboard.
+Active Resource Harvesting:  Pioneer Modules may now perform a Resource Scan which will identify nearby 'Resource Lodes'.  These are physical objects that must be grappled, at which point both the Range and Tundra regolith sifters can convert the ResourceLode resource into a variety of other resources based on planetary composition (similar to how Dirt works today).    
+Due to a fire at the USI Warehouse, Prices for the Duna, Tundra, and Ranger modules have dropped.  Note that all warranties are now void.
+Refinery output efficiency has been buffed by 500%.  Applies to all refineries, sifters, crushers, and smelters.
+The stock surface scanner now shows data for all relevant resources - enjoy prospecting!
+All USI reactors and the Ranger Power Pack now include a fill-cap of 95% to leave some headroom for solar panels.
+Planetary Logistics no longer require a pilot to push resources, only to pull (welcome back unmanned mining bases, we missed you!)
+Demolition for the massses!  Demo charges and part scrapping no longer have a trait requirement.
+Habitation EC costs have been reduced accross the board.
+Fixed a missing attachment node on the Duna modules
+Added the Akita Rover from Konstruction
+The Tundra Multihub now features 10,000l of KIS storage
+The Scout Lander Mk2 now has 1,000l of KIS storage (enough to stuff a single MKS Ranger module)
+The Tundra airlock (the larger one) also gets 1,000l of KIS storage.  
+The Tundra 250 hubs (both versions) get 3,000l of KIS storage.
+All MKS drills now have a heat overlay
+The Ranger AgModule now shows up only in Kolonization, not life suppurt.
+You can no longer utilize modules before they are expanded (booo!)
+
 0.50.8 - (KSP 1.2.2)
 -------------------
 Updates for KSP 1.2.2
