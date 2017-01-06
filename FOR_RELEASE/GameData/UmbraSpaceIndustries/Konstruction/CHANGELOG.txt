@@ -1,3 +1,52 @@
+0.1.9 - 2017.01.01
+-------------------
+Dependency Updates
+
+0.1.8 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+
+0.1.7 - (KSP 1.2.1)
+-------------------
+Add support for parts being KIS-helpers (enabling them to carry weight for KIS actions) - Thanks DStaal and Boiler1!
+All PAL parts are now in SpecializedConstruction
+Updated the suspension of the PAL wheels a bit to fix jitters
+
+0.1.6 - 2016.10.22
+------------------
+Two new parts - Lateral and Inline adjustable legs
+You can now assing groups with master/slave servos
+You can now highlight konstruction servo parts as needed
+Lots of revisions to construction ports - toggle for angle snap, and some other PAW changes
+CTT configs!  (Thanks theRagingIrishman!)
+Akita Tags!  (Thanks DavidRWilliamsJr!)
+Moved all fallback categories for Konstruction to SpecializedConstruction
+
+0.1.5 - 2016.10.16
+------------------
+Dependency Updates
+
+0.1.4 - 2016.10.15
+------------------
+Fixed issue where some parts would shift on compression (Thanks DefiantZombie!)
+
+0.1.3 - (KSP 1.2)
+-----------------
+Removed command probe options from truss segments
+Fixed Akita wheel name
+Magnets are now twice as powerful and use 1/10th of the EC
+More nodes on the cradle!
+
+0.1.2 - (KSP 1.2)
+-----------------
+Increased the range of the various port sliders
+Fixed nullref issue with the claw
+
+0.1.1 - (KSP 1.2)
+------------------
+Lots of updates to magnets, etc.
+Moved structural nodes back to USITools
+
 0.1.0 - (KSP 1.1.3)
 ------------------
 Initial Release

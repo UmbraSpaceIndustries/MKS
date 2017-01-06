@@ -1,3 +1,44 @@
+0.6.5 - (2017.01.01)
+--------------------
+Updated asteroid and scanner settings
+
+0.6.4 - (KSP 1.2.2)
+-------------------
+Added Decaborane as a resource
+
+0.6.3 - (KSP 1.2.1)
+-------------------
+Adjusted cost Fluorine  (KSPI-E) to cost LqdFluorine (Realfuels)
+Removed double definition of LqdFluorine
+
+0.6.2 - 2016.10.15
+------------------
+Various KSPI resource updates
+Silicate resource distribution added
+
+0.6.1 - 2016.10.15
+------------------
+Resorted KSPI resources alphabeticly, added abbreviation and Added LqdArgon, LqdFluorine, LqdNitrogen15, LqdOxygen18
+
+0.6.0 - (KSP 1.2)
+-------------------
+Added ARP icon data for RealFuels
+Added/Updated distribution data for:
+- Antimatter
+- Helium3
+- ArgonGas
+- XenonGas
+- LqdHydrogen
+Added several new resources, including:
+- HeavyWater
+- Deuternium
+- Helium4
+- Silicates
+- Borate
+- ColonySupplies
+- RefinedExotics
+
+
 0.5.4 - (KSP 1.1.3)
 ------------------
 Update for KSP 1.1.3

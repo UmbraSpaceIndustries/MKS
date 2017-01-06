@@ -1,0 +1,14 @@
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\PlanetaryLogistics.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\PlanetaryLogistics.pdb
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\Assembly-CSharp.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\UnityEngine.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\USITools.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\TDx.TDxInput.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\TrackIRUnity.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\Mono.Cecil.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\bin\Debug\Mono.Security.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\obj\Debug\PlanetaryLogistics.dll
+C:\SYNC\Dropbox\USI-GIT\Kolonization\Source\KolonyTools\PlanetaryLogistics\obj\Debug\PlanetaryLogistics.pdb
+C:\SYNC\Dropbox\KSP_DEV\GameData\UmbraSpaceIndustries\Kolonization\PlanetaryLogistics.dll
+C:\SYNC\Dropbox\KSP_DEV\GameData\UmbraSpaceIndustries\Kolonization\PlanetaryLogistics.pdb
