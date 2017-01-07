@@ -1,3 +1,14 @@
+0.50.10 - 2017.01.07
+--------------------
+Added the ExplorerSkill effect and Scout trait.  Explorers (which include Scouts and Pilots) are immune from habitation effects in USI-LS.
+Any Kerbal on a planet that has a Kolonization level of 500% and is in a vessel with a habitation rating of 1 year or more will be immune to habitation effects, as this world is now 'Kolonized'.
+Habitation Extenders will take into account habitation multipliers, making ark ships easier.
+Fixed an issue where ResourceLodes could be added to craft :)
+No more flag scrapping! (Thanks MadMerlyn!)
+Several profile/CLS fixes for tundra modules from Kerbas-ad-astra
+Added an attach node to the mini drill (Thanks MadMerlyn!)
+
+
 0.50.9 - 2017.01.01
 -------------------
 Add Silicates, Silicon, RefinedExotics, ColonySupplies, and Organics to Karabou storage modules. (thanks boiler1!)
