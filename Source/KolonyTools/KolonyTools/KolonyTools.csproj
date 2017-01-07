@@ -58,6 +58,7 @@
     <Compile Include="AddScenarioModules.cs" />
     <Compile Include="Experience\AgronomySkill.cs" />
     <Compile Include="Experience\BotanySkill.cs" />
+    <Compile Include="Experience\ExplorerSkill.cs" />
     <Compile Include="Experience\FundsBoost.cs" />
     <Compile Include="Experience\GeologySkill.cs" />
     <Compile Include="Experience\LogisticsSkill.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="ModuleEfficiencyPart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpaceAcademy.cs" />
-    <Compile Include="StationManager\StationManager.cs" />
+    <None Include="StationManager\StationManager.old" />
     <Compile Include="Utilities.cs" />
     <Compile Include="OrbitalLogistics\Window.cs" />
   </ItemGroup>
