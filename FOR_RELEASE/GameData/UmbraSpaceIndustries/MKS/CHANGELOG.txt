@@ -1,3 +1,12 @@
+0.50.11 - 2017.01.08
+--------------------
+Fixed an issue where multi-bay modules were not operating at peak efficiency (Note that this is a USI Tools change so be sure to have the latest version!  This is why I bundle MiniAVC ;))
+Reduced the size of Resource Lodes to 5kl
+Added a new resource lode that can be found via the orbital survey scanner.  Unlike the smaller ones found with the Pioneer module, these are planet-wide and significantly larger (500kl).
+Scouts can now be recruited.
+The USI-LS window no longer conflicts with the Kolonization Dashboard.
+Fixed prices of Tundra manufacturing modules.
+
 0.50.10 - 2017.01.07
 --------------------
 Added the ExplorerSkill effect and Scout trait.  Explorers (which include Scouts and Pilots) are immune from habitation effects in USI-LS.

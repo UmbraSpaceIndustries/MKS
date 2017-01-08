@@ -88,9 +88,11 @@ namespace KolonyTools
         void Awake()
         {
             _kolonists = new List<Kolonist>();
-            _kolonists.Add(new Kolonist { Name = "Pilot", Cost = 250000, Effects = "Autopilot, VesselControl, RepBoost, Logistics" });
+            _kolonists.Add(new Kolonist { Name = "Pilot", Cost = 250000, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
             _kolonists.Add(new Kolonist { Name = "Scientist", Cost = 250000, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
             _kolonists.Add(new Kolonist { Name = "Engineer", Cost = 250000, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 10000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Scout", Cost = 10000, Effects = "Explorer" });
             _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 10000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
             _kolonists.Add(new Kolonist { Name = "Miner", Cost = 10000, Effects = "Drill, FundsBoost" });
             _kolonists.Add(new Kolonist { Name = "Technician", Cost = 10000, Effects = "Converter, FundsBoost" });
@@ -162,7 +164,7 @@ namespace KolonyTools
 
         private void Ondraw()
         {
-            _windowPosition = GUILayout.Window(10, _windowPosition, OnWindow, "Kolonization Dashboard", _windowStyle);
+            _windowPosition = GUILayout.Window(12, _windowPosition, OnWindow, "Kolonization Dashboard", _windowStyle);
         }
 
         private void OnWindow(int windowId)
