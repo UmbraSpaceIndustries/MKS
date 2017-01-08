@@ -16,15 +16,60 @@ namespace KolonyTools
             _rnd = new Random();
         }
 
+        [KSPField]
+        public double lodeRange = 0.5d;
+
+        [KSPField]
+        public bool allowHomeBody = false;
+
+        [KSPField]
+        public int maxLodes = 5;
+
+        [KSPField]
+        public string lodePart = "UsiExplorationRock";
+
+        [KSPField]
+        public double altModifier = 0d;
+
+
+        private ModuleAnimationGroup _ani;
+
         [KSPEvent(guiActive = true, guiName = "Scan for resource lodes", active = true)]
         public void ResourceScan()
+        {
+            PerformScan();
+        }
+
+        public override void OnStartFinished(StartState state)
+        {
+            base.OnStartFinished(state);
+            _ani = part.FindModuleImplementing<ModuleAnimationGroup>();
+        }
+
+        private void PerformScan()
         {
             var numLodes = 0;
             string msg;
 
-            if (FlightGlobals.currentMainBody == FlightGlobals.GetHomeBody())
+            if (_ani != null && !_ani.isDeployed)
             {
-                msg = string.Format("There are no resource lodes available on Kerbin!");
+                msg = string.Format("Must deploy first!");
+                ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+
+            var minAlt = vessel.mainBody.Radius*altModifier;
+            if(altModifier > ResourceUtilities.FLOAT_TOLERANCE 
+                && (vessel.altitude < minAlt || vessel.altitude > minAlt*2d))
+            {
+                msg = string.Format("Must perform scan at an altitude between {0:0}km and {1:0}km.", minAlt/1000, minAlt*2/1000);
+                ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
+                return;
+            }
+
+            if (FlightGlobals.currentMainBody == FlightGlobals.GetHomeBody() && !allowHomeBody)
+            {
+                msg = string.Format("There are no resource lodes available on " + FlightGlobals.GetHomeBody().bodyName + "!");
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
@@ -37,10 +82,10 @@ namespace KolonyTools
                 {
                     if (v.protoVessel.protoPartSnapshots.Count > 1)
                         continue;
-                    foreach (ProtoPartModuleSnapshot pm in v.protoVessel.protoPartSnapshots[0].modules)
+
+                    if(v.protoVessel.protoPartSnapshots[0].partName == lodePart)
                     {
-                        if (pm.moduleName == "ModuleResourceLode")
-                            numLodes++;
+                        numLodes++;
                     }
                 }
                 else
@@ -53,7 +98,7 @@ namespace KolonyTools
                 }
             }
 
-            if (numLodes >= 5)
+            if (numLodes >= maxLodes)
             {
                 msg = string.Format("Too many resource lodes active - Harvest some first!");
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
@@ -62,12 +107,12 @@ namespace KolonyTools
 
             var lode = new LodeData();
             lode.name = "Resource Lode";
-            lode.craftPart = PartLoader.getPartInfoByName("UsiExplorationRock");
+            lode.craftPart = PartLoader.getPartInfoByName(lodePart);
             lode.vesselType = VesselType.Unknown;
             lode.body = FlightGlobals.currentMainBody;
             lode.orbit = null;
-            lode.latitude = RandomizePosition(part.vessel.latitude, 0.5d);
-            lode.longitude = RandomizePosition(part.vessel.longitude, 0.5d);
+            lode.latitude = RandomizePosition(part.vessel.latitude, lodeRange);
+            lode.longitude = RandomizePosition(part.vessel.longitude, lodeRange);
             lode.altitude = null;
             CreateLode(lode);
             msg = string.Format("A new resource lode has been discovered and added to your map!");
