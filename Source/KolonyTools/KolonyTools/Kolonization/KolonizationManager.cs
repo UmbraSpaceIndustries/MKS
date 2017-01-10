@@ -58,6 +58,12 @@ namespace KolonyTools
             KolonizationScenario.Instance.settings.DeleteStatusNode(logEntry);
         }
 
+        public List<KolonizationEntry> FetchEntriesForPlanet(int body)
+        {
+            var logEntries = KolonizationInfo.Where(n => n.BodyIndex == body).ToList();
+            return logEntries;
+        }
+
         public KolonizationEntry FetchLogEntry(string vesselId, int body)
         {
             if (!DoesLogEntryExist(vesselId, body))
