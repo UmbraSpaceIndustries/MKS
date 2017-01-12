@@ -626,11 +626,11 @@ namespace KolonyTools
             if (idx == NearVessels.Count)
                 idx = 0;
 
-            _resList = RebuildResourceList();
-
             v.Setup(NearVessels[idx], idx);
             if (_fromVessel.Idx == _toVessel.Idx && NearVessels.Count > 1)
                 SetNextVessel(v);
+
+            _resList = RebuildResourceList();
         }
         internal void OnDestroy()
         {
