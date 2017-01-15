@@ -1,4 +1,9 @@
-0.8.8 - 2017.01.01
+0.8.10 - 2017.01.15
+-------------------
+Performance Updates
+Fixed a bug that caused animations to auto-deploy
+
+0.8.9 - 2017.01.01
 -------------------
 Fixed bug w/swappable converter multi-bays
 

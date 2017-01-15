@@ -51,20 +51,10 @@
     </Reference>
     <Reference Include="USITools">
       <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddScenarioModules.cs" />
-    <Compile Include="Experience\AgronomySkill.cs" />
-    <Compile Include="Experience\BotanySkill.cs" />
-    <Compile Include="Experience\ExplorerSkill.cs" />
-    <Compile Include="Experience\FundsBoost.cs" />
-    <Compile Include="Experience\GeologySkill.cs" />
-    <Compile Include="Experience\LogisticsSkill.cs" />
-    <Compile Include="Experience\MedicalSkill.cs" />
-    <Compile Include="Experience\RepBoost.cs" />
-    <Compile Include="Experience\ScienceBoost.cs" />
     <Compile Include="Kolonization\KolonizationConfig.cs" />
     <Compile Include="Kolonization\KolonizationSetup.cs" />
     <Compile Include="MksAutoRepair.cs" />

@@ -1,3 +1,14 @@
+0.50.12 - 2017.01.15
+--------------------
+Performance updates
+Added the ability for MKS modules to enable ground tethering.
+Added additional fixes for overly 'jittery' bases.
+Added weight transfer to the small KIS container (Thanks Wyzard256!)
+Added weight transfer to the radial liquid tank and other Ranger-size tanks (Thanks dboi88!)
+Fixed texture path for Toolbar icons (Thanks fat-lobyte!)
+Fixed issue where the KoloniationMonitor was displaying incorrect resources (thanks again fat-lobyte!)
+Efficiency Parts are no longer bound to skill bonuses
+
 0.50.11 - 2017.01.08
 --------------------
 Fixed an issue where multi-bay modules were not operating at peak efficiency (Note that this is a USI Tools change so be sure to have the latest version!  This is why I bundle MiniAVC ;))

@@ -1,3 +1,7 @@
+0.1.10 - 2017.01.15
+-------------------
+Construction ports now default to snap being OFF to avoid confusion
+
 0.1.9 - 2017.01.01
 -------------------
 Dependency Updates
