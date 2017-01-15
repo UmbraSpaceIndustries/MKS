@@ -29,7 +29,7 @@ namespace KolonyTools
         //    if (ToolbarManager.ToolbarAvailable)
         //    {
         //        this.orbLogTButton = ToolbarManager.Instance.add("UKS", "orbLog");
-        //        orbLogTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/OrbitalLogistics24";
+        //        orbLogTButton.TexturePath = "UmbraSpaceIndustries/MKS/OrbitalLogistics24";
         //        orbLogTButton.ToolTip = "USI Orbital Logistics";
         //        orbLogTButton.Enabled = true;
         //        orbLogTButton.OnClick += (e) => { if (windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
