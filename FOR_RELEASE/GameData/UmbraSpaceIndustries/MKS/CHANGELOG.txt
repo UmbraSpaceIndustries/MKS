@@ -1,3 +1,7 @@
+0.50.14 - 2017.01.16
+--------------------
+Removed excess ZIP files
+
 0.50.13 - 2017.01.16
 --------------------
 Fixed runaway efficiency bonuses
