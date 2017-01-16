@@ -1,3 +1,7 @@
+0.8.11 - 2017.01.16
+-------------------
+Fixed runaway efficiency issue
+
 0.8.10 - 2017.01.15
 -------------------
 Performance Updates
