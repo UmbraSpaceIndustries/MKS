@@ -1,3 +1,8 @@
+0.50.13 - 2017.01.16
+--------------------
+Fixed runaway efficiency bonuses
+Removed duplicate USITools
+
 0.50.12 - 2017.01.15
 --------------------
 Performance updates
