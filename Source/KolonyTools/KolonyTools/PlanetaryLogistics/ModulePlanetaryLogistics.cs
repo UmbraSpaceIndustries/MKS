@@ -45,7 +45,7 @@ namespace PlanetaryLogistics
                 {
                     bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
 
-                    if (!mod.transferEnabled)
+                    if (!mod.soiTransferEnabled)
                         continue;
 
                     var rCount = mod.part.Resources.Count;

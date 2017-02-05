@@ -1,3 +1,7 @@
+0.3.8 - 2017.02.04
+------------------
+Dependency Updates
+
 0.3.7 - 2017.01.15
 ------------------
 KIS Kontainers are now hidden if KIS is not installed (Thanks Wyzard256!)

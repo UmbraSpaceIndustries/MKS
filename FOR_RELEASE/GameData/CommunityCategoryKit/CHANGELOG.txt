@@ -1,0 +1,27 @@
+1.2.2 - 2016.02.04
+------------------
+Added Rovers as a new standard category
+
+1.2.1 - 2016.12.12
+- [Change] Recompile for KSP 1.2.2
+
+1.2.0 - 2016.12.2
+- [Enhancement] Define common filters via a config file.
+- [Enhancement] Allow defining custom filters by updating via ModuleManager (read Wiki!).
+
+1.1.0 - 2016.11.29
+- [Fix #7] Add images for Containers category.
+- [Fix #9] Sync up DLL's and mod's versions.
+
+0.1.2 - (KSP 1.2.1)
+-------------------
+Recompile for KSP 1.2.1
+
+0.1.1 - 2016.10.15
+------------------
+Fixed initial tag for real this time
+
+0.1.0 - 2016.10.15
+------------------
+Initial Release!
+Added tag of cck-lifesupport
