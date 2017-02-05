@@ -1,3 +1,19 @@
+0.50.15 - 2017.02.04
+------------------
+Bundled the 'Ground Construction' mod as the standard off-world construction mod for USI.
+For users of EL, Technicians and Mechanics now have the ExConstructionSkill.
+You can no longer scrap EVA Kerbals...  (Thanks jd284!)
+New nodes on the Tundra modules and KSPedia entries (Thanks dboi88!)
+Added an antenna to the Salamander (Thanks voicey99!)
+Updated the Karibou to use CCK (Thanks DStaal)
+You can now toggle local logistics and planetary logistics separately on warehouses
+A new line of Tundra ISM's have been introduced.  These use the 4.75m form factor and are equivalent to the Ranger ISMs.
+Fixed a bug where some expandable parts were not properly receiving shielding from fairings.
+Fixed cost bugs with the Tundra PDU and P-Log Modules
+Material Kits can now come from the local vessel even if the container is not a warehouse.
+The Ranger mini hab now has its own texture.
+Agriculture converters no longer require Organics as an input
+
 0.50.14 - 2017.01.16
 --------------------
 Removed excess ZIP files

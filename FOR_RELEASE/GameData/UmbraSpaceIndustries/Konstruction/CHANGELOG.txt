@@ -1,3 +1,8 @@
+0.1.11 - 2017.02.04
+-------------------
+Bundled the 'Ground Construction' mod as the standard off-world construction mod for USI.
+Fixed jittery PAL wheels
+
 0.1.10 - 2017.01.15
 -------------------
 Construction ports now default to snap being OFF to avoid confusion
