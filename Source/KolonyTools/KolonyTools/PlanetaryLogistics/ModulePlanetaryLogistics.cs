@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using KolonyTools;
 using USITools;
 using USITools.Logistics;
@@ -41,18 +42,23 @@ namespace PlanetaryLogistics
                 if(_warehouseList == null)
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
 
-                foreach (var mod in _warehouseList)
+                if (_warehouseList != null)
                 {
-                    bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
-
-                    if (!mod.soiTransferEnabled)
-                        continue;
-
-                    var rCount = mod.part.Resources.Count;
-                    for (int i = 0; i < rCount; ++i)
+                    foreach (var mod in _warehouseList)
                     {
-                        var res = mod.part.Resources[i];
-                        LevelResources(mod.part, res.resourceName,hasSkill);
+                        bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
+
+                        if (!mod.soiTransferEnabled)
+                            continue;
+
+                        var rCount = mod.part.Resources.Count;
+                        for (int i = 0; i < rCount; ++i)
+                        {
+                            var res = mod.part.Resources[i];
+                            if (_blackList.Contains(res.resourceName))
+                                continue;
+                            LevelResources(mod.part, res.resourceName, hasSkill);
+                        }
                     }
                 }
             }
@@ -61,6 +67,8 @@ namespace PlanetaryLogistics
                 print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate");
             }
         }
+
+        private List<String> _blackList = new List<string> { "Machinery", "EnrichedUranium", "DepletedFuel", "Construction", "ReplacementParts", "ElectricCharge" };
 
 
         private void LevelResources(Part rPart, string resource, bool hasSkill)
