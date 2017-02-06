@@ -1,3 +1,8 @@
+0.50.15 - 2017.02.05
+------------------
+Fixed issue with expanding modules
+Updated GC version and other dependencies
+
 0.50.15 - 2017.02.04
 ------------------
 Bundled the 'Ground Construction' mod as the standard off-world construction mod for USI.

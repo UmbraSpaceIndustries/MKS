@@ -1,6 +1,10 @@
-0.8.12 - 2017.02.04
+0.8.13 - 2017.02.04
 ------------------
-Dependency Updates
+Fixed some nullref spam in Animations related to logistics
+
+0.8.13 - 2017.02.04
+------------------
+Fixed an issue with the new warehouse toggles
 
 0.8.11 - 2017.01.16
 -------------------
