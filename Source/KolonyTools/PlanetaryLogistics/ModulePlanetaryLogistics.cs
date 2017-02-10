@@ -39,7 +39,10 @@ namespace PlanetaryLogistics
 
             foreach (var res in part.Resources.list)
             {
-                LevelResources(res.resourceName);
+                if (res.ResourceName != "ElectricCharge")
+                {
+                    LevelResources(res.resourceName);
+                }
             }
         }
 
