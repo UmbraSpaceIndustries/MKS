@@ -64,7 +64,7 @@ namespace KolonyTools
                 var pList = vsl.FindPartModulesImplementing<ModuleEfficiencyPart>();
                 foreach (var p in pList)
                 {
-                    if (p.IsActivated)
+                    if (p.IsActivated && p.eTag == eTag)
                         totEff += (float)(p.EfficiencyMultiplier * p.eMultiplier);
                 }
             }
