@@ -25,7 +25,6 @@ namespace PlanetaryLogistics
         [KSPField] 
         public double ResourceTax = 0.05d;
 
-        private double lastCheck;
         private List<USI_ModuleResourceWarehouse> _warehouseList;
 
         public void FixedUpdate()
@@ -64,7 +63,7 @@ namespace PlanetaryLogistics
             }
             catch (Exception ex)
             {
-                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate");
+                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate: " + ex.StackTrace);
             }
         }
 
