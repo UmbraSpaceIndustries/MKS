@@ -183,7 +183,8 @@ namespace KolonyTools
             var rate = GetEfficiencyBonus();
             foreach (var con in _con)
             {
-                con.SetEfficiencyBonus("MKS",rate);
+                if(con.useEfficiencyBonus)
+                    con.SetEfficiencyBonus("MKS",rate);
             }
         }
 
