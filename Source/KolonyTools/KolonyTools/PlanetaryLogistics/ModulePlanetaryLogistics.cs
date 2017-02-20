@@ -63,7 +63,7 @@ namespace PlanetaryLogistics
             }
             catch (Exception ex)
             {
-                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate");
+                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate: " + ex.StackTrace);
             }
         }
 
