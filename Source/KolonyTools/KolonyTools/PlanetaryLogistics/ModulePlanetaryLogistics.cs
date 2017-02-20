@@ -25,7 +25,6 @@ namespace PlanetaryLogistics
         [KSPField] 
         public double ResourceTax = 0.05d;
 
-        private double lastCheck;
         private List<USI_ModuleResourceWarehouse> _warehouseList;
 
         public void FixedUpdate()
@@ -68,7 +67,7 @@ namespace PlanetaryLogistics
             }
         }
 
-        private List<String> _blackList = new List<string> { "Machinery", "EnrichedUranium", "DepletedFuel", "Construction", "ReplacementParts", "ElectricCharge" };
+        private List<String> _blackList = new List<string> { "EnrichedUranium", "DepletedFuel", "Construction", "ReplacementParts", "ElectricCharge" };
 
 
         private void LevelResources(Part rPart, string resource, bool hasSkill)
