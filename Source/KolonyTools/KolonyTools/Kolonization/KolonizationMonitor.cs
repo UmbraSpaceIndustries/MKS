@@ -257,7 +257,8 @@ namespace KolonyTools
             GUILayout.Label(String.Format("Kolonization"), _labelStyle, GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
-            var planetList = KolonizationManager.Instance.KolonizationInfo.Select(p => p.BodyIndex).Distinct();
+            var focusedPlanet = GetFocusedPlanet();
+            var planetList = KolonizationManager.Instance.KolonizationInfo.Select(p => p.BodyIndex).Distinct().OrderByDescending(pId => pId == focusedPlanet);
 
             foreach (var p in planetList)
             {
@@ -298,6 +299,27 @@ namespace KolonyTools
             GUILayout.EndScrollView();
         }
 
+        private static int GetFocusedPlanet()
+        {
+            if (HighLogic.LoadedSceneHasPlanetarium)
+            {
+                var cameraTarget = MapView.MapCamera.target;
+                if (cameraTarget.celestialBody)
+                {
+                    return cameraTarget.celestialBody.flightGlobalsIndex;
+                }
+                else if (cameraTarget.vessel)
+                {
+                    return cameraTarget.vessel.mainBody.flightGlobalsIndex;
+                }
+            }
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                return FlightGlobals.ActiveVessel.mainBody.flightGlobalsIndex;
+            }
+            return -1;
+        }
+
         private void PlanLogScreen()
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos, _scrollStyle, GUILayout.Width(600), GUILayout.Height(380));
@@ -305,7 +327,8 @@ namespace KolonyTools
 
             try
             {
-                var planetList = PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Select(p => p.BodyIndex).Distinct();
+                var focusedPlanet = GetFocusedPlanet();
+                var planetList = PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Select(p => p.BodyIndex).Distinct().OrderByDescending(pId => pId == focusedPlanet);
 
                 foreach (var p in planetList)
                 {
@@ -313,7 +336,7 @@ namespace KolonyTools
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(String.Format("<color=#FFFFFF>{0}</color>", planet.bodyName), _labelStyle, GUILayout.Width(135));
                     GUILayout.EndHorizontal();
-                    foreach (var log in PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Where(x => x.BodyIndex == p))
+                    foreach (var log in PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Where(x => x.BodyIndex == p).OrderBy(x => x.ResourceName))
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("", _labelStyle, GUILayout.Width(30));
