@@ -9,7 +9,7 @@ MinDistanceToWorkshop     = 50
 MaxDistanceEfficiency     = 0.2
 //MaxMetalworkPerHour       = 0.01
 
-VolumePerKerbal           = 3
+VolumePerKerbal           = 8
 PartVolumeFactor          = 0.3
 MinGenericEfficiency      = 0.05
 MaxGenericEfficiency      = 0.5
