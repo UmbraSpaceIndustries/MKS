@@ -34,6 +34,11 @@ namespace KolonyTools
 
         public virtual float GetEfficiencyRate()
         {
+            return GetEfficiencyPartsBonus();
+        }
+
+        private float GetEfficiencyPartsBonus()
+        {
             if (eTag == "")
                 return 1f;
 
@@ -64,7 +69,7 @@ namespace KolonyTools
                 var pList = vsl.FindPartModulesImplementing<ModuleEfficiencyPart>();
                 foreach (var p in pList)
                 {
-                    if (p.IsActivated)
+                    if (p.IsActivated && p.eTag == eTag)
                         totEff += (float)(p.EfficiencyMultiplier * p.eMultiplier);
                 }
             }
@@ -188,20 +193,15 @@ namespace KolonyTools
             }
         }
 
-
-        private double GetPlanetaryBonus()
+        private float GetPlanetaryBonus()
         {
-            var thisBodyInfo = KolonizationManager.Instance.KolonizationInfo.Where(k => k.BodyIndex == vessel.mainBody.flightGlobalsIndex);
-            var bonus = thisBodyInfo.Sum(k => k.GeologyResearch);
+            var bodyId = vessel.mainBody.flightGlobalsIndex;
             if (BonusEffect == "RepBoost")
-                bonus = thisBodyInfo.Sum(k => k.KolonizationResearch);
+                return KolonizationManager.GetKolonizationResearchBonus(bodyId);
             else if (BonusEffect == "ScienceBoost")
-                bonus = thisBodyInfo.Sum(k => k.BotanyResearch);
-
-            bonus = Math.Sqrt(bonus);
-            bonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
-            bonus += KolonizationSetup.Instance.Config.StartingBaseBonus;
-            return Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, bonus);
+                return KolonizationManager.GetBotanyResearchBonus(bodyId);
+            else
+                return KolonizationManager.GetGeologyResearchBonus(bodyId);
         }
 
         private float GetEfficiency()
@@ -223,20 +223,9 @@ namespace KolonyTools
 
         public float GetEfficiencyBonus()
         {
-            var totBonus = 1f;
-            var thisBodyInfo = KolonizationManager.Instance.KolonizationInfo.Where(b => b.BodyIndex == vessel.mainBody.flightGlobalsIndex);
-            var geoBonus = thisBodyInfo.Sum(b => b.GeologyResearch);
-            geoBonus = Math.Sqrt(geoBonus);
-            geoBonus /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
-            geoBonus += KolonizationSetup.Instance.Config.StartingBaseBonus;
-            totBonus *= (float)Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, geoBonus);
-
-            var conEff = GetEfficiencyRate();
-            var kBonus = Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, GetPlanetaryBonus());
-            conEff *= (float)kBonus;
-            totBonus *= conEff;
-
-            return totBonus;
+            var bodyId = vessel.mainBody.flightGlobalsIndex;
+            var geoBonus = KolonizationManager.GetGeologyResearchBonus(bodyId);
+            return geoBonus * GetEfficiencyPartsBonus() * GetPlanetaryBonus();
         }
     }
 }
