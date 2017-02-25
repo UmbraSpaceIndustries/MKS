@@ -24,12 +24,13 @@ namespace KolonyTools
         private float _effPartTotal;
         private float _efficiencyRate;
         private const int EFF_RANGE = 500;
-        private List<IEfficiencyBonusConsumer> _con;
+        private List<IEfficiencyBonusConsumer> _bonusConsumerConverters;
 
         public override void OnStart(StartState state)
         {
-            _con = new List<IEfficiencyBonusConsumer>();
-            _con.AddRange(part.FindModulesImplementing<IEfficiencyBonusConsumer>());
+            // Apply bonuses to all converters but efficiency boosters
+            _bonusConsumerConverters = part.FindModulesImplementing<IEfficiencyBonusConsumer>()
+                .Where(mod => !typeof(ModuleEfficiencyPart).IsInstanceOfType(mod)).ToList();
         }
 
         public virtual float GetEfficiencyRate()
@@ -95,7 +96,7 @@ namespace KolonyTools
                     var m = p.part.FindModuleImplementing<MKSModule>();
                     if (m != null && m.eTag == eTag)
                     {
-                        if (p.IsActivated)
+                        if (p.IsActivated) // p has a GetEfficiencyMultiplier ()
                             totEff += m.eMultiplier;
                     }
                 }
@@ -186,7 +187,7 @@ namespace KolonyTools
         private void UpdateEfficiencyBonus()
         {
             var rate = GetEfficiencyBonus();
-            foreach (var con in _con)
+            foreach (var con in _bonusConsumerConverters)
             {
                 if(con.useEfficiencyBonus)
                     con.SetEfficiencyBonus("MKS",rate);
