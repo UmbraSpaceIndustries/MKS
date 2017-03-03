@@ -13,13 +13,6 @@ using PlanetaryLogistics;
 
 namespace KolonyTools
 {
-    public struct Kolonist
-    {
-        public string Name { get; set; }
-        public string Effects { get; set; }
-        public double Cost { get; set; }
-    }
-
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class KolonizationMonitor_Flight : KolonizationMonitor
     { }
@@ -53,7 +46,6 @@ namespace KolonyTools
         public static bool renderDisplay = false;
         public int curTab = 0;
 
-        private List<Kolonist> _kolonists;
         private ComboBox fromVesselComboBox;
         private Guid activeId;
         private List<Vessel> NearVessels;
@@ -87,26 +79,10 @@ namespace KolonyTools
 
         void Awake()
         {
-            _kolonists = new List<Kolonist>();
-            _kolonists.Add(new Kolonist { Name = "Pilot", Cost = 250000, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
-            _kolonists.Add(new Kolonist { Name = "Scientist", Cost = 250000, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Engineer", Cost = 250000, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 10000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Scout", Cost = 10000, Effects = "Explorer" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 10000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Miner", Cost = 10000, Effects = "Drill, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Technician", Cost = 10000, Effects = "Converter, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Mechanic", Cost = 10000, Effects = "Repair, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Biologist", Cost = 10000, Effects = "Biology, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Geologist", Cost = 10000, Effects = "Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Farmer", Cost = 10000, Effects = "Agronomy, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Medic", Cost = 10000, Effects = "Medical, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Quartermaster", Cost = 10000, Effects = "Logistics, RepBoost" });
-
             if (ToolbarManager.ToolbarAvailable)
             {
                 this.kolonyTButton = ToolbarManager.Instance.add("UKS", "kolony");
-                kolonyTButton.TexturePath = "UmbraSpaceIndustries/Kolonization/Kolony24";
+                kolonyTButton.TexturePath = "UmbraSpaceIndustries/MKS/Kolony24";
                 kolonyTButton.ToolTip = "USI Kolony";
                 kolonyTButton.Enabled = true;
                 kolonyTButton.OnClick += (e) => { if(windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
@@ -174,7 +150,7 @@ namespace KolonyTools
 
         private void GenerateWindow()
         {
-            var tabStrings = new[] { "Kolony Statistics", "Recruit Kolonists", "Local Logistics", "Planetary Logistics"};
+            var tabStrings = new[] { "Kolony Statistics", "Local Logistics", "Planetary Logistics"};
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             curTab = GUILayout.SelectionGrid(curTab, tabStrings, 6, _smButtonStyle);
@@ -185,12 +161,9 @@ namespace KolonyTools
                     StatScreen();
                     break;
                 case 1:
-                    RecruitScreen();
-                    break;
-                case 2:
                     LocalLogScreen();
                     break;
-                case 3:
+                case 2:
                     PlanLogScreen();
                     break;
             }
@@ -198,79 +171,79 @@ namespace KolonyTools
             GUI.DragWindow();
         }
 
-        private void RecruitScreen()
-        {
-            GUILayout.BeginVertical();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(String.Format(""), _labelStyle, GUILayout.Width(135)); //Spacer
-            GUILayout.EndHorizontal();
+        //private void RecruitScreen()
+        //{
+        //    GUILayout.BeginVertical();
+        //    GUILayout.BeginHorizontal();
+        //    GUILayout.Label(String.Format(""), _labelStyle, GUILayout.Width(135)); //Spacer
+        //    GUILayout.EndHorizontal();
 
-            var count = _kolonists.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                var k = _kolonists[i];
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(k.Name, GUILayout.Width(100)))
-                    RecruitKerbal(i);
-                GUILayout.Label("", _labelStyle, GUILayout.Width(5));
-                GUILayout.Label(k.Cost/1000 + "k", _labelStyle, GUILayout.Width(50));
-                GUILayout.Label(k.Effects, _labelStyle, GUILayout.Width(400));
-                GUILayout.EndHorizontal();
-            }
+        //    var count = _kolonists.Count;
+        //    for (int i = 0; i < count; ++i)
+        //    {
+        //        var k = _kolonists[i];
+        //        GUILayout.BeginHorizontal();
+        //        if (GUILayout.Button(k.Name, GUILayout.Width(100)))
+        //            RecruitKerbal(i);
+        //        GUILayout.Label("", _labelStyle, GUILayout.Width(5));
+        //        GUILayout.Label(k.Cost/1000 + "k", _labelStyle, GUILayout.Width(50));
+        //        GUILayout.Label(k.Effects, _labelStyle, GUILayout.Width(400));
+        //        GUILayout.EndHorizontal();
+        //    }
 
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Random", GUILayout.Width(100)))
-                RecruitKerbal(-1);
-            GUILayout.Label("", _labelStyle, GUILayout.Width(5));
-            GUILayout.Label("1k", _labelStyle, GUILayout.Width(50));
-            GUILayout.Label("[Grab a random Kerbal!]", _labelStyle, GUILayout.Width(400));
-            GUILayout.EndHorizontal();
+        //    GUILayout.BeginHorizontal();
+        //    if (GUILayout.Button("Random", GUILayout.Width(100)))
+        //        RecruitKerbal(-1);
+        //    GUILayout.Label("", _labelStyle, GUILayout.Width(5));
+        //    GUILayout.Label("1k", _labelStyle, GUILayout.Width(50));
+        //    GUILayout.Label("[Grab a random Kerbal!]", _labelStyle, GUILayout.Width(400));
+        //    GUILayout.EndHorizontal();
 
 
-            GUILayout.EndVertical();
-        }
+        //    GUILayout.EndVertical();
+        //}
 
-        private void RecruitKerbal(int id)
-        {
-            Random r = new Random();
-            var classId = id;
-            if (id < 0)
-                classId = r.Next(_kolonists.Count - 1);
-            var k = _kolonists[classId];
+        //private void RecruitKerbal(int id)
+        //{
+        //    Random r = new Random();
+        //    var classId = id;
+        //    if (id < 0)
+        //        classId = r.Next(_kolonists.Count - 1);
+        //    var k = _kolonists[classId];
 
-            var cost = k.Cost;
-            var trait = k.Name;
-            if (id < 0)
-                cost = 1000;
+        //    var cost = k.Cost;
+        //    var trait = k.Name;
+        //    if (id < 0)
+        //        cost = 1000;
 
-            string msg;
-            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
-            {
-                if (cost > Funding.Instance.Funds)
-                {
-                    msg = string.Format("Not enough funds!");
-                    ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-                    return;
-                }
-                if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= 
-                    GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
-                {
-                    msg = string.Format("Roster is full!");
-                    ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-                    return;
-                }
-                double myFunds = Funding.Instance.Funds;
-                Funding.Instance.AddFunds(-cost, TransactionReasons.CrewRecruited);
-            }
+        //    string msg;
+        //    if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+        //    {
+        //        if (cost > Funding.Instance.Funds)
+        //        {
+        //            msg = string.Format("Not enough funds!");
+        //            ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
+        //            return;
+        //        }
+        //        if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= 
+        //            GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
+        //        {
+        //            msg = string.Format("Roster is full!");
+        //            ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
+        //            return;
+        //        }
+        //        double myFunds = Funding.Instance.Funds;
+        //        Funding.Instance.AddFunds(-cost, TransactionReasons.CrewRecruited);
+        //    }
 
-            msg = string.Format("Recruited {0}!",trait);
-            ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
-            ProtoCrewMember newKerbal = HighLogic.CurrentGame.CrewRoster.GetNewKerbal();
-            KerbalRoster.SetExperienceTrait(newKerbal, trait);
-            newKerbal.rosterStatus = ProtoCrewMember.RosterStatus.Available;
-            newKerbal.experience = 0;
-            newKerbal.experienceLevel = 0;
-        }
+        //    msg = string.Format("Recruited {0}!",trait);
+        //    ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
+        //    ProtoCrewMember newKerbal = HighLogic.CurrentGame.CrewRoster.GetNewKerbal();
+        //    KerbalRoster.SetExperienceTrait(newKerbal, trait);
+        //    newKerbal.rosterStatus = ProtoCrewMember.RosterStatus.Available;
+        //    newKerbal.experience = 0;
+        //    newKerbal.experienceLevel = 0;
+        //}
 
         private void StatScreen()
         { 
@@ -284,45 +257,46 @@ namespace KolonyTools
             GUILayout.Label(String.Format("Kolonization"), _labelStyle, GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
-            var planetList = KolonizationManager.Instance.KolonizationInfo.Select(p => p.BodyIndex).Distinct();
+            var focusedPlanet = GetFocusedPlanet();
+            var planetList = KolonizationManager.Instance.KolonizationInfo.Select(p => p.BodyIndex).Distinct().OrderByDescending(pId => pId == focusedPlanet);
 
             foreach (var p in planetList)
             {
-            var body = FlightGlobals.Bodies[p];
-            var geo = 0d;
-            var kol = 0d;
-            var bot = 0d;
-                                       
-            foreach(var k in KolonizationManager.Instance.KolonizationInfo.Where(x=>x.BodyIndex == p))
-            {
-                geo += k.GeologyResearch;
-                bot += k.BotanyResearch;
-                kol += k.KolonizationResearch;
-            }
-
-            geo = Math.Sqrt(geo);
-            geo /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
-            geo += KolonizationSetup.Instance.Config.StartingBaseBonus;
-
-            bot = Math.Sqrt(bot);
-            bot /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
-            bot += KolonizationSetup.Instance.Config.StartingBaseBonus;
-
-            kol = Math.Sqrt(kol);
-            kol /= KolonizationSetup.Instance.Config.EfficiencyMultiplier;
-            kol += KolonizationSetup.Instance.Config.StartingBaseBonus;
-
-                    
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(String.Format("<color=#FFFFFF>{0}</color>", body.bodyName), _labelStyle, GUILayout.Width(135));
-            GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", geo* 100d), _labelStyle, GUILayout.Width(80));
-            GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", bot* 100d), _labelStyle, GUILayout.Width(80));
-            GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", kol* 100d), _labelStyle, GUILayout.Width(80));
-            GUILayout.EndHorizontal();
+                var body = FlightGlobals.Bodies[p];
+                var geo = KolonizationManager.GetGeologyResearchBonus(p);
+                var kol = KolonizationManager.GetKolonizationResearchBonus(p);
+                var bot = KolonizationManager.GetBotanyResearchBonus(p);
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(String.Format("<color=#FFFFFF>{0}</color>", body.bodyName), _labelStyle, GUILayout.Width(135));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", geo * 100d), _labelStyle, GUILayout.Width(80));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", bot * 100d), _labelStyle, GUILayout.Width(80));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", kol * 100d), _labelStyle, GUILayout.Width(80));
+                GUILayout.EndHorizontal();
             }
 
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
+        }
+
+        private static int GetFocusedPlanet()
+        {
+            if (HighLogic.LoadedSceneHasPlanetarium)
+            {
+                var cameraTarget = MapView.MapCamera.target;
+                if (cameraTarget.celestialBody)
+                {
+                    return cameraTarget.celestialBody.flightGlobalsIndex;
+                }
+                else if (cameraTarget.vessel)
+                {
+                    return cameraTarget.vessel.mainBody.flightGlobalsIndex;
+                }
+            }
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                return FlightGlobals.ActiveVessel.mainBody.flightGlobalsIndex;
+            }
+            return -1;
         }
 
         private void PlanLogScreen()
@@ -332,7 +306,8 @@ namespace KolonyTools
 
             try
             {
-                var planetList = PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Select(p => p.BodyIndex).Distinct();
+                var focusedPlanet = GetFocusedPlanet();
+                var planetList = PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Select(p => p.BodyIndex).Distinct().OrderByDescending(pId => pId == focusedPlanet);
 
                 foreach (var p in planetList)
                 {
@@ -340,7 +315,7 @@ namespace KolonyTools
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(String.Format("<color=#FFFFFF>{0}</color>", planet.bodyName), _labelStyle, GUILayout.Width(135));
                     GUILayout.EndHorizontal();
-                    foreach (var log in PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Where(x => x.BodyIndex == p))
+                    foreach (var log in PlanetaryLogisticsManager.Instance.PlanetaryLogisticsInfo.Where(x => x.BodyIndex == p).OrderBy(x => x.ResourceName))
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("", _labelStyle, GUILayout.Width(30));
@@ -626,11 +601,11 @@ namespace KolonyTools
             if (idx == NearVessels.Count)
                 idx = 0;
 
-            _resList = RebuildResourceList();
-
             v.Setup(NearVessels[idx], idx);
             if (_fromVessel.Idx == _toVessel.Idx && NearVessels.Count > 1)
                 SetNextVessel(v);
+
+            _resList = RebuildResourceList();
         }
         internal void OnDestroy()
         {

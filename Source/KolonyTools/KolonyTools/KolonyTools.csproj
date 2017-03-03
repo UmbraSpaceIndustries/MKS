@@ -55,16 +55,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AC\CustomAstronautComplexUI.cs" />
+    <Compile Include="AC\CustomAstronautComplexUISpawner.cs" />
+    <Compile Include="AC\EditACPrefab.cs" />
+    <Compile Include="AC\EditACPrefabs_Editor.cs" />
+    <Compile Include="AC\Kolonist.cs" />
+    <Compile Include="AC\EditACPrefabsSpaceCentre.cs" />
     <Compile Include="AddScenarioModules.cs" />
-    <Compile Include="Experience\AgronomySkill.cs" />
-    <Compile Include="Experience\BotanySkill.cs" />
-    <Compile Include="Experience\ExplorerSkill.cs" />
-    <Compile Include="Experience\FundsBoost.cs" />
-    <Compile Include="Experience\GeologySkill.cs" />
-    <Compile Include="Experience\LogisticsSkill.cs" />
-    <Compile Include="Experience\MedicalSkill.cs" />
-    <Compile Include="Experience\RepBoost.cs" />
-    <Compile Include="Experience\ScienceBoost.cs" />
     <Compile Include="Kolonization\KolonizationConfig.cs" />
     <Compile Include="Kolonization\KolonizationSetup.cs" />
     <Compile Include="MksAutoRepair.cs" />

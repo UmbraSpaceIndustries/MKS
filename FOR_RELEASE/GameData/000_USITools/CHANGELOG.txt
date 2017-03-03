@@ -1,4 +1,30 @@
-0.8.8 - 2017.01.01
+0.8.16 - 2017.02.24
+-------------------
+Mechanics can now perform EVA maintenance
+Fixed an issue where resources were being double-consumed when converters were swapped
+
+0.8.15 - 2017.02.08
+------------------
+Fixed more nullref spam
+
+0.8.13 - 2017.02.04
+------------------
+Fixed some nullref spam in Animations related to logistics
+
+0.8.13 - 2017.02.04
+------------------
+Fixed an issue with the new warehouse toggles
+
+0.8.11 - 2017.01.16
+-------------------
+Fixed runaway efficiency issue
+
+0.8.10 - 2017.01.15
+-------------------
+Performance Updates
+Fixed a bug that caused animations to auto-deploy
+
+0.8.9 - 2017.01.01
 -------------------
 Fixed bug w/swappable converter multi-bays
 
