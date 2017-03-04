@@ -280,7 +280,7 @@ namespace KolonyTools
 
         private static int GetFocusedPlanet()
         {
-            if (HighLogic.LoadedSceneHasPlanetarium)
+            if (HighLogic.LoadedSceneHasPlanetarium && MapView.MapCamera && MapView.MapCamera.target)
             {
                 var cameraTarget = MapView.MapCamera.target;
                 if (cameraTarget.celestialBody)
