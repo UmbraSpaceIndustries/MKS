@@ -15,6 +15,14 @@ namespace KolonyTools
 
         public float Governor = 1.0f;
 
+        public override string GetInfo()
+        {
+            if (string.IsNullOrEmpty(eTag))
+                return string.Empty;
+            return "Boosts efficiency of converters benefiting from a " + eTag + "\n\n" +
+                "Boost power: " + eMultiplier.ToString();
+        }
+
         private double _curMult;
 
         public double EfficiencyMultiplier
