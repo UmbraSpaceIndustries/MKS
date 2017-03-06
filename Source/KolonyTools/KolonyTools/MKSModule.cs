@@ -17,6 +17,9 @@ namespace KolonyTools
         [KSPField]
         public float eMultiplier = 1f;
 
+        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
+        public float Governor = 1.0f;
+
         private double lastCheck;
         private double checkTime = 5f;
 
@@ -189,8 +192,11 @@ namespace KolonyTools
             var rate = GetEfficiencyBonus();
             foreach (var con in _bonusConsumerConverters)
             {
-                if(con.useEfficiencyBonus)
-                    con.SetEfficiencyBonus("MKS",rate);
+                if (con.useEfficiencyBonus)
+                {
+                    con.SetEfficiencyBonus("MKS", rate);
+                }
+                con.SetEfficiencyBonus("GOV", Governor);
             }
         }
 
