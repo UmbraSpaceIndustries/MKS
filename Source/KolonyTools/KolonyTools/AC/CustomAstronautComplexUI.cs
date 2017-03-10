@@ -182,19 +182,21 @@ namespace KolonyTools.AC
         private int costMath()
         {
             dCheck();
-            float fearcost = 0;
+            float fearlessCost = 0;
             float basecost = _kolonists[KCareer].Cost;
-            float couragecost = (50 - KCourage) * 150;
-            float stupidcost = (KStupidity - 50) * 150;
+            float couragecost = KCourage * 150;
+            float stupidRebate = KStupidity * 150;
             float diffcost = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
             if (KFearless == true)
             {
-                fearcost += 10000;
+                fearlessCost += 10000;
             }
             DCost = 1 + (KDead * 0.1f);
 
+            double minCost = 0.1d * basecost;
+            double attribsCost = Math.Max(minCost, basecost + couragecost - stupidRebate);
 
-            double currentcost = (basecost - couragecost - stupidcost + fearcost) * (KLevel + 1) * DCost * diffcost * KBulki;
+            double currentcost = (attribsCost + fearlessCost) * (KLevel + 1) * DCost * diffcost * KBulki;
             // double finaldouble = (Math.Round(currentcost));
             int finalcost = Convert.ToInt32(currentcost); //Convert.ToInt32(finaldouble);
             return finalcost;
