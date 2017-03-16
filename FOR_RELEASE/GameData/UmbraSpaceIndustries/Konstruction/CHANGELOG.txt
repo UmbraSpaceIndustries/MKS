@@ -1,3 +1,7 @@
+0.1.12 - 2017.03.10
+-------------------
+
+
 0.1.11 - 2017.02.04
 -------------------
 Bundled the 'Ground Construction' mod as the standard off-world construction mod for USI.
