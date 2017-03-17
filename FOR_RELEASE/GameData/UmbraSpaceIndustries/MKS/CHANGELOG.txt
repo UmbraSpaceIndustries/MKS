@@ -1,4 +1,4 @@
-0.50.18 - 2017.03.10
+0.50.18 - 2017.03.17
 --------------------
 Updated drill descriptions (Thanks voicey99!)
 MPU's now have a 10x processing boost for fuel products only to make them more in line with stock ISRU modules (Thanks voicey99!)
@@ -14,6 +14,9 @@ Scavenging/Logistics will only push/pull to remote parts or consider remote part
 Updated costs of the MPUs
 Adjusted MPU consumption rate/machinery requirements as this was having an effect on production rate
 Updated impact range of drills
+Corrected texture for the Tundra workshop (thanks FirroSeranel!)
+Fixed an issue where multi-bay efficiency parts were providing a significantly larger bonus than they should have.  The multipliers for all modules have been divided by the number of bays (boo!)
+When using OSE Workshop, all recipes now require a quantity of specialized parts
 
 0.50.17 - 2017.02.24
 -------------------
