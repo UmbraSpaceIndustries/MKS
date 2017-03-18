@@ -38,6 +38,18 @@ namespace KolonyTools.AC
         private bool hTest = true;
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
+        private static string RecruitLevel = "RecruitementLevel";
+        private static string HomeworldName;
+
+        static CustomAstronautComplexUI()
+        {
+            for (int level = 1; level <= 5; level++)
+            {
+                var expValue = GetExperienceNeededFor(level);
+                KerbalRoster.AddExperienceType(RecruitLevel + level, "Recruited at level " + level + " on", 0.0f, expValue);
+            }
+            HomeworldName = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().name;
+        }
 
         private void Awake()
         {
@@ -131,36 +143,13 @@ namespace KolonyTools.AC
                     newKerb.isBadass = true;
                 }
                 // Debug.Log("PSH :: Status set to Available, courage and stupidity set, fearless trait set.");
-
-                if (KLevel == 1)
+                if (KLevel > 0)
                 {
-                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Flight,Kerbin");
-                    newKerb.flightLog.AddEntry("Land,Kerbin");
-                    newKerb.flightLog.AddEntry("Recover");
+                    var logName = RecruitLevel + KLevel;
+                    newKerb.flightLog.AddEntry(logName, HomeworldName);
                     newKerb.ArchiveFlightLog();
-                    newKerb.experience = 2;
-                    newKerb.experienceLevel = 1;
-                    // Debug.Log("KSI :: Level set to 1.");
-                }
-                if (KLevel == 2)
-                {
-                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
-                    newKerb.flightLog.AddEntry("Flight,Kerbin");
-                    newKerb.flightLog.AddEntry("Land,Kerbin");
-                    newKerb.flightLog.AddEntry("Recover");
-                    newKerb.flightLog.AddEntry("Flyby,Mun");
-                    newKerb.flightLog.AddEntry("Orbit,Mun");
-                    newKerb.flightLog.AddEntry("Land,Mun");
-                    newKerb.flightLog.AddEntry("Flyby,Minmus");
-                    newKerb.flightLog.AddEntry("Orbit,Minmus");
-                    newKerb.flightLog.AddEntry("Land,Minmus");
-                    newKerb.ArchiveFlightLog();
-                    newKerb.experience = 8;
-                    newKerb.experienceLevel = 2;
-                    // Debug.Log("KSI :: Level set to 2.");
+                    newKerb.experience = GetExperienceNeededFor(KLevel);
+                    newKerb.experienceLevel = KLevel;
                 }
                 if (ACLevel == 5 || kerExp == false)
                 {
@@ -168,7 +157,6 @@ namespace KolonyTools.AC
                     newKerb.experienceLevel = 5;
                     Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
                 }
-
 
             }
             // Refreshes the AC so that new kerbal shows on the available roster.
@@ -400,6 +388,28 @@ namespace KolonyTools.AC
                 }
             }
         }
+
+        private static float GetExperienceNeededFor(int level)
+        {
+            switch (level)
+            {
+                case 0:
+                    return 0;
+                case 1:
+                    return 2;
+                case 2:
+                    return 8;
+                case 3:
+                    return 16;
+                case 4:
+                    return 32;
+                case 5:
+                    return 64;
+                default:
+                    return 0;
+            }
+        }
+
     }
 
 }
