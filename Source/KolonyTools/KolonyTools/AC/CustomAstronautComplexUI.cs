@@ -39,16 +39,19 @@ namespace KolonyTools.AC
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
         private static string RecruitLevel = "RecruitementLevel";
-        private static string HomeworldName;
 
-        static CustomAstronautComplexUI()
+        [KSPAddon(KSPAddon.Startup.Instantly, true)]
+        public class StaticLoader : MonoBehaviour
         {
-            for (int level = 1; level <= 5; level++)
+            public StaticLoader()
             {
-                var expValue = GetExperienceNeededFor(level);
-                KerbalRoster.AddExperienceType(RecruitLevel + level, "Recruited at level " + level + " on", 0.0f, expValue);
+                Debug.Log("InitStaticData");
+                for (int level = 1; level <= 5; level++)
+                {
+                    var expValue = GetExperienceNeededFor(level);
+                    KerbalRoster.AddExperienceType(RecruitLevel + level, "Recruited at level " + level + " on", 0.0f, expValue);
+                }
             }
-            HomeworldName = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().name;
         }
 
         private void Awake()
@@ -146,7 +149,8 @@ namespace KolonyTools.AC
                 if (KLevel > 0)
                 {
                     var logName = RecruitLevel + KLevel;
-                    newKerb.flightLog.AddEntry(logName, HomeworldName);
+                    var homeworldName = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().name;
+                    newKerb.flightLog.AddEntry(logName, homeworldName);
                     newKerb.ArchiveFlightLog();
                     newKerb.experience = GetExperienceNeededFor(KLevel);
                     newKerb.experienceLevel = KLevel;
