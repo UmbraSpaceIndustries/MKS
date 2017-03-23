@@ -1,0 +1,25 @@
+{ 
+    "NAME":"000_AT_Utils",
+    "URL":"https://raw.githubusercontent.com/allista/AT_Utils/master/GameData/000_AT_Utils/000_AT_Utils.version",
+    "DOWNLOAD":"https://github.com/allista/AT_Utils/releases",
+    "CHANGE_LOG_URL":"",
+    "VERSION":
+     {
+         "MAJOR":1,
+         "MINOR":4,
+         "PATCH":2,
+         "BUILD":0
+     },
+    "KSP_VERSION_MIN":
+     {
+         "MAJOR":1,
+         "MINOR":2,
+         "PATCH":2
+     },
+    "KSP_VERSION_MAX":
+     {
+         "MAJOR":1,
+         "MINOR":2,
+         "PATCH":2
+     }
+}

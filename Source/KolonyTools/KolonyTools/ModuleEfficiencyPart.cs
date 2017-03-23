@@ -13,8 +13,15 @@ namespace KolonyTools
         [KSPField]
         public string eTag = "";
 
-        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
         public float Governor = 1.0f;
+
+        public override string GetInfo()
+        {
+            if (string.IsNullOrEmpty(eTag))
+                return string.Empty;
+            return "Boosts efficiency of converters benefiting from a " + eTag + "\n\n" +
+                "Boost power: " + eMultiplier.ToString();
+        }
 
         private double _curMult;
 

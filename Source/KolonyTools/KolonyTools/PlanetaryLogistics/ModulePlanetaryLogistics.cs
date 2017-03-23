@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using KolonyTools;
 using USITools;
 using USITools.Logistics;
@@ -24,7 +25,6 @@ namespace PlanetaryLogistics
         [KSPField] 
         public double ResourceTax = 0.05d;
 
-        private double lastCheck;
         private List<USI_ModuleResourceWarehouse> _warehouseList;
 
         public void FixedUpdate()
@@ -41,26 +41,33 @@ namespace PlanetaryLogistics
                 if(_warehouseList == null)
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
 
-                foreach (var mod in _warehouseList)
+                if (_warehouseList != null)
                 {
-                    bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
-
-                    if (!mod.transferEnabled)
-                        continue;
-
-                    var rCount = mod.part.Resources.Count;
-                    for (int i = 0; i < rCount; ++i)
+                    foreach (var mod in _warehouseList)
                     {
-                        var res = mod.part.Resources[i];
-                        LevelResources(mod.part, res.resourceName,hasSkill);
+                        bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
+
+                        if (!mod.soiTransferEnabled)
+                            continue;
+
+                        var rCount = mod.part.Resources.Count;
+                        for (int i = 0; i < rCount; ++i)
+                        {
+                            var res = mod.part.Resources[i];
+                            if (_blackList.Contains(res.resourceName))
+                                continue;
+                            LevelResources(mod.part, res.resourceName, hasSkill);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate");
+                print("ERROR IN ModulePlanetaryLogistics -> FixedUpdate: " + ex.StackTrace);
             }
         }
+
+        private List<String> _blackList = new List<string> { "EnrichedUranium", "DepletedFuel", "Construction", "ReplacementParts", "ElectricCharge" };
 
 
         private void LevelResources(Part rPart, string resource, bool hasSkill)
