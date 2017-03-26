@@ -5,8 +5,19 @@ using Smooth.Slinq.Test;
 using UnityEngine;
 using Random = System.Random;
 
+
 namespace KolonyTools
 {
+    public class ModuleGroundPylon : LaunchClamp
+    {
+        public override void OnStart(StartState state)
+        {
+            stagingEnabled = false;
+            Actions["ReleaseClamp"].active = false;
+            Events["Release"].active = false;
+        }
+    }
+
     public class ModuleResourceSurveyor : PartModule
     {
         private Random _rnd;
