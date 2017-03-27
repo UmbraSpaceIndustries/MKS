@@ -20,7 +20,9 @@ namespace KolonyTools
         [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
         public float Governor = 1.0f;
 
-        private double lastCheck;
+        [KSPField(isPersistant = true)]
+        private double lastCheck = -1;
+
         private double checkTime = 5f;
 
         private float _colonyConverterEff;
@@ -107,15 +109,49 @@ namespace KolonyTools
             return totEff;
         }
 
-        public void FixedUpdate()
+        public override void OnAwake()
         {
             if (!HighLogic.LoadedSceneIsFlight)
                 return;
 
-            if (Math.Abs(lastCheck - Planetarium.GetUniversalTime()) < checkTime)
+            _conMods = part.FindModulesImplementing<ModuleResourceConverter>();
+            _maxDelta = ResourceUtilities.GetMaxDeltaTime();
+        }
+
+        private double _maxDelta;
+        private List<ModuleResourceConverter> _conMods;
+
+        private bool InCatchupMode()
+        {
+            var count = _conMods.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                var c = _conMods[i];
+                var thisDelta = c.lastTimeFactor / c.GetEfficiencyMultiplier();
+                if (thisDelta / 2 > TimeWarp.deltaTime)
+                    return true;
+            }
+            return false;
+        }
+
+
+        public void FixedUpdate()
+        {
+            if (lastCheck < 0)
+                lastCheck = vessel.lastUT;
+
+            if (!HighLogic.LoadedSceneIsFlight)
                 return;
 
-            lastCheck = Planetarium.GetUniversalTime();
+            var planTime = Planetarium.GetUniversalTime();
+
+            if (!InCatchupMode())
+            {
+                if (Math.Abs(planTime - lastCheck) < checkTime)
+                    return;
+            }
+
+            lastCheck = Math.Min(lastCheck + _maxDelta, planTime);
 
             UpdateKolonizationStats();
             UpdateEfficiencyBonus();
