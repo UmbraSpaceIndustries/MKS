@@ -17,6 +17,9 @@ namespace KolonyTools
         [KSPField]
         public float eMultiplier = 1f;
 
+        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
+        public float Governor = 1.0f;
+
         private double lastCheck;
         private double checkTime = 5f;
 
@@ -24,12 +27,13 @@ namespace KolonyTools
         private float _effPartTotal;
         private float _efficiencyRate;
         private const int EFF_RANGE = 500;
-        private List<IEfficiencyBonusConsumer> _con;
+        private List<IEfficiencyBonusConsumer> _bonusConsumerConverters;
 
         public override void OnStart(StartState state)
         {
-            _con = new List<IEfficiencyBonusConsumer>();
-            _con.AddRange(part.FindModulesImplementing<IEfficiencyBonusConsumer>());
+            // Apply bonuses to all converters but efficiency boosters
+            _bonusConsumerConverters = part.FindModulesImplementing<IEfficiencyBonusConsumer>()
+                .Where(mod => !typeof(ModuleEfficiencyPart).IsInstanceOfType(mod)).ToList();
         }
 
         public virtual float GetEfficiencyRate()
@@ -95,7 +99,7 @@ namespace KolonyTools
                     var m = p.part.FindModuleImplementing<MKSModule>();
                     if (m != null && m.eTag == eTag)
                     {
-                        if (p.IsActivated)
+                        if (p.IsActivated) // p has a GetEfficiencyMultiplier ()
                             totEff += m.eMultiplier;
                     }
                 }
@@ -186,10 +190,13 @@ namespace KolonyTools
         private void UpdateEfficiencyBonus()
         {
             var rate = GetEfficiencyBonus();
-            foreach (var con in _con)
+            foreach (var con in _bonusConsumerConverters)
             {
-                if(con.useEfficiencyBonus)
-                    con.SetEfficiencyBonus("MKS",rate);
+                if (con.useEfficiencyBonus)
+                {
+                    con.SetEfficiencyBonus("MKS", rate);
+                }
+                con.SetEfficiencyBonus("GOV", Governor);
             }
         }
 
@@ -212,12 +219,19 @@ namespace KolonyTools
 
         public override string GetInfo()
         {
-            if (string.IsNullOrEmpty(eTag))
-                return string.Empty;
-
             var output = new StringBuilder("");
-            output.Append(string.Format("Efficiency Tag: {0}\n", eTag));
-            output.Append(string.Format("Multiplier: {0:0.00}\n", eMultiplier));
+
+            output.Append("Benefits from bonuses:\n");
+            output.Append("  Geology Research\n");
+            if (BonusEffect == "RepBoost")
+                output.Append("  Kolonization Research\n");
+            else if (BonusEffect == "ScienceBoost")
+                output.Append("  Botany Research\n");
+            if (!string.IsNullOrEmpty(eTag))
+            {
+                output.Append("Benefits from Efficiency Parts:\n");
+                output.Append(string.Format("  {0} (consumption {1})\n", eTag, eMultiplier));
+            }
             return output.ToString();
         }
 

@@ -1,3 +1,23 @@
+0.50.18 - 2017.03.17
+--------------------
+Updated drill descriptions (Thanks voicey99!)
+MPU's now have a 10x processing boost for fuel products only to make them more in line with stock ISRU modules (Thanks voicey99!)
+Fixed NRE with the Kolonization Monitor in the KSC scene (Thanks Gnurfos!)
+Fixed typos in the new processor start/stop actions (thanks jarosm!)
+Fixed output resource for fertilizer converters (thanks drgola!)
+No longer suppress EL parts (thanks Dstaal!)
+Fixed a ton of miscellaneous non-breaking config/load errors (thanks theRagingIrishman!)
+Added ModuleLogisticsConsumer to the fuel cell array (Thanks Fury1SOG!)
+Deprecated outdated MFT configurations
+Removed all references to ReplacementParts as those are not being currently used
+Scavenging/Logistics will only push/pull to remote parts or consider remote parts that are USI warehouses.  Parts local to the vessel are unaffected.
+Updated costs of the MPUs
+Adjusted MPU consumption rate/machinery requirements as this was having an effect on production rate
+Updated impact range of drills
+Corrected texture for the Tundra workshop (thanks FirroSeranel!)
+Fixed an issue where multi-bay efficiency parts were providing a significantly larger bonus than they should have.  The multipliers for all modules have been divided by the number of bays (boo!)
+When using OSE Workshop, all recipes now require a quantity of specialized parts
+
 0.50.17 - 2017.02.24
 -------------------
 New Features and Updates:
