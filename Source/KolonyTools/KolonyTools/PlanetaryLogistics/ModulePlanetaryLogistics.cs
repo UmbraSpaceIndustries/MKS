@@ -26,6 +26,7 @@ namespace PlanetaryLogistics
         public double ResourceTax = 0.05d;
 
         private List<USI_ModuleResourceWarehouse> _warehouseList;
+        private double lastWHCheck;
 
         public void FixedUpdate()
         {
@@ -37,16 +38,20 @@ namespace PlanetaryLogistics
                 if (!vessel.LandedOrSplashed)
                     return;
 
+                bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
+                
+                //Periodic refresh of the warehouses due to vessel change, etc.
+                if (Planetarium.GetUniversalTime() > lastWHCheck + CheckFrequency)
+                    _warehouseList = null;
+
                 //PlanLog grabs all things attached to this vessel.
-                if(_warehouseList == null)
+                if (_warehouseList == null)
                     _warehouseList = vessel.FindPartModulesImplementing<USI_ModuleResourceWarehouse>();
 
                 if (_warehouseList != null)
                 {
                     foreach (var mod in _warehouseList)
                     {
-                        bool hasSkill = LogisticsTools.NearbyCrew(vessel, 500, "LogisticsSkill");
-
                         if (!mod.soiTransferEnabled)
                             continue;
 

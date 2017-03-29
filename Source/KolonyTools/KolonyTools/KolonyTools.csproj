@@ -66,6 +66,7 @@
     <Compile Include="Kolonization\KolonizationSetup.cs" />
     <Compile Include="MksAutoRepair.cs" />
     <Compile Include="ModuleColonyRewards.cs" />
+    <Compile Include="ModuleGroundPylon.cs" />
     <Compile Include="ModuleResourceLode.cs" />
     <Compile Include="ModuleResourceSurveyor.cs" />
     <Compile Include="OrbitalLogistics\ComboBox.cs" />
