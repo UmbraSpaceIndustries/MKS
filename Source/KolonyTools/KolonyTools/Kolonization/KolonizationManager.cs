@@ -58,6 +58,12 @@ namespace KolonyTools
             KolonizationScenario.Instance.settings.DeleteStatusNode(logEntry);
         }
 
+        public List<KolonizationEntry> FetchEntriesForPlanet(int body)
+        {
+            var logEntries = KolonizationInfo.Where(n => n.BodyIndex == body).ToList();
+            return logEntries;
+        }
+
         public KolonizationEntry FetchLogEntry(string vesselId, int body)
         {
             if (!DoesLogEntryExist(vesselId, body))
@@ -103,6 +109,31 @@ namespace KolonyTools
             newEntry.Rep = logEntry.Rep; 
             KolonizationScenario.Instance.settings.SaveLogEntryNode(newEntry);
         }
+
+        public static float GetGeologyResearchBonus(int bodyIndex)
+        {
+            var researchTotal = Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.GeologyResearch);
+            return ConvertResearchToBonus(researchTotal);
+        }
+        public static float GetBotanyResearchBonus(int bodyIndex)
+        {
+            var researchTotal = Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.BotanyResearch);
+            return ConvertResearchToBonus(researchTotal);
+        }
+        public static float GetKolonizationResearchBonus(int bodyIndex)
+        {
+            var researchTotal = Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.KolonizationResearch);
+            return ConvertResearchToBonus(researchTotal);
+        }
+        private static float ConvertResearchToBonus(double researchTotal)
+        {
+            var progress = Math.Sqrt(researchTotal) / KolonizationSetup.Instance.Config.EfficiencyMultiplier;
+            var candidateBonus = KolonizationSetup.Instance.Config.StartingBaseBonus + (float)progress;
+            return Math.Max(KolonizationSetup.Instance.Config.MinBaseBonus, candidateBonus);
+
+        }
+
+
     }
 }
 

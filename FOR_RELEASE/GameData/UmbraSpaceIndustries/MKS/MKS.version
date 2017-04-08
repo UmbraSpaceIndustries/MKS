@@ -1,6 +1,6 @@
 {
-     "NAME":"UKS",
-	 "URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/UKS/UKS.version",
+     "NAME":"MKS",
+	 "URL":"https://raw.githubusercontent.com/BobPalmer/MKS/master/FOR_RELEASE/GameData/UmbraSpaceIndustries/MKS/MKS.version",
 	 "DOWNLOAD":"https://github.com/BobPalmer/MKS/releases",
      "GITHUB":{
          "USERNAME":"BobPalmer",
@@ -10,13 +10,13 @@
      "VERSION":{
          "MAJOR":0,
          "MINOR":50,
-         "PATCH":7,
+         "PATCH":18,
          "BUILD":0
      },
      "KSP_VERSION":{
          "MAJOR":1,
          "MINOR":2,
-         "PATCH":1
+         "PATCH":2
      },
      "KSP_VERSION_MIN":{
          "MAJOR":1,
@@ -26,6 +26,6 @@
      "KSP_VERSION_MAX":{
          "MAJOR":1,
          "MINOR":2,
-         "PATCH":1
+         "PATCH":2
      }
  } 

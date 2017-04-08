@@ -1,3 +1,147 @@
+0.50.18 - 2017.03.17
+--------------------
+Updated drill descriptions (Thanks voicey99!)
+MPU's now have a 10x processing boost for fuel products only to make them more in line with stock ISRU modules (Thanks voicey99!)
+Fixed NRE with the Kolonization Monitor in the KSC scene (Thanks Gnurfos!)
+Fixed typos in the new processor start/stop actions (thanks jarosm!)
+Fixed output resource for fertilizer converters (thanks drgola!)
+No longer suppress EL parts (thanks Dstaal!)
+Fixed a ton of miscellaneous non-breaking config/load errors (thanks theRagingIrishman!)
+Added ModuleLogisticsConsumer to the fuel cell array (Thanks Fury1SOG!)
+Deprecated outdated MFT configurations
+Removed all references to ReplacementParts as those are not being currently used
+Scavenging/Logistics will only push/pull to remote parts or consider remote parts that are USI warehouses.  Parts local to the vessel are unaffected.
+Updated costs of the MPUs
+Adjusted MPU consumption rate/machinery requirements as this was having an effect on production rate
+Updated impact range of drills
+Corrected texture for the Tundra workshop (thanks FirroSeranel!)
+Fixed an issue where multi-bay efficiency parts were providing a significantly larger bonus than they should have.  The multipliers for all modules have been divided by the number of bays (boo!)
+When using OSE Workshop, all recipes now require a quantity of specialized parts
+
+0.50.17 - 2017.02.24
+-------------------
+New Features and Updates:
+- Mechanics can now perform EVA maintenance
+- Mechanics and Technicians can now work in Ground Construction workshops
+- Machinery can be transferred again via Planetary Logistics	
+- MKS now uses Ground Construction Core.  This means the only default GC part you will see is the (new) DIYKit.  GC Workshop functionality has been included in the Ranger Workshop, Tundra Assembly Plant, and a new Tundra-250 style Workshop.
+- Buffed the Ranger OSE Workshop, added OSE capabilities to the Tundra 250
+- Planetary logistics now defaults to OFF.  Local logistics still defaults to ON.
+- Replaced the Astronaut Complex code with an implementation of TheReadPanda's Hiring mod (Thanks for letting me use this!)
+- There are three new drills, one counterpart for each of the three existing MKS drills (with the added benefit of Ore drilling), optimized for remote operation.  They have been rebalanced to have the same mass, but will not have Kolony bonuses or specialty bonuses/penalties.
+- All MKS parts that utilize core heat (PDU's, Drills) have had their max coolant capacity increased tenfold to account for issues with efficiency causing excessive overheating.
+- There are three new automated refineries suitable for unattended operations.  These come in 1.25, 2.5, and 3.75 form factors, and may also be used as efficiency parts for the larger MKS refinery.  Note that these only handle refining for Tier-1 materials (Ore->LF,Ox,MP, Metals, Chemicals, Polymers, and Fertilizer via Gypsum or Minerals).  One thing to note is that these modules feature redundant systems in the form of extra machinery and reduced machinery draw, resulting in significantly longer run-times without maintenance. 
+- The two docks created originally for EL are now marked Legacy.
+- Agriculture modules now use the Botany bonus to their converters.
+- Habitats, MedBays, and Kolonization Modules now use the Kolonization bonus to their converters.
+- The Geology kolony reward has been renamed to Industry (since it encompasses everything from resource harvesting through refining and manufacturing) to avoid confusion.
+- The three new automated refineries are Planetary Logistics capable for push operations only (i.e. even with a pilot present, they will not pull).  
+- Kolonization Modules now have the option to enable Kolony Growth.  When enabled, new Kerabls will spawn provided that the Kolonization Module is active, it has space for the new crew, and you have at least one male and one female in your colony
+- Alphabetize Planetary Logistics, and fixed a nullref in maintenance (thanks Gnurfos!)
+- The larger resource lodes (the ones picked up by the orbital scanner) are now eight times larger!
+
+Bug Fixes:
+- Fixed an issue where resources were being double-consumed when converters were swapped
+- Fixed a small hab issue with the Karibou cab
+- Fixed an issue where efficiency parts were not respecting the efficiency part tag, also some other refactoring (Thanks Gnurfos!)
+- Asteroids no longer return material kits when scrapped.
+
+0.50.16 - 2017.02.05
+------------------
+Fixed issue with expanding modules
+Updated GC version and other dependencies
+
+0.50.15 - 2017.02.04
+------------------
+Bundled the 'Ground Construction' mod as the standard off-world construction mod for USI.
+For users of EL, Technicians and Mechanics now have the ExConstructionSkill.
+You can no longer scrap EVA Kerbals...  (Thanks jd284!)
+New nodes on the Tundra modules and KSPedia entries (Thanks dboi88!)
+Added an antenna to the Salamander (Thanks voicey99!)
+Updated the Karibou to use CCK (Thanks DStaal)
+You can now toggle local logistics and planetary logistics separately on warehouses
+A new line of Tundra ISM's have been introduced.  These use the 4.75m form factor and are equivalent to the Ranger ISMs.
+Fixed a bug where some expandable parts were not properly receiving shielding from fairings.
+Fixed cost bugs with the Tundra PDU and P-Log Modules
+Material Kits can now come from the local vessel even if the container is not a warehouse.
+The Ranger mini hab now has its own texture.
+Agriculture converters no longer require Organics as an input
+
+0.50.14 - 2017.01.16
+--------------------
+Removed excess ZIP files
+
+0.50.13 - 2017.01.16
+--------------------
+Fixed runaway efficiency bonuses
+Removed duplicate USITools
+
+0.50.12 - 2017.01.15
+--------------------
+Performance updates
+Added the ability for MKS modules to enable ground tethering.
+Added additional fixes for overly 'jittery' bases.
+Added weight transfer to the small KIS container (Thanks Wyzard256!)
+Added weight transfer to the radial liquid tank and other Ranger-size tanks (Thanks dboi88!)
+Fixed texture path for Toolbar icons (Thanks fat-lobyte!)
+Fixed issue where the KoloniationMonitor was displaying incorrect resources (thanks again fat-lobyte!)
+Efficiency Parts are no longer bound to skill bonuses
+
+0.50.11 - 2017.01.08
+--------------------
+Fixed an issue where multi-bay modules were not operating at peak efficiency (Note that this is a USI Tools change so be sure to have the latest version!  This is why I bundle MiniAVC ;))
+Reduced the size of Resource Lodes to 5kl
+Added a new resource lode that can be found via the orbital survey scanner.  Unlike the smaller ones found with the Pioneer module, these are planet-wide and significantly larger (500kl).
+Scouts can now be recruited.
+The USI-LS window no longer conflicts with the Kolonization Dashboard.
+Fixed prices of Tundra manufacturing modules.
+
+0.50.10 - 2017.01.07
+--------------------
+Added the ExplorerSkill effect and Scout trait.  Explorers (which include Scouts and Pilots) are immune from habitation effects in USI-LS.
+Any Kerbal on a planet that has a Kolonization level of 500% and is in a vessel with a habitation rating of 1 year or more will be immune to habitation effects, as this world is now 'Kolonized'.
+Habitation Extenders will take into account habitation multipliers, making ark ships easier.
+Fixed an issue where ResourceLodes could be added to craft :)
+No more flag scrapping! (Thanks MadMerlyn!)
+Several profile/CLS fixes for tundra modules from Kerbas-ad-astra
+Added an attach node to the mini drill (Thanks MadMerlyn!)
+
+
+0.50.9 - 2017.01.01
+-------------------
+Add Silicates, Silicon, RefinedExotics, ColonySupplies, and Organics to Karabou storage modules. (thanks boiler1!)
+Updated OSE Workshop support (thanks dboi88!)
+Local Logistics:  Resources may now be manually transferred between any two craft within 150m provided crew are present on at least one of the two vessels.  This GUI may be accessed from the Kolonization Dashboard.
+Active Resource Harvesting:  Pioneer Modules may now perform a Resource Scan which will identify nearby 'Resource Lodes'.  These are physical objects that must be grappled, at which point both the Range and Tundra regolith sifters can convert the ResourceLode resource into a variety of other resources based on planetary composition (similar to how Dirt works today).    
+Due to a fire at the USI Warehouse, Prices for the Duna, Tundra, and Ranger modules have dropped.  Note that all warranties are now void.
+Refinery output efficiency has been buffed by 500%.  Applies to all refineries, sifters, crushers, and smelters.
+The stock surface scanner now shows data for all relevant resources - enjoy prospecting!
+All USI reactors and the Ranger Power Pack now include a fill-cap of 95% to leave some headroom for solar panels.
+Planetary Logistics no longer require a pilot to push resources, only to pull (welcome back unmanned mining bases, we missed you!)
+Demolition for the massses!  Demo charges and part scrapping no longer have a trait requirement.
+Habitation EC costs have been reduced accross the board.
+Fixed a missing attachment node on the Duna modules
+Added the Akita Rover from Konstruction
+The Tundra Multihub now features 10,000l of KIS storage
+The Scout Lander Mk2 now has 1,000l of KIS storage (enough to stuff a single MKS Ranger module)
+The Tundra airlock (the larger one) also gets 1,000l of KIS storage.  
+The Tundra 250 hubs (both versions) get 3,000l of KIS storage.
+All MKS drills now have a heat overlay
+The Ranger AgModule now shows up only in Kolonization, not life suppurt.
+You can no longer utilize modules before they are expanded (booo!)
+
+0.50.8 - (KSP 1.2.2)
+-------------------
+Updates for KSP 1.2.2
+The Karibou Rover has been merged into MKS.
+Added Weight Distribution to the Ranger Battery Pack and Mini Hab (Thanks Dboi88)
+Since MKS does change the behavior of EL reactions, in the short term, we're moving back to part supression.  
+Several new Kerbal types have been added!  They can be recruited directly from the Kolonization Dashboard at a significant discount (as well as recruiting Pilots, Engineers, and Scientists.)
+All converters have had their effects updated.  Note that Scientists, Engineers, and Pilots will encompass relevant (new) effects, so this change is backwards compatible.  But you now have the option of using low-cost Kolonists for crewing your colonies.
+Bundled MKS KSPedia!  Thanks Dboi88!
+The heat pump will no longer deactivate, but instead will simply cease working if your ship does a physics 'hop' on load.
+Ranger workshop moved earlier in the CTT tech tree
+
 0.50.7 - 2016.11.23
 -------------------
 Fixed converter nullref spam

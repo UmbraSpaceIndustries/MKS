@@ -55,11 +55,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AC\CustomAstronautComplexUI.cs" />
+    <Compile Include="AC\CustomAstronautComplexUISpawner.cs" />
+    <Compile Include="AC\EditACPrefab.cs" />
+    <Compile Include="AC\EditACPrefabs_Editor.cs" />
+    <Compile Include="AC\Kolonist.cs" />
+    <Compile Include="AC\EditACPrefabsSpaceCentre.cs" />
     <Compile Include="AddScenarioModules.cs" />
     <Compile Include="Kolonization\KolonizationConfig.cs" />
     <Compile Include="Kolonization\KolonizationSetup.cs" />
     <Compile Include="MksAutoRepair.cs" />
     <Compile Include="ModuleColonyRewards.cs" />
+    <Compile Include="ModuleResourceLode.cs" />
+    <Compile Include="ModuleResourceSurveyor.cs" />
     <Compile Include="OrbitalLogistics\ComboBox.cs" />
     <Compile Include="OrbitalLogistics\MKSGui.cs" />
     <Compile Include="OrbitalLogistics\MKSLExtensions.cs" />
@@ -80,13 +88,12 @@
     <Compile Include="PlanetaryLogistics\ModulePlanetaryLogistics.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsEntry.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsManager.cs" />
-    <Compile Include="PlanetaryLogistics\PlanetaryLogisticsMonitor.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsPersistance.cs" />
     <Compile Include="PlanetaryLogistics\PlanetaryLogisticsScenario.cs" />
     <Compile Include="ModuleEfficiencyPart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpaceAcademy.cs" />
-    <Compile Include="StationManager\StationManager.cs" />
+    <None Include="StationManager\StationManager.old" />
     <Compile Include="Utilities.cs" />
     <Compile Include="OrbitalLogistics\Window.cs" />
   </ItemGroup>

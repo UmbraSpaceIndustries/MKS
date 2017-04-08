@@ -1,0 +1,28 @@
+UseStockAppLauncher = true
+
+StructureResourceName = MaterialKits 
+
+EnergyForMetalwork        = 100
+WorkshopShutdownThreshold = 0.99
+MaxDistanceToWorkshop     = 300
+MinDistanceToWorkshop     = 50
+MaxDistanceEfficiency     = 0.2
+//MaxMetalworkPerHour       = 0.01
+
+VolumePerKerbal           = 8
+PartVolumeFactor          = 0.3
+MinGenericEfficiency      = 0.05
+MaxGenericEfficiency      = 0.5
+
+ComplexityFactor = 1E-04
+
+ComplexityWeight = 13
+MetalworkWeight  = 10
+
+VesselKitDensity = 0.5
+VesselKitMinSize = 0.5
+
+DeployMaxSpeed   = 0.5
+DeployMaxAV      = 1E-03
+DeploymentSpeed  = 50
+MinDeploymentTime = 3

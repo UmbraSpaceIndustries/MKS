@@ -1,3 +1,17 @@
+0.6.6 - 2017.02.04
+------------------
+Added common resource Sodium a potential high efficient electric propellant
+Added common resource Caesium a rare but dense and highly efficient electric propellant
+ResourceLode value set to zero to prevent exploits.
+
+0.6.5 - (2017.01.01)
+--------------------
+Updated asteroid and scanner settings
+
+0.6.4 - (KSP 1.2.2)
+-------------------
+Added Decaborane as a resource
+
 0.6.3 - (KSP 1.2.1)
 -------------------
 Adjusted cost Fluorine  (KSPI-E) to cost LqdFluorine (Realfuels)
