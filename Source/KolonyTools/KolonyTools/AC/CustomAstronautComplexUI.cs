@@ -155,11 +155,11 @@ namespace KolonyTools.AC
                     newKerb.experience = GetExperienceNeededFor(KLevel);
                     newKerb.experienceLevel = KLevel;
                 }
-                if (ACLevel == 5 || kerExp == false)
+                if (kerExp == false)
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;
-                    Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
+                    Debug.Log("KSI :: Level set to 5 - Kerbal Experience Off default.");
                 }
 
             }
@@ -269,12 +269,12 @@ namespace KolonyTools.AC
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
                 hasKredits = false;
-                ACLevel = 5;
+                ACLevel = ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex);
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX)
             {
                 hasKredits = false;
-                ACLevel = 5;
+                ACLevel = ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex);
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
@@ -331,14 +331,13 @@ namespace KolonyTools.AC
                 // If statements for level options
                 if (kerExp == false)
                 {
-                    GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                    GUILayout.Label("Level 5 - Mandatory with no EXP enabled.");
                 }
                 else
                 {
                     if (ACLevel == 0) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero); }
                     if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
                     if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
-                    if (ACLevel == 5) { GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode."); }
                 }
                 GUILayout.EndVertical();
 
