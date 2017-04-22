@@ -38,21 +38,6 @@ namespace KolonyTools.AC
         private bool hTest = true;
         private bool hasKredits = true;
         private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
-        private static string RecruitLevel = "RecruitementLevel";
-
-        [KSPAddon(KSPAddon.Startup.Instantly, true)]
-        public class StaticLoader : MonoBehaviour
-        {
-            public StaticLoader()
-            {
-                Debug.Log("InitStaticData");
-                for (int level = 1; level <= 5; level++)
-                {
-                    var expValue = GetExperienceNeededFor(level);
-                    KerbalRoster.AddExperienceType(RecruitLevel + level, "Recruited at level " + level + " on", 0.0f, expValue);
-                }
-            }
-        }
 
         private void Awake()
         {
@@ -146,21 +131,44 @@ namespace KolonyTools.AC
                     newKerb.isBadass = true;
                 }
                 // Debug.Log("PSH :: Status set to Available, courage and stupidity set, fearless trait set.");
-                if (KLevel > 0)
+
+                if (KLevel == 1)
                 {
-                    var logName = RecruitLevel + KLevel;
-                    var homeworldName = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().name;
-                    newKerb.flightLog.AddEntry(logName, homeworldName);
+                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
+                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
+                    newKerb.flightLog.AddEntry("Flight,Kerbin");
+                    newKerb.flightLog.AddEntry("Land,Kerbin");
+                    newKerb.flightLog.AddEntry("Recover");
                     newKerb.ArchiveFlightLog();
-                    newKerb.experience = GetExperienceNeededFor(KLevel);
-                    newKerb.experienceLevel = KLevel;
+                    newKerb.experience = 2;
+                    newKerb.experienceLevel = 1;
+                    // Debug.Log("KSI :: Level set to 1.");
                 }
-                if (ACLevel == 5 || kerExp == false)
+                if (KLevel == 2)
+                {
+                    newKerb.flightLog.AddEntry("Orbit,Kerbin");
+                    newKerb.flightLog.AddEntry("Suborbit,Kerbin");
+                    newKerb.flightLog.AddEntry("Flight,Kerbin");
+                    newKerb.flightLog.AddEntry("Land,Kerbin");
+                    newKerb.flightLog.AddEntry("Recover");
+                    newKerb.flightLog.AddEntry("Flyby,Mun");
+                    newKerb.flightLog.AddEntry("Orbit,Mun");
+                    newKerb.flightLog.AddEntry("Land,Mun");
+                    newKerb.flightLog.AddEntry("Flyby,Minmus");
+                    newKerb.flightLog.AddEntry("Orbit,Minmus");
+                    newKerb.flightLog.AddEntry("Land,Minmus");
+                    newKerb.ArchiveFlightLog();
+                    newKerb.experience = 8;
+                    newKerb.experienceLevel = 2;
+                    // Debug.Log("KSI :: Level set to 2.");
+                }
+                if (kerExp == false)
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;
-                    Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
+                    Debug.Log("KSI :: Level set to 5 - Kerbal Experience Off default.");
                 }
+
 
             }
             // Refreshes the AC so that new kerbal shows on the available roster.
@@ -269,12 +277,12 @@ namespace KolonyTools.AC
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
                 hasKredits = false;
-                ACLevel = 5;
+                ACLevel = ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex);
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX)
             {
                 hasKredits = false;
-                ACLevel = 5;
+                ACLevel = ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex);
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
@@ -331,14 +339,13 @@ namespace KolonyTools.AC
                 // If statements for level options
                 if (kerExp == false)
                 {
-                    GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                    GUILayout.Label("Level 5 - Mandatory with no EXP enabled.");
                 }
                 else
                 {
                     if (ACLevel == 0) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero); }
                     if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
                     if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
-                    if (ACLevel == 5) { GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode."); }
                 }
                 GUILayout.EndVertical();
 
@@ -392,28 +399,6 @@ namespace KolonyTools.AC
                 }
             }
         }
-
-        private static float GetExperienceNeededFor(int level)
-        {
-            switch (level)
-            {
-                case 0:
-                    return 0;
-                case 1:
-                    return 2;
-                case 2:
-                    return 8;
-                case 3:
-                    return 16;
-                case 4:
-                    return 32;
-                case 5:
-                    return 64;
-                default:
-                    return 0;
-            }
-        }
-
     }
 
 }
