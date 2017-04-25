@@ -4,6 +4,6 @@ namespace KolonyTools.AC
     {
         public string Name { get; set; }
         public string Effects { get; set; }
-        public float Cost { get; set; }
+        public bool isBase { get; set; }
     }
 }
