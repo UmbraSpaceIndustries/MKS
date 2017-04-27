@@ -4,6 +4,7 @@ Overhauled Astronaut Complex (there's now a lot more configurability to it)
 Fixed some bugs with PL and catchup
 Lowered the mass of some structural parts that were way too heavy
 Fixed negative mass in the inflatable fuel tank when CryoTanks was installed
+Added ModuleWeightDistributer to Duna parts
 
 Added Probe Control to Pioneer and Logistics modules (Thanks DStaal)
 Updated OSE compatability (Thanks Wyzard256!)
