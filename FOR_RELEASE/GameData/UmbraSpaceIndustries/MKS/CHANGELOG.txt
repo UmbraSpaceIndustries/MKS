@@ -1,3 +1,24 @@
+0.51.0 - 2017.04.29
+--------------------
+Overhauled Astronaut Complex (there's now a lot more configurability to it)
+Fixed some bugs with PL and catchup
+Lowered the mass of some structural parts that were way too heavy
+Fixed negative mass in the inflatable fuel tank when CryoTanks was installed
+
+Added Probe Control to Pioneer and Logistics modules (Thanks DStaal)
+Updated OSE compatability (Thanks Wyzard256!)
+Add fore/aft attachment nodes to KER_Hub roof rack (Thanks Wyzard256!)
+Re-added resources consumption in the VAB info of efficiency parts (Thanks Seb E!)
+Fixed typo in the Tundra Refinery (Thanks Seb E!)
+Added Rock storage/output modes (Thanks voicey99!)
+Added in missing TemperatureModifier node title to the 1.25m MPU monoprop setting (Thanks voicey99!)
+Give Kolonization bonuses to sifters (Thanks voicey99!)
+Removed the vesseltype = Base line from most parts to allow them to be used on-orbit (Thanks voicey99!)
+Updated TAC-LS compatability (Thanks Thorbane!)
+Added water as an output to the stock fuel cells (Thanks boiler1!)
+Added the ability to extract ore to the mks drills (Thanks Letik!)
+
+
 0.50.18 - 2017.03.17
 --------------------
 Updated drill descriptions (Thanks voicey99!)
