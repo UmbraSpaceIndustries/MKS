@@ -18,7 +18,7 @@ Removed the vesseltype = Base line from most parts to allow them to be used on-o
 Updated TAC-LS compatability (Thanks Thorbane!)
 Added water as an output to the stock fuel cells (Thanks boiler1!)
 Added the ability to extract ore to the mks drills (Thanks Letik!)
-
+Improved the Tundra and Ranger ISM's storage options (Thanks FrontLineFodder!)
 
 0.50.18 - 2017.03.17
 --------------------
