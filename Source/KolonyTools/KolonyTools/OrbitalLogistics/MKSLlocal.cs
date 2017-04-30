@@ -14,7 +14,6 @@ namespace KolonyTools
     {
         private ApplicationLauncherButton orbLogButton;
         private IButton orbLogTButton;
-        private bool windowVisible;
 
         double nextchecktime;
 
@@ -316,7 +315,7 @@ namespace KolonyTools
 
         private bool checkStaticLocation(Vessel ves, double LAT, double LON)
         {
-            double distance = GetDistanceBetweenPoints(ves.latitude, ves.longitude, LAT, LON);
+            //double distance = GetDistanceBetweenPoints(ves.latitude, ves.longitude, LAT, LON);
 
             return (true);
         }

@@ -18,7 +18,6 @@ namespace KolonyTools
         {
             foreach (ProtoCrewMember crew in vessel.GetVesselCrew())
             {
-                var thisCrew = crew;
                 var oldLevel = crew.experienceLevel;
                 var teacher = GetTeacher(crew.experienceTrait.Title);
                 //Teachers have to be a level higher than students
