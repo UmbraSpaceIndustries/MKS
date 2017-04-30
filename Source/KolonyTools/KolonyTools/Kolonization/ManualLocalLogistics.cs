@@ -23,6 +23,8 @@ namespace KolonyTools
 
         private Guid _activeVesselIdOnLastTransferSetup;
         private List<Vessel> _participatingVessels;
+        private double _lastVesselsCheck = -1;
+
         private bool _crewPresent;
 
         private IResourceBroker _broker;
@@ -32,6 +34,7 @@ namespace KolonyTools
         private List<ResourceTransferSummary> _transferableResources;
 
         private const int LOCAL_LOGISTICS_RANGE = 150;
+        private const double VESSELS_CHECK_INTERVAL = 5d;
 
         public ManualLocalLogistics()
         {
@@ -49,10 +52,8 @@ namespace KolonyTools
                 return;
 
             _activeVesselIdOnLastTransferSetup = FlightGlobals.ActiveVessel.id;
-            var nearbyVessels = LogisticsTools.GetNearbyVessels(LOCAL_LOGISTICS_RANGE, true, FlightGlobals.ActiveVessel, true);
-            _participatingVessels = nearbyVessels.Where(HasResources).ToList();
 
-            if (_participatingVessels.Count == 0)
+            if ((_participatingVessels == null) || (_participatingVessels.Count == 0))
             {
                 _crewPresent = false;
                 _fromVessel = null;
@@ -73,11 +74,52 @@ namespace KolonyTools
 
         private void CheckVessels()
         {
+            bool vesselsChanged = false;
+
             var tranferPreviouslyNotAvailable = (_participatingVessels == null) || (_participatingVessels.Count < 2);
             var activeVesselChanged = _activeVesselIdOnLastTransferSetup != FlightGlobals.ActiveVessel.id;
-
             if (tranferPreviouslyNotAvailable || activeVesselChanged)
+            {
+                _participatingVessels = FetchNewParticipatingVessels();
+                vesselsChanged = true;
+            }
+            else
+            {
+                vesselsChanged = UpdateParticipatingVessels();
+            }
+            if (vesselsChanged)
+            {
                 TransferSetup();
+            }
+        }
+
+        private bool UpdateParticipatingVessels()
+        {
+            var now = Planetarium.GetUniversalTime();
+            if (now > _lastVesselsCheck + VESSELS_CHECK_INTERVAL)
+            {
+                _lastVesselsCheck = now;
+                var newParticipatingVessels = FetchNewParticipatingVessels();
+                if (newParticipatingVessels.SequenceEqual(_participatingVessels))
+                {
+                    return false;
+                }
+                else
+                {
+                    _participatingVessels = newParticipatingVessels;
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static List<Vessel> FetchNewParticipatingVessels()
+        {
+            var nearbyVessels = LogisticsTools.GetNearbyVessels(LOCAL_LOGISTICS_RANGE, true, FlightGlobals.ActiveVessel, true);
+            return nearbyVessels.Where(HasResources).ToList();
         }
 
         public void displayAndRun()
@@ -221,7 +263,7 @@ namespace KolonyTools
             return hex;
         }
 
-        private bool IsTransferable(PartResource res)
+        private static bool IsTransferable(PartResource res)
         {
             if (BlackList.Contains(res.resourceName))
                 return false;
@@ -231,7 +273,7 @@ namespace KolonyTools
             return true;
         }
 
-        private bool HasResources(Vessel v)
+        private static bool HasResources(Vessel v)
         {
             return v.Parts.Any(p => p.Resources.Any(res => IsTransferable(res)));
         }
@@ -341,7 +383,7 @@ namespace KolonyTools
             public double TransferAmount { get; set; }
         }
 
-        public List<String> BlackList = new List<string> {"Machinery","DepletedFuel","EnrichedUranium","ElectricCharge","ResourceLode"};
+        public static List<String> BlackList = new List<string> {"Machinery","DepletedFuel","EnrichedUranium","ElectricCharge","ResourceLode"};
 
         private class TransferVessel
         {
