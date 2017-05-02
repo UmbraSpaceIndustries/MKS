@@ -11,8 +11,6 @@ namespace KolonyTools.AC
     class CustomAstronautComplexUI : MonoBehaviour
     {
         private Rect _areaRect = new Rect(-500f, -500f, 200f, 200f);
-        private Vector2 _guiScalar = Vector2.one;
-        private Vector2 _guiPivot = Vector2.zero;
         private float KBulk = 1;
         private int KBulki = 1;
         private int crewWeCanHire = 10;
@@ -21,11 +19,10 @@ namespace KolonyTools.AC
         private static bool KFearless = false;
         private static int KCareer = 0;
         private List<Kolonist> _kolonists; private static int KLevel = 0;
-        private float Krep = Reputation.CurrentRep;
         private string[] KLevelStringsZero = new string[1] { "Level 0" };
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
-        private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
+        //private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
         private static int KGender = 0;
         private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
         private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
@@ -85,9 +82,6 @@ namespace KolonyTools.AC
                 guiRect.height / uiScaleMultiplier);
 
             _areaRect = correctedRect;
-
-            _guiPivot = new Vector2(_areaRect.x, _areaRect.y);
-            _guiScalar = new Vector2(GameSettings.UI_SCALE, GameSettings.UI_SCALE);
 
             enabled = true;
         }
@@ -216,15 +210,6 @@ namespace KolonyTools.AC
             return finalcost;
         }
 
-        // these slightly reduce garbage created by avoiding array allocations which is one reason OnGUI
-        // is so terrible
-        private static readonly GUILayoutOption[] DefaultLayoutOptions = new GUILayoutOption[0];
-        private static readonly GUILayoutOption[] PortraitOptions = { GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false) };
-        private static readonly GUILayoutOption[] FixedWidth = { GUILayout.Width(220f) };
-        private static readonly GUILayoutOption[] HireButtonOptions = { GUILayout.ExpandHeight(true), GUILayout.MaxHeight(40f), GUILayout.MinWidth(40f) };
-        private static readonly GUILayoutOption[] StatOptions = { GUILayout.MaxWidth(100f) };
-        private static readonly GUILayoutOption[] FlavorTextOptions = { GUILayout.MaxWidth(200f) };
-
         private string hireStatus()
         {
 
@@ -286,7 +271,6 @@ namespace KolonyTools.AC
         {
 
             GUI.skin = HighLogic.Skin;
-            var roster = HighLogic.CurrentGame.CrewRoster;
             GUIContent[] KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
