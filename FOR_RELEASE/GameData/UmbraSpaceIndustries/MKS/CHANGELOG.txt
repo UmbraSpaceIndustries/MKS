@@ -1,24 +1,23 @@
-0.51.0 - 2017.04.29
---------------------
-Overhauled Astronaut Complex (there's now a lot more configurability to it)
-Fixed some bugs with PL and catchup
-Lowered the mass of some structural parts that were way too heavy
-Fixed negative mass in the inflatable fuel tank when CryoTanks was installed
-Added ModuleWeightDistributer to Duna parts
-
-Added Probe Control to Pioneer and Logistics modules (Thanks DStaal)
-Updated OSE compatability (Thanks Wyzard256!)
-Add fore/aft attachment nodes to KER_Hub roof rack (Thanks Wyzard256!)
-Re-added resources consumption in the VAB info of efficiency parts (Thanks Seb E!)
-Fixed typo in the Tundra Refinery (Thanks Seb E!)
-Added Rock storage/output modes (Thanks voicey99!)
-Added in missing TemperatureModifier node title to the 1.25m MPU monoprop setting (Thanks voicey99!)
-Give Kolonization bonuses to sifters (Thanks voicey99!)
-Removed the vesseltype = Base line from most parts to allow them to be used on-orbit (Thanks voicey99!)
-Updated TAC-LS compatability (Thanks Thorbane!)
-Added water as an output to the stock fuel cells (Thanks boiler1!)
-Added the ability to extract ore to the mks drills (Thanks Letik!)
-Improved the Tundra and Ranger ISM's storage options (Thanks FrontLineFodder!)
+0.51.0 - 2017.05.06
+-------------------
+Fix local logistics vessel list not being updated
+Sifters now use the geology bonus (Thanks Gnurfos!)
+Updated TAC-LS config
+Added rock production to various drills, as well as residual rock output to different converters (Thanks voicey99!)
+Removed hard coded references to the EXConstructionSkill (these are handled via MM) - thanks theRagingIrishman!
+The Pioneer Modules and Logistics Centers are now probe control points (thanks DanStaal!)
+Fix for AC Recruitment and planet packs (Thanks Gnurfos!)!
+Fore and aft attachment nodes for the Karibou hub roof rack (Thanks Wyzard256!)
+Removed OSE's extra harvesters from stock drills when MKS is installed (Thanks Qyzard256!)
+Stock Fuel cells now produce water as a byproduct (Thanks Boiler1!)
+Custom settings via the stock settings dialog have been added:
+* You may now disable machinery consumption for MKS.  The default is on.  This setting effectively puts this mod very close to where MKS-Lite was, and is a good starting point if you want to avoid most of the core resource chain.
+Extensive changes to the Astronaut Complex.  You can now:
+* Toggle the ability to customize Kerbonauts.  If enabled, you can change bravery/stupidity and choose a starting level.  If disabled, these options will not be available.
+* Enable / disable the hiring of Kolonist Kerbonauts (i.e. combined with the option below, you can disable MKS extended classes altogether).
+* Enable / disable Kolonist Kerbonauts being available in rescue contracts (if disabled, only base kerbonauts appear as rescue kerbals).  
+* Use either the stock calculated cost or a custom price for your Kerbals.  This setting is independent for base vs kolonists, so you could use standard pricing for your pilots, engineers, and scientists - but still get cheap pricing for Kolonists.
+* Enable/disable and configure a custom price cap for all hires.  i.e. you could decide to use the stock hiring scheme, but with a specific max cap so it does not rise to unreasonable exponential numbers.
 
 0.50.18 - 2017.03.17
 --------------------

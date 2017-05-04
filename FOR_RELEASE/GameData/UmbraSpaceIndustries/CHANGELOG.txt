@@ -1,3 +1,7 @@
+0.3.11 - 2017.05.06
+-------------------
+Rock kontainers - config and texture (Thanks JadeOfMaar!)
+
 0.3.10 - 2017.03.17
 -------------------
 New containers in a KIS SC-62 form factor (Thanks Wyzard256!)

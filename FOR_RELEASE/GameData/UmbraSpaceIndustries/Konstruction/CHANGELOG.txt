@@ -1,3 +1,8 @@
+0.1.13 - 2017.05.06
+-------------------
+Dependency updates
+Lowered some part masses
+
 0.1.12 - 2017.03.17
 -------------------
 Dependency Updates
