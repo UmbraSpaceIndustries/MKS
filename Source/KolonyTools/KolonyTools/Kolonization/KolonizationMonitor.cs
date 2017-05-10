@@ -82,7 +82,7 @@ namespace KolonyTools
             if (ToolbarManager.ToolbarAvailable)
             {
                 this.kolonyTButton = ToolbarManager.Instance.add("UKS", "kolony");
-                kolonyTButton.TexturePath = "UmbraSpaceIndustries/MKS/Kolony24";
+                kolonyTButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/UI/Kolony24";
                 kolonyTButton.ToolTip = "USI Kolony";
                 kolonyTButton.Enabled = true;
                 kolonyTButton.OnClick += (e) => { if(windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
