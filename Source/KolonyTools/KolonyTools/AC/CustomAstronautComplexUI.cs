@@ -19,6 +19,7 @@ namespace KolonyTools.AC
         private static bool KFearless = false;
         private static int KCareer = 0;
         private List<Kolonist> _kolonists; private static int KLevel = 0;
+        private string[] _recruitableKolonists;
         private string[] KLevelStringsZero = new string[1] { "Level 0" };
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
@@ -106,24 +107,7 @@ namespace KolonyTools.AC
                     case 2: break;
                     default: break;
                 }
-                string career = "";
-                switch (KCareer) // Sets career
-                {
-                    case 0: career = "Pilot"; break;
-                    case 1: career = "Scientist"; break;
-                    case 2: career = "Engineer"; break;
-                    case 3: career = "Kolonist"; break;
-                    case 4: career = "Scout"; break;
-                    case 5: career = "Kolonist"; break;
-                    case 6: career = "Miner"; break;
-                    case 7: career = "Technician"; break;
-                    case 8: career = "Mechanic"; break;
-                    case 9: career = "Biologist"; break;
-                    case 10: career = "Geologist"; break;
-                    case 11: career = "Farmer"; break;
-                    case 12: career = "Medic"; break;
-                    case 13: career = "Quartermaster"; break;
-                }
+                string career = _recruitableKolonists[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
 
@@ -299,12 +283,15 @@ namespace KolonyTools.AC
 
                 // Career selection
                 GUILayout.BeginVertical("box");
-                var kArray = _kolonists.Select(k => k.Name).Take(3).ToArray();
                 if (KolonyACOptions.KolonistHiringEnabled)
                 {
-                    kArray = _kolonists.Select(k => k.Name).ToArray();
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).ToArray();
                 }
-                KCareer = GUILayout.SelectionGrid(KCareer,kArray, 4);
+                else
+                {
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).Take(3).ToArray();
+                }
+                KCareer = GUILayout.SelectionGrid(KCareer, _recruitableKolonists, 4);
 
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
