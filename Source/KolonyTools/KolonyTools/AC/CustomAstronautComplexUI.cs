@@ -28,6 +28,7 @@ namespace KolonyTools.AC
         private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
         private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
         private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+        private GUIContent[] KGendArray;
         Color basecolor = GUI.color;
         private float ACLevel = 0;
         private double KDead;
@@ -68,6 +69,7 @@ namespace KolonyTools.AC
             _kolonists.Add(new Kolonist { Name = "Medic", isBase = true, Effects = "Medical, ScienceBoost, RepBoost" });
             _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = true, Effects = "Logistics, RepBoost" });
             _kolonists.Add(new Kolonist { Name = "Scout", isBase = true, Effects = "Explorer" });
+            KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
         }
 
         public void Initialize(Rect guiRect)
@@ -100,13 +102,11 @@ namespace KolonyTools.AC
             {
                 ProtoCrewMember newKerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
 
-                switch (KGender) // Sets gender
-                {
-                    case 0: newKerb.gender = ProtoCrewMember.Gender.Male; break;
-                    case 1: newKerb.gender = ProtoCrewMember.Gender.Female; break;
-                    case 2: break;
-                    default: break;
-                }
+                var selectedGender = KGendArray[KGender].text;
+                if (selectedGender.Equals("Male"))
+                    newKerb.gender = ProtoCrewMember.Gender.Male;
+                else if (selectedGender.Equals("Female"))
+                    newKerb.gender = ProtoCrewMember.Gender.Female;
                 string career = _recruitableKolonists[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
@@ -255,7 +255,6 @@ namespace KolonyTools.AC
         {
 
             GUI.skin = HighLogic.Skin;
-            GUIContent[] KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
                 hasKredits = false;
