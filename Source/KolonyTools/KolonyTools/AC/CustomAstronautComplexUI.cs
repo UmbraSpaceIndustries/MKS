@@ -19,6 +19,7 @@ namespace KolonyTools.AC
         private static bool KFearless = false;
         private static int KCareer = 0;
         private List<Kolonist> _kolonists; private static int KLevel = 0;
+        private string[] _recruitableKolonists;
         private string[] KLevelStringsZero = new string[1] { "Level 0" };
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
@@ -27,6 +28,7 @@ namespace KolonyTools.AC
         private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
         private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
         private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+        private GUIContent[] KGendArray;
         Color basecolor = GUI.color;
         private float ACLevel = 0;
         private double KDead;
@@ -67,6 +69,7 @@ namespace KolonyTools.AC
             _kolonists.Add(new Kolonist { Name = "Medic", isBase = true, Effects = "Medical, ScienceBoost, RepBoost" });
             _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = true, Effects = "Logistics, RepBoost" });
             _kolonists.Add(new Kolonist { Name = "Scout", isBase = true, Effects = "Explorer" });
+            KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
         }
 
         public void Initialize(Rect guiRect)
@@ -97,33 +100,15 @@ namespace KolonyTools.AC
 
             for (int i = 0; i < KBulki; i++)
             {
-                ProtoCrewMember newKerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+                ProtoCrewMember.Gender? chosenGender =  null;
+                var selectedGender = KGendArray[KGender].text;
+                if (selectedGender.Equals("Male"))
+                    chosenGender = ProtoCrewMember.Gender.Male;
+                else if (selectedGender.Equals("Female"))
+                    chosenGender = ProtoCrewMember.Gender.Female;
+                ProtoCrewMember newKerb = SpawnKerbal(chosenGender);
 
-                switch (KGender) // Sets gender
-                {
-                    case 0: newKerb.gender = ProtoCrewMember.Gender.Male; break;
-                    case 1: newKerb.gender = ProtoCrewMember.Gender.Female; break;
-                    case 2: break;
-                    default: break;
-                }
-                string career = "";
-                switch (KCareer) // Sets career
-                {
-                    case 0: career = "Pilot"; break;
-                    case 1: career = "Scientist"; break;
-                    case 2: career = "Engineer"; break;
-                    case 3: career = "Kolonist"; break;
-                    case 4: career = "Scout"; break;
-                    case 5: career = "Kolonist"; break;
-                    case 6: career = "Miner"; break;
-                    case 7: career = "Technician"; break;
-                    case 8: career = "Mechanic"; break;
-                    case 9: career = "Biologist"; break;
-                    case 10: career = "Geologist"; break;
-                    case 11: career = "Farmer"; break;
-                    case 12: career = "Medic"; break;
-                    case 13: career = "Quartermaster"; break;
-                }
+                string career = _recruitableKolonists[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
 
@@ -168,6 +153,20 @@ namespace KolonyTools.AC
             GameEvents.onGUIAstronautComplexSpawn.Fire();
 
         }
+
+        private static ProtoCrewMember SpawnKerbal(ProtoCrewMember.Gender? chosenGender)
+        {
+            for (int attempt = 0; attempt < 100; attempt++)
+            {
+                var kerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+                if ((!chosenGender.HasValue) || (chosenGender.Value == kerb.gender))
+                    return kerb;
+                HighLogic.CurrentGame.CrewRoster.Remove(kerb);
+            }
+            Debug.LogError("Failed spawning a kerbal with the wanted gender");
+            return HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+        }
+
 
 
         private int costMath()
@@ -271,7 +270,6 @@ namespace KolonyTools.AC
         {
 
             GUI.skin = HighLogic.Skin;
-            GUIContent[] KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
                 hasKredits = false;
@@ -299,12 +297,15 @@ namespace KolonyTools.AC
 
                 // Career selection
                 GUILayout.BeginVertical("box");
-                var kArray = _kolonists.Select(k => k.Name).Take(3).ToArray();
                 if (KolonyACOptions.KolonistHiringEnabled)
                 {
-                    kArray = _kolonists.Select(k => k.Name).ToArray();
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).ToArray();
                 }
-                KCareer = GUILayout.SelectionGrid(KCareer,kArray, 4);
+                else
+                {
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).Take(3).ToArray();
+                }
+                KCareer = GUILayout.SelectionGrid(KCareer, _recruitableKolonists, 4);
 
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
