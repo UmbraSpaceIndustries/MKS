@@ -28,6 +28,7 @@ namespace KolonyTools
 
         private double checkTime = 5f;
 
+        private bool CatchupDone;
         private float _colonyConverterEff;
         private float _effPartTotal;
         private float _efficiencyRate;
@@ -126,20 +127,27 @@ namespace KolonyTools
 
         private bool InCatchupMode()
         {
+            if(CatchupDone)
+                return false;
+
             var count = _conMods.Count;
             for (int i = 0; i < count; ++i)
             {
                 var c = _conMods[i];
-                var thisDelta = c.lastTimeFactor / c.GetEfficiencyMultiplier();
-                if (thisDelta / 2 > TimeWarp.deltaTime)
+                var em = c.GetEfficiencyMultiplier();
+                if (c.lastTimeFactor / 2 > em)
                     return true;
             }
+            CatchupDone = true;
             return false;
         }
 
 
         public void FixedUpdate()
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
+
             if (lastCheck < 0)
                 lastCheck = vessel.lastUT;
 
@@ -153,7 +161,6 @@ namespace KolonyTools
                 if (Math.Abs(planTime - lastCheck) < checkTime)
                     return;
             }
-
             lastCheck = Math.Min(lastCheck + _maxDelta, planTime);
 
             UpdateKolonizationStats();
