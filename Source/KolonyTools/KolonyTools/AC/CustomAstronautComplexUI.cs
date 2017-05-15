@@ -100,13 +100,14 @@ namespace KolonyTools.AC
 
             for (int i = 0; i < KBulki; i++)
             {
-                ProtoCrewMember newKerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
-
+                ProtoCrewMember.Gender? chosenGender =  null;
                 var selectedGender = KGendArray[KGender].text;
                 if (selectedGender.Equals("Male"))
-                    newKerb.gender = ProtoCrewMember.Gender.Male;
+                    chosenGender = ProtoCrewMember.Gender.Male;
                 else if (selectedGender.Equals("Female"))
-                    newKerb.gender = ProtoCrewMember.Gender.Female;
+                    chosenGender = ProtoCrewMember.Gender.Female;
+                ProtoCrewMember newKerb = SpawnKerbal(chosenGender);
+
                 string career = _recruitableKolonists[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
@@ -152,6 +153,20 @@ namespace KolonyTools.AC
             GameEvents.onGUIAstronautComplexSpawn.Fire();
 
         }
+
+        private static ProtoCrewMember SpawnKerbal(ProtoCrewMember.Gender? chosenGender)
+        {
+            for (int attempt = 0; attempt < 100; attempt++)
+            {
+                var kerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+                if ((!chosenGender.HasValue) || (chosenGender.Value == kerb.gender))
+                    return kerb;
+                HighLogic.CurrentGame.CrewRoster.Remove(kerb);
+            }
+            Debug.LogError("Failed spawning a kerbal with the wanted gender");
+            return HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+        }
+
 
 
         private int costMath()
