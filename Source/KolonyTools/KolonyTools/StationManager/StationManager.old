@@ -26,7 +26,7 @@ namespace KolonyTools
         //    if (ToolbarManager.ToolbarAvailable)
         //    {
         //        this.stationTButton = ToolbarManager.Instance.add("UKS", "stationManager");
-        //        stationTButton.TexturePath = "UmbraSpaceIndustries/MKS/StationManager24";
+        //        stationTButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/UI/StationManager24";
         //        stationTButton.ToolTip = "USI Station Manager";
         //        stationTButton.Enabled = true;
         //        stationTButton.OnClick += (e) => { if(windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
