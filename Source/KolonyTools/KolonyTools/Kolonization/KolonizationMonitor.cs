@@ -59,7 +59,7 @@ namespace KolonyTools
             else
             {
                 var texture = new Texture2D(36, 36, TextureFormat.RGBA32, false);
-                var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Kolony.png");
+                var textureFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets/UI/Kolony.png");
                 print("Loading " + textureFile);
                 texture.LoadImage(File.ReadAllBytes(textureFile));
                 this.kolonyButton = ApplicationLauncher.Instance.AddModApplication(GuiOn, GuiOff, null, null, null, null,
