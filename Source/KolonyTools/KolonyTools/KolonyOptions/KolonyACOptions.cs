@@ -138,6 +138,14 @@ namespace KolonyTools
             }
         }
 
+        public override string DisplaySection
+        {
+            get
+            {
+                return "Kolonization";
+            }
+        }
+
         public override string Title
         {
             get

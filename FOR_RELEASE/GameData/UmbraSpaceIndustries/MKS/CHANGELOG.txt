@@ -1,7 +1,10 @@
-0.51.0 - 2017.05.06
+0.52.0 - KSP 1.3
 -------------------
+KSP 1.3 Compatibility
 Fix local logistics vessel list not being updated
-Sifters now use the geology bonus (Thanks Gnurfos!)
+Sifters now use the geology bonus
+Allow incremental payment of inflatables deployment cost
+Fix recruitement of various kolonist classes
 Updated TAC-LS config
 Added rock production to various drills, as well as residual rock output to different converters (Thanks voicey99!)
 Removed hard coded references to the EXConstructionSkill (these are handled via MM) - thanks theRagingIrishman!

@@ -47,7 +47,7 @@ namespace KolonyTools
         protected override void PostProcess(ConverterResults result, double deltaTime)
         {
             base.PostProcess(result,deltaTime);
-            EfficiencyMultiplier = result.TimeFactor/deltaTime;
+            EfficiencyMultiplier = result.TimeFactor;
         }
     }
 }
