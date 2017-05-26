@@ -26,7 +26,7 @@ namespace PlanetaryLogistics
         public double ResourceTax = 0.05d;
 
         private List<USI_ModuleResourceWarehouse> _warehouseList;
-        private double lastWHCheck;
+        private double lastWHCheck = 0; // TOFIX ? actually never updated at the moment
 
         public void FixedUpdate()
         {

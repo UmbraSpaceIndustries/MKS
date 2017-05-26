@@ -17,6 +17,9 @@ namespace KolonyTools
         [KSPField]
         public float eMultiplier = 1f;
 
+        [KSPField]
+        public bool ApplyBonuses = true;
+
         [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
         public float Governor = 1.0f;
 
@@ -25,6 +28,7 @@ namespace KolonyTools
 
         private double checkTime = 5f;
 
+        private bool CatchupDone;
         private float _colonyConverterEff;
         private float _effPartTotal;
         private float _efficiencyRate;
@@ -123,20 +127,27 @@ namespace KolonyTools
 
         private bool InCatchupMode()
         {
+            if(CatchupDone)
+                return false;
+
             var count = _conMods.Count;
             for (int i = 0; i < count; ++i)
             {
                 var c = _conMods[i];
-                var thisDelta = c.lastTimeFactor / c.GetEfficiencyMultiplier();
-                if (thisDelta / 2 > TimeWarp.deltaTime)
+                var em = c.GetEfficiencyMultiplier();
+                if (c.lastTimeFactor / 2 > em)
                     return true;
             }
+            CatchupDone = true;
             return false;
         }
 
 
         public void FixedUpdate()
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
+
             if (lastCheck < 0)
                 lastCheck = vessel.lastUT;
 
@@ -150,7 +161,6 @@ namespace KolonyTools
                 if (Math.Abs(planTime - lastCheck) < checkTime)
                     return;
             }
-
             lastCheck = Math.Min(lastCheck + _maxDelta, planTime);
 
             UpdateKolonizationStats();
@@ -225,6 +235,8 @@ namespace KolonyTools
 
         private void UpdateEfficiencyBonus()
         {
+            if (!ApplyBonuses)
+                return;
             var rate = GetEfficiencyBonus();
             foreach (var con in _bonusConsumerConverters)
             {
@@ -257,12 +269,18 @@ namespace KolonyTools
         {
             var output = new StringBuilder("");
 
-            output.Append("Benefits from bonuses:\n");
-            output.Append("  Geology Research\n");
-            if (BonusEffect == "RepBoost")
-                output.Append("  Kolonization Research\n");
-            else if (BonusEffect == "ScienceBoost")
-                output.Append("  Botany Research\n");
+            output.Append("Contributes to bonuses research\n");
+
+            if (ApplyBonuses)
+            {
+                output.Append("Benefits from bonuses:\n");
+                output.Append("  Geology Research\n");
+                if (BonusEffect == "RepBoost")
+                    output.Append("  Kolonization Research\n");
+                else if (BonusEffect == "ScienceBoost")
+                    output.Append("  Botany Research\n");
+            }
+
             if (!string.IsNullOrEmpty(eTag))
             {
                 output.Append("Benefits from Efficiency Parts:\n");

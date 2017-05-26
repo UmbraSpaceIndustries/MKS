@@ -14,7 +14,6 @@ namespace KolonyTools
     {
         private ApplicationLauncherButton orbLogButton;
         private IButton orbLogTButton;
-        private bool windowVisible;
 
         double nextchecktime;
 
@@ -29,7 +28,7 @@ namespace KolonyTools
         //    if (ToolbarManager.ToolbarAvailable)
         //    {
         //        this.orbLogTButton = ToolbarManager.Instance.add("UKS", "orbLog");
-        //        orbLogTButton.TexturePath = "UmbraSpaceIndustries/MKS/OrbitalLogistics24";
+        //        orbLogTButton.TexturePath = "UmbraSpaceIndustries/MKS/Assets/UI/OrbitalLogistics24";
         //        orbLogTButton.ToolTip = "USI Orbital Logistics";
         //        orbLogTButton.Enabled = true;
         //        orbLogTButton.OnClick += (e) => { if (windowVisible) { GuiOff(); windowVisible = false; } else { GuiOn(); windowVisible = true; } };
@@ -316,7 +315,7 @@ namespace KolonyTools
 
         private bool checkStaticLocation(Vessel ves, double LAT, double LON)
         {
-            double distance = GetDistanceBetweenPoints(ves.latitude, ves.longitude, LAT, LON);
+            //double distance = GetDistanceBetweenPoints(ves.latitude, ves.longitude, LAT, LON);
 
             return (true);
         }

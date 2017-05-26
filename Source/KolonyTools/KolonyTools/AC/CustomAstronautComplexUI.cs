@@ -11,8 +11,6 @@ namespace KolonyTools.AC
     class CustomAstronautComplexUI : MonoBehaviour
     {
         private Rect _areaRect = new Rect(-500f, -500f, 200f, 200f);
-        private Vector2 _guiScalar = Vector2.one;
-        private Vector2 _guiPivot = Vector2.zero;
         private float KBulk = 1;
         private int KBulki = 1;
         private int crewWeCanHire = 10;
@@ -21,15 +19,16 @@ namespace KolonyTools.AC
         private static bool KFearless = false;
         private static int KCareer = 0;
         private List<Kolonist> _kolonists; private static int KLevel = 0;
-        private float Krep = Reputation.CurrentRep;
+        private string[] _recruitableKolonists;
         private string[] KLevelStringsZero = new string[1] { "Level 0" };
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
-        private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
+        //private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
         private static int KGender = 0;
         private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
         private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
         private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+        private GUIContent[] KGendArray;
         Color basecolor = GUI.color;
         private float ACLevel = 0;
         private double KDead;
@@ -57,20 +56,20 @@ namespace KolonyTools.AC
         private void Awake()
         {
             _kolonists = new List<Kolonist>();
-            _kolonists.Add(new Kolonist { Name = "Pilot", Cost = 25000, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
-            _kolonists.Add(new Kolonist { Name = "Scientist", Cost = 25000, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Engineer", Cost = 25000, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 1000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Scout", Cost = 1000, Effects = "Explorer" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", Cost = 1000, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Miner", Cost = 1000, Effects = "Drill, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Technician", Cost = 1000, Effects = "Converter, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Mechanic", Cost = 1000, Effects = "Repair, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Biologist", Cost = 1000, Effects = "Biology, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Geologist", Cost = 1000, Effects = "Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Farmer", Cost = 1000, Effects = "Agronomy, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Medic", Cost = 1000, Effects = "Medical, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Quartermaster", Cost = 1000, Effects = "Logistics, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Pilot", isBase = true, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
+            _kolonists.Add(new Kolonist { Name = "Scientist", isBase = true, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Engineer", isBase = true, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Kolonist", isBase = true, Effects = "RepBoost, FundsBoost, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Miner", isBase = true, Effects = "Drill, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Technician", isBase = true, Effects = "Converter, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Mechanic", isBase = true, Effects = "Repair, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Biologist", isBase = true, Effects = "Biology, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Geologist", isBase = true, Effects = "Geology, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Farmer", isBase = true, Effects = "Agronomy, ScienceBoost, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Medic", isBase = true, Effects = "Medical, ScienceBoost, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = true, Effects = "Logistics, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Scout", isBase = true, Effects = "Explorer" });
+            KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
         }
 
         public void Initialize(Rect guiRect)
@@ -87,9 +86,6 @@ namespace KolonyTools.AC
 
             _areaRect = correctedRect;
 
-            _guiPivot = new Vector2(_areaRect.x, _areaRect.y);
-            _guiScalar = new Vector2(GameSettings.UI_SCALE, GameSettings.UI_SCALE);
-
             enabled = true;
         }
 
@@ -104,33 +100,15 @@ namespace KolonyTools.AC
 
             for (int i = 0; i < KBulki; i++)
             {
-                ProtoCrewMember newKerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+                ProtoCrewMember.Gender? chosenGender =  null;
+                var selectedGender = KGendArray[KGender].text;
+                if (selectedGender.Equals("Male"))
+                    chosenGender = ProtoCrewMember.Gender.Male;
+                else if (selectedGender.Equals("Female"))
+                    chosenGender = ProtoCrewMember.Gender.Female;
+                ProtoCrewMember newKerb = SpawnKerbal(chosenGender);
 
-                switch (KGender) // Sets gender
-                {
-                    case 0: newKerb.gender = ProtoCrewMember.Gender.Male; break;
-                    case 1: newKerb.gender = ProtoCrewMember.Gender.Female; break;
-                    case 2: break;
-                    default: break;
-                }
-                string career = "";
-                switch (KCareer) // Sets career
-                {
-                    case 0: career = "Pilot"; break;
-                    case 1: career = "Scientist"; break;
-                    case 2: career = "Engineer"; break;
-                    case 3: career = "Kolonist"; break;
-                    case 4: career = "Scout"; break;
-                    case 5: career = "Kolonist"; break;
-                    case 6: career = "Miner"; break;
-                    case 7: career = "Technician"; break;
-                    case 8: career = "Mechanic"; break;
-                    case 9: career = "Biologist"; break;
-                    case 10: career = "Geologist"; break;
-                    case 11: career = "Farmer"; break;
-                    case 12: career = "Medic"; break;
-                    case 13: career = "Quartermaster"; break;
-                }
+                string career = _recruitableKolonists[KCareer];
                 // Sets the kerbal's career based on the KCareer switch.
                 KerbalRoster.SetExperienceTrait(newKerb, career);
 
@@ -138,13 +116,19 @@ namespace KolonyTools.AC
                 // Debug.Log("KSI :: " + newKerb.experienceTrait.TypeName + " " + newKerb.name + " has been created in: " + loopcount.ToString() + " loops.");
                 newKerb.rosterStatus = ProtoCrewMember.RosterStatus.Available;
                 newKerb.experience = 0;
-                newKerb.experienceLevel = 0;
-                newKerb.courage = KCourage / 100;
-                newKerb.stupidity = KStupidity / 100;
-                if (KFearless)
+
+
+                if (KolonyACOptions.CustomKerbonautsEnabled)
                 {
-                    newKerb.isBadass = true;
+                    newKerb.experienceLevel = 0;
+                    newKerb.courage = KCourage/100;
+                    newKerb.stupidity = KStupidity/100;
+                    if (KFearless)
+                    {
+                        newKerb.isBadass = true;
+                    }
                 }
+
                 // Debug.Log("PSH :: Status set to Available, courage and stupidity set, fearless trait set.");
                 if (KLevel > 0)
                 {
@@ -161,8 +145,8 @@ namespace KolonyTools.AC
                     newKerb.experienceLevel = 5;
                     Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
                 }
-
             }
+
             // Refreshes the AC so that new kerbal shows on the available roster.
             Debug.Log("PSH :: Hiring Function Completed.");
             GameEvents.onGUIAstronautComplexDespawn.Fire();
@@ -170,12 +154,40 @@ namespace KolonyTools.AC
 
         }
 
+        private static ProtoCrewMember SpawnKerbal(ProtoCrewMember.Gender? chosenGender)
+        {
+            for (int attempt = 0; attempt < 100; attempt++)
+            {
+                var kerb = HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+                if ((!chosenGender.HasValue) || (chosenGender.Value == kerb.gender))
+                    return kerb;
+                HighLogic.CurrentGame.CrewRoster.Remove(kerb);
+            }
+            Debug.LogError("Failed spawning a kerbal with the wanted gender");
+            return HighLogic.CurrentGame.CrewRoster.GetNewKerbal(ProtoCrewMember.KerbalType.Crew);
+        }
+
+
 
         private int costMath()
         {
+            int active = HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount();
+            var defaultCost = (int)GameVariables.Instance.GetRecruitHireCost(active);
+
+            if (KolonyACOptions.CostCapEnabled)
+                defaultCost = Math.Min(defaultCost, KolonyACOptions.GetMaxCost);
+
+            if (_kolonists[KCareer].isBase && !KolonyACOptions.AlternateCoreCostEnabled)
+                return defaultCost;
+            if (!_kolonists[KCareer].isBase && !KolonyACOptions.AlternateKolonistCostEnabled)
+                return defaultCost;
+
             dCheck();
             float fearlessCost = 0;
-            float basecost = _kolonists[KCareer].Cost;
+            float basecost = KolonyACOptions.GetKolonistCost;
+            if (_kolonists[KCareer].isBase)
+                basecost = KolonyACOptions.GetCoreCost;
+
             float couragecost = KCourage * 150;
             float stupidRebate = KStupidity * 150;
             float diffcost = HighLogic.CurrentGame.Parameters.Career.FundsLossMultiplier;
@@ -189,19 +201,13 @@ namespace KolonyTools.AC
             double attribsCost = Math.Max(minCost, basecost + couragecost - stupidRebate);
 
             double currentcost = (attribsCost + fearlessCost) * (KLevel + 1) * DCost * diffcost * KBulki;
-            // double finaldouble = (Math.Round(currentcost));
-            int finalcost = Convert.ToInt32(currentcost); //Convert.ToInt32(finaldouble);
+            int finalcost = Convert.ToInt32(currentcost); 
+
+            if (KolonyACOptions.CostCapEnabled)
+                finalcost = Math.Min(finalcost, KolonyACOptions.GetMaxCost);
+
             return finalcost;
         }
-
-        // these slightly reduce garbage created by avoiding array allocations which is one reason OnGUI
-        // is so terrible
-        private static readonly GUILayoutOption[] DefaultLayoutOptions = new GUILayoutOption[0];
-        private static readonly GUILayoutOption[] PortraitOptions = { GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false) };
-        private static readonly GUILayoutOption[] FixedWidth = { GUILayout.Width(220f) };
-        private static readonly GUILayoutOption[] HireButtonOptions = { GUILayout.ExpandHeight(true), GUILayout.MaxHeight(40f), GUILayout.MinWidth(40f) };
-        private static readonly GUILayoutOption[] StatOptions = { GUILayout.MaxWidth(100f) };
-        private static readonly GUILayoutOption[] FlavorTextOptions = { GUILayout.MaxWidth(200f) };
 
         private string hireStatus()
         {
@@ -264,8 +270,6 @@ namespace KolonyTools.AC
         {
 
             GUI.skin = HighLogic.Skin;
-            var roster = HighLogic.CurrentGame.CrewRoster;
-            GUIContent[] KGendArray = new GUIContent[3] { KMale, KFemale, KGRandom };
             if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
             {
                 hasKredits = false;
@@ -293,8 +297,15 @@ namespace KolonyTools.AC
 
                 // Career selection
                 GUILayout.BeginVertical("box");
-
-                KCareer = GUILayout.SelectionGrid(KCareer, _kolonists.Select(k => k.Name).ToArray(), 4);
+                if (KolonyACOptions.KolonistHiringEnabled)
+                {
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).ToArray();
+                }
+                else
+                {
+                    _recruitableKolonists = _kolonists.Select(k => k.Name).Take(3).ToArray();
+                }
+                KCareer = GUILayout.SelectionGrid(KCareer, _recruitableKolonists, 4);
 
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
@@ -312,35 +323,50 @@ namespace KolonyTools.AC
                 GUI.contentColor = basecolor;
                 GUILayout.EndVertical();
 
-                // Courage Brains and BadS flag selections
-                GUILayout.BeginVertical("box");
-                GUILayout.Label("Courage:  " + Math.Truncate(KCourage));
-                KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
-                GUILayout.Label("Stupidity:  " + Math.Truncate(KStupidity));
-                KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Is this Kerbal Fearless?");
-                KFearless = GUILayout.Toggle(KFearless, "Fearless");
-                GUILayout.EndHorizontal();
-                GUILayout.EndVertical();
-
-                // Level selection
-                GUILayout.BeginVertical("box");
-                GUILayout.Label("Select Your Level:");
-
-                // If statements for level options
-                if (kerExp == false)
+                if (KolonyACOptions.CustomKerbonautsEnabled)
                 {
-                    GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                    // Courage Brains and BadS flag selections
+                    GUILayout.BeginVertical("box");
+                    GUILayout.Label("Courage:  " + Math.Truncate(KCourage));
+                    KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
+                    GUILayout.Label("Stupidity:  " + Math.Truncate(KStupidity));
+                    KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Is this Kerbal Fearless?");
+                    KFearless = GUILayout.Toggle(KFearless, "Fearless");
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
+
+                    // Level selection
+                    GUILayout.BeginVertical("box");
+                    GUILayout.Label("Select Your Level:");
+
+                    // If statements for level options
+                    if (kerExp == false)
+                    {
+                        GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                    }
+                    else
+                    {
+                        if (ACLevel == 0)
+                        {
+                            KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero);
+                        }
+                        if (ACLevel == 0.5)
+                        {
+                            KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne);
+                        }
+                        if (ACLevel == 1)
+                        {
+                            KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo);
+                        }
+                        if (ACLevel == 5)
+                        {
+                            GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode.");
+                        }
+                    }
+                    GUILayout.EndVertical();
                 }
-                else
-                {
-                    if (ACLevel == 0) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsZero); }
-                    if (ACLevel == 0.5) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsOne); }
-                    if (ACLevel == 1) { KLevel = GUILayout.Toolbar(KLevel, KLevelStringsTwo); }
-                    if (ACLevel == 5) { GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode."); }
-                }
-                GUILayout.EndVertical();
 
                 if (hasKredits == true)
                 {
@@ -393,7 +419,7 @@ namespace KolonyTools.AC
             }
         }
 
-        private static float GetExperienceNeededFor(int level)
+        public static float GetExperienceNeededFor(int level)
         {
             switch (level)
             {

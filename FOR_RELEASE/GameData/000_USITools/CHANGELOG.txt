@@ -1,6 +1,11 @@
-0.8.17 - 2017.03.17
+0.9.0 - KSP 1.3
 -------------------
-Dependency Updates
+KSP 1.3 Compatibility
+Fix infinite loop with "prev loadout" when USILS is not installed
+
+0.8.18 - 2017.03.17
+-------------------
+Fixed bugs related to ground tethers and PDU power transfers
 
 0.8.16 - 2017.02.24
 -------------------

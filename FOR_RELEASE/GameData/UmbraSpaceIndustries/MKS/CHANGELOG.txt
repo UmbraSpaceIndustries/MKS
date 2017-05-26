@@ -1,3 +1,27 @@
+0.52.0 - KSP 1.3
+-------------------
+KSP 1.3 Compatibility
+Fix local logistics vessel list not being updated
+Sifters now use the geology bonus
+Allow incremental payment of inflatables deployment cost
+Fix recruitement of various kolonist classes
+Updated TAC-LS config
+Added rock production to various drills, as well as residual rock output to different converters (Thanks voicey99!)
+Removed hard coded references to the EXConstructionSkill (these are handled via MM) - thanks theRagingIrishman!
+The Pioneer Modules and Logistics Centers are now probe control points (thanks DanStaal!)
+Fix for AC Recruitment and planet packs (Thanks Gnurfos!)!
+Fore and aft attachment nodes for the Karibou hub roof rack (Thanks Wyzard256!)
+Removed OSE's extra harvesters from stock drills when MKS is installed (Thanks Qyzard256!)
+Stock Fuel cells now produce water as a byproduct (Thanks Boiler1!)
+Custom settings via the stock settings dialog have been added:
+* You may now disable machinery consumption for MKS.  The default is on.  This setting effectively puts this mod very close to where MKS-Lite was, and is a good starting point if you want to avoid most of the core resource chain.
+Extensive changes to the Astronaut Complex.  You can now:
+* Toggle the ability to customize Kerbonauts.  If enabled, you can change bravery/stupidity and choose a starting level.  If disabled, these options will not be available.
+* Enable / disable the hiring of Kolonist Kerbonauts (i.e. combined with the option below, you can disable MKS extended classes altogether).
+* Enable / disable Kolonist Kerbonauts being available in rescue contracts (if disabled, only base kerbonauts appear as rescue kerbals).  
+* Use either the stock calculated cost or a custom price for your Kerbals.  This setting is independent for base vs kolonists, so you could use standard pricing for your pilots, engineers, and scientists - but still get cheap pricing for Kolonists.
+* Enable/disable and configure a custom price cap for all hires.  i.e. you could decide to use the stock hiring scheme, but with a specific max cap so it does not rise to unreasonable exponential numbers.
+
 0.50.18 - 2017.03.17
 --------------------
 Updated drill descriptions (Thanks voicey99!)
