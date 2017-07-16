@@ -1,0 +1,31 @@
+{
+    "DOWNLOAD": "https://github.com/BobPalmer/CommunityCategoryKit/releases", 
+    "GITHUB": {
+        "ALLOW_PRE_RELEASE": false, 
+        "REPOSITORY": "CommunityCategoryKit", 
+        "USERNAME": "BobPalmer"
+    }, 
+    "KSP_VERSION": {
+        "MAJOR": 1, 
+        "MINOR": 3, 
+        "PATCH": 0
+    }, 
+    "KSP_VERSION_MAX": {
+        "MAJOR": 1, 
+        "MINOR": 3, 
+        "PATCH": 9
+    }, 
+    "KSP_VERSION_MIN": {
+        "MAJOR": 1, 
+        "MINOR": 2, 
+        "PATCH": 9
+    }, 
+    "NAME": "Community Category Kit", 
+    "URL": "https://raw.githubusercontent.com/BobPalmer/CommunityCategoryKit/master/FOR_RELEASE/GameData/CommunityCategoryKit/CCK.version", 
+    "VERSION": {
+        "BUILD": 0, 
+        "MAJOR": 2, 
+        "MINOR": 0, 
+        "PATCH": 1
+    }
+}

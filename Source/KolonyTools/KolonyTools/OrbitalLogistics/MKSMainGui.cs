@@ -10,7 +10,6 @@ namespace KolonyTools
         private Vector2 scrollPositionGUIPreviousTransfers;
         private MKSLGuiTransfer editGUITransfer;
         private MKSTransferView _transferView;
-        private MKSTransferCreateView _transferCreateView;
 
         public MKSMainGui(MKSLcentral model)
             : base("Kolony Logistics", 200, 500)
@@ -35,7 +34,6 @@ namespace KolonyTools
                 editGUITransfer.VesselTo = _model.vessel;
                 editGUITransfer.calcResources();
 
-                _transferCreateView = new MKSTransferCreateView(editGUITransfer, _model);
             }
 
             GUILayout.Label("Current transfers", MKSGui.labelStyle, GUILayout.Width(150));

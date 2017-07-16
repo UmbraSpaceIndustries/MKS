@@ -5,8 +5,19 @@ using Smooth.Slinq.Test;
 using UnityEngine;
 using Random = System.Random;
 
+
 namespace KolonyTools
 {
+    public class ModuleGroundPylon : LaunchClamp
+    {
+        public override void OnStart(StartState state)
+        {
+            stagingEnabled = false;
+            Actions["ReleaseClamp"].active = false;
+            Events["Release"].active = false;
+        }
+    }
+
     public class ModuleResourceSurveyor : PartModule
     {
         private Random _rnd;
@@ -165,7 +176,6 @@ namespace KolonyTools
             uint flightId = ShipConstruction.GetUniqueFlightID(HighLogic.CurrentGame.flightState);
             partNodes = new ConfigNode[1];
             partNodes[0] = ProtoVessel.CreatePartNode(lodeData.craftPart.name, flightId);
-            DiscoveryLevels discoveryLevel = DiscoveryLevels.Owned;
             ConfigNode protoVesselNode = ProtoVessel.CreateVesselNode(lodeData.name, lodeData.vesselType, lodeData.orbit, 0, partNodes);
             Vector3d norm = lodeData.body.GetRelSurfaceNVector(lodeData.latitude, lodeData.longitude);
             double terrainHeight = 0.0;

@@ -51,14 +51,24 @@
     </Reference>
     <Reference Include="USITools">
       <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AC\CustomAstronautComplexUI.cs" />
+    <Compile Include="AC\CustomAstronautComplexUISpawner.cs" />
+    <Compile Include="AC\EditACPrefab.cs" />
+    <Compile Include="AC\EditACPrefabs_Editor.cs" />
+    <Compile Include="AC\Kolonist.cs" />
+    <Compile Include="AC\EditACPrefabsSpaceCentre.cs" />
     <Compile Include="AddScenarioModules.cs" />
     <Compile Include="Kolonization\KolonizationConfig.cs" />
     <Compile Include="Kolonization\KolonizationSetup.cs" />
+    <Compile Include="KolonyOptions\RescueKerbalFilter.cs" />
+    <Compile Include="KolonyOptions\KolonyACOptions.cs" />
     <Compile Include="MksAutoRepair.cs" />
     <Compile Include="ModuleColonyRewards.cs" />
+    <Compile Include="ModuleGroundPylon.cs" />
     <Compile Include="ModuleResourceLode.cs" />
     <Compile Include="ModuleResourceSurveyor.cs" />
     <Compile Include="OrbitalLogistics\ComboBox.cs" />
@@ -74,6 +84,7 @@
     <Compile Include="Kolonization\KolonizationMonitor.cs" />
     <Compile Include="Kolonization\KolonizationPersistance.cs" />
     <Compile Include="Kolonization\KolonizationScenario.cs" />
+    <Compile Include="Kolonization/ManualLocalLogistics.cs" />
     <Compile Include="MKSModule.cs" />
     <Compile Include="OrbitalLogistics\MKSMainGui.cs" />
     <Compile Include="OrbitalLogistics\MKSTransferCreateView.cs" />
@@ -93,12 +104,10 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="KolonySettings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"D:\Games\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' != 'Unix'">"D:\Games\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 Other similar extension points exist, see Microsoft.Common.targets.

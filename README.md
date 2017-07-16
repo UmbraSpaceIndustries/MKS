@@ -34,7 +34,7 @@ NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only p
 
 Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
 
-There is also a [Walkthrough](https://github.com/BobPalmer/MKS/wiki/Tutorial-August-2015-%280.31.6%29)
+There are also [Tutorials](https://github.com/BobPalmer/MKS/wiki/Tutorials)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
