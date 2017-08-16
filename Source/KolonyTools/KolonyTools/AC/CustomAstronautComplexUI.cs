@@ -139,7 +139,7 @@ namespace KolonyTools.AC
                     newKerb.experience = GetExperienceNeededFor(KLevel);
                     newKerb.experienceLevel = KLevel;
                 }
-                if (ACLevel == 5 || kerExp == false)
+                if (kerExp == false)
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;

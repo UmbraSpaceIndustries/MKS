@@ -64,6 +64,8 @@
     <Compile Include="AddScenarioModules.cs" />
     <Compile Include="Kolonization\KolonizationConfig.cs" />
     <Compile Include="Kolonization\KolonizationSetup.cs" />
+    <Compile Include="Kolonization\KolonyInventory.cs" />
+    <Compile Include="Kolonization\ManualLocalLogistics.cs" />
     <Compile Include="KolonyOptions\RescueKerbalFilter.cs" />
     <Compile Include="KolonyOptions\KolonyACOptions.cs" />
     <Compile Include="MksAutoRepair.cs" />
@@ -84,7 +86,6 @@
     <Compile Include="Kolonization\KolonizationMonitor.cs" />
     <Compile Include="Kolonization\KolonizationPersistance.cs" />
     <Compile Include="Kolonization\KolonizationScenario.cs" />
-    <Compile Include="Kolonization/ManualLocalLogistics.cs" />
     <Compile Include="MKSModule.cs" />
     <Compile Include="OrbitalLogistics\MKSMainGui.cs" />
     <Compile Include="OrbitalLogistics\MKSTransferCreateView.cs" />

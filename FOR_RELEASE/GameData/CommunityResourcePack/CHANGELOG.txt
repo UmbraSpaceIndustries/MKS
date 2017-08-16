@@ -1,3 +1,9 @@
+0.7.2 - 2017.08.15
+---------------
+Dependency Updates
+Localization Updates
+New KSPI Resources
+
 0.7.1 - KSP 1.3
 ------------------
 KSP 1.3 Compatibility
