@@ -45,6 +45,7 @@ namespace KolonyTools
         public int curTab = 0;
 
         private ManualLocalLogistics _localLogistics;
+        private KolonyInventory _kolonyInventory;
 
         void Awake()
         {
@@ -78,6 +79,7 @@ namespace KolonyTools
             {
                 InitStyles();
                 _localLogistics = new ManualLocalLogistics();
+                _kolonyInventory = new KolonyInventory();
             }
         }
 
@@ -118,7 +120,7 @@ namespace KolonyTools
 
         private void GenerateWindow()
         {
-            var tabStrings = new[] { "Kolony Statistics", "Local Logistics", "Planetary Logistics" };
+            var tabStrings = new[] { "Kolony Statistics", "Local Logistics", "Planetary Logistics", "Kolony Inventory" };
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             curTab = GUILayout.SelectionGrid(curTab, tabStrings, 6, _smButtonStyle);
@@ -133,6 +135,9 @@ namespace KolonyTools
                     break;
                 case 2:
                     PlanLogScreen();
+                    break;
+                case 3:
+                    _kolonyInventory.Display();
                     break;
             }
             GUILayout.EndVertical();
