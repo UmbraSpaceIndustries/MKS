@@ -1,3 +1,12 @@
+0.8.0 - 2017.10.09
+------------------
+KSP 1.3.1
+Various localization updates
+
+0.7.3 - 2017.09.08
+------------------
+Dependency Updates
+
 0.7.2 - 2017.08.15
 ---------------
 Dependency Updates
