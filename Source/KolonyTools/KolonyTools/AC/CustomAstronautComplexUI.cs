@@ -74,15 +74,17 @@ namespace KolonyTools.AC
 
         public void Initialize(Rect guiRect)
         {
-            var uiScaleMultiplier = GameSettings.UI_SCALE;
+            //var uiScaleMultiplier = GameSettings.UI_SCALE;
 
             // the supplied rect will have the UI scalar already factored in
             //
             // to respect the player's UI scale wishes, work out what the unscaled rect
             // would be. Then we'll apply the scale again in OnGUI so all of our GUILayout elements
             // will respect the multiplier
-            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width / uiScaleMultiplier,
-                guiRect.height / uiScaleMultiplier);
+            //var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width / uiScaleMultiplier,
+            //    guiRect.height / uiScaleMultiplier);
+
+            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width, guiRect.height);
 
             _areaRect = correctedRect;
 
