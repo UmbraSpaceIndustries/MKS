@@ -98,7 +98,7 @@ namespace KolonyTools
             get
             {
                 KolonyACOptions options = HighLogic.CurrentGame.Parameters.CustomParams<KolonyACOptions>();
-                return options.AlternateCoreCost;
+                return options.AlternateKolonistCost;
             }
         }
 
