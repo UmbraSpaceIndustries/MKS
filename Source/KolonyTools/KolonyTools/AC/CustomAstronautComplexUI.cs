@@ -89,6 +89,13 @@ namespace KolonyTools.AC
             _areaRect = correctedRect;
 
             enabled = true;
+
+            // Reset of the basic Stupidity and Courage if the customization of Kerbonauts is disabled during game
+            if (!KolonyACOptions.CustomKerbonautsEnabled)
+            {
+                KStupidity = 50;
+                KCourage = 50;
+            }
         }
 
         private void kHire()
