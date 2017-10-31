@@ -216,11 +216,6 @@ namespace KolonyTools.AC
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double kredits = Funding.Instance.Funds;
-                if (costMath() > kredits)
-                {
-                    bText = "Not Enough Funds!";
-                    hTest = false;
-                }
                 if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
                     bText = "Roster is Full!";
@@ -228,7 +223,13 @@ namespace KolonyTools.AC
                 }
                 else
                 {
-                    hTest = true;
+                    if (costMath() > kredits)
+                    {
+                        bText = "Not Enough Funds!";
+                        hTest = false;
+                    }
+                    else
+                        hTest = true;
                 }
             }
             return bText;
@@ -390,15 +391,14 @@ namespace KolonyTools.AC
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
+                string statusText = hireStatus();
                 if (hTest)
                 {
-                    if (GUILayout.Button(hireStatus(), GUILayout.Width(200f)))
+                    if (GUILayout.Button(statusText, GUILayout.Width(200f)))
                         kHire();
                 }
-                if (!hTest)
-                {
-                    GUILayout.Button(hireStatus(), GUILayout.Width(200f));
-                }
+                else
+                    GUILayout.Button(statusText, GUILayout.Width(200f));
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
