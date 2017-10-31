@@ -59,16 +59,16 @@ namespace KolonyTools.AC
             _kolonists.Add(new Kolonist { Name = "Pilot", isBase = true, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
             _kolonists.Add(new Kolonist { Name = "Scientist", isBase = true, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
             _kolonists.Add(new Kolonist { Name = "Engineer", isBase = true, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", isBase = true, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Miner", isBase = true, Effects = "Drill, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Technician", isBase = true, Effects = "Converter, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Mechanic", isBase = true, Effects = "Repair, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Biologist", isBase = true, Effects = "Biology, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Geologist", isBase = true, Effects = "Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Farmer", isBase = true, Effects = "Agronomy, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Medic", isBase = true, Effects = "Medical, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = true, Effects = "Logistics, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Scout", isBase = true, Effects = "Explorer" });
+            _kolonists.Add(new Kolonist { Name = "Kolonist", isBase = false, Effects = "RepBoost, FundsBoost, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Miner", isBase = false, Effects = "Drill, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Technician", isBase = false, Effects = "Converter, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Mechanic", isBase = false, Effects = "Repair, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Biologist", isBase = false, Effects = "Biology, ScienceBoost" });
+            _kolonists.Add(new Kolonist { Name = "Geologist", isBase = false, Effects = "Geology, FundsBoost" });
+            _kolonists.Add(new Kolonist { Name = "Farmer", isBase = false, Effects = "Agronomy, ScienceBoost, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Medic", isBase = false, Effects = "Medical, ScienceBoost, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = false, Effects = "Logistics, RepBoost" });
+            _kolonists.Add(new Kolonist { Name = "Scout", isBase = false, Effects = "Explorer" });
             KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
         }
 
