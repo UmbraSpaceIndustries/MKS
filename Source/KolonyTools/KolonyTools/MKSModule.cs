@@ -180,18 +180,18 @@ namespace KolonyTools
                 return;
             }
 
-            var repBoosters = GetVesselCrewByEffect("RepBoost");
-            var fundsBoosters = GetVesselCrewByEffect("FundsBoost");
-            var scienceBoosters = GetVesselCrewByEffect("ScienceBoost");
+            k.RepBoosters = GetVesselCrewByEffect("RepBoost");
+            k.FundsBoosters = GetVesselCrewByEffect("FundsBoost");
+            k.ScienceBoosters = GetVesselCrewByEffect("ScienceBoost");
 
             var elapsedTime = Planetarium.GetUniversalTime() - k.LastUpdate;
             var orbitMod = 1d;
             if (!vessel.LandedOrSplashed)
                 orbitMod = KolonizationSetup.Instance.Config.OrbitMultiplier;
 
-            var scienceBase = scienceBoosters * elapsedTime * orbitMod;
-            var repBase = repBoosters * elapsedTime * orbitMod;
-            var fundsBase = fundsBoosters * elapsedTime * orbitMod;
+            var scienceBase = k.ScienceBoosters * elapsedTime * orbitMod;
+            var repBase = k.RepBoosters * elapsedTime * orbitMod;
+            var fundsBase = k.FundsBoosters * elapsedTime * orbitMod;
 
             k.LastUpdate = Planetarium.GetUniversalTime();
             k.BotanyResearch += scienceBase;
@@ -219,7 +219,7 @@ namespace KolonyTools
 
         }
 
-        private double GetVesselCrewByEffect(string effect)
+        private int GetVesselCrewByEffect(string effect)
         {
             var count = vessel.GetCrewCount();
             var crew = vessel.GetVesselCrew();

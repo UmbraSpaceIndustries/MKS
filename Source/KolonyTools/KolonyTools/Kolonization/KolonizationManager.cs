@@ -107,6 +107,9 @@ namespace KolonyTools
             newEntry.Science = logEntry.Science;
             newEntry.Funds = logEntry.Funds;
             newEntry.Rep = logEntry.Rep; 
+            newEntry.RepBoosters = logEntry.RepBoosters;
+            newEntry.ScienceBoosters = logEntry.ScienceBoosters;
+            newEntry.FundsBoosters = logEntry.FundsBoosters;
             KolonizationScenario.Instance.settings.SaveLogEntryNode(newEntry);
         }
 
@@ -124,6 +127,18 @@ namespace KolonyTools
         {
             var researchTotal = Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.KolonizationResearch);
             return ConvertResearchToBonus(researchTotal);
+        }
+        public static int GetGeologyResearchBoosters(int bodyIndex)
+        {
+            return Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.FundsBoosters);
+        }
+        public static int GetBotanyResearchBoosters(int bodyIndex)
+        {
+            return Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.ScienceBoosters);
+        }
+        public static int GetKolonizationResearchBoosters(int bodyIndex)
+        {
+            return Instance.KolonizationInfo.Where(k => k.BodyIndex == bodyIndex).Sum(k => k.RepBoosters);
         }
         private static float ConvertResearchToBonus(double researchTotal)
         {
