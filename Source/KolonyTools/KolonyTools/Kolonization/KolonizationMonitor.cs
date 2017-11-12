@@ -151,9 +151,9 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(String.Format("Body Name"), _labelStyle, GUILayout.Width(135));
-            GUILayout.Label(String.Format("Geology"), _labelStyle, GUILayout.Width(80));
-            GUILayout.Label(String.Format("Botany"), _labelStyle, GUILayout.Width(80));
-            GUILayout.Label(String.Format("Kolonization"), _labelStyle, GUILayout.Width(80));
+            GUILayout.Label(String.Format("Geology"), _labelStyle, GUILayout.Width(120));
+            GUILayout.Label(String.Format("Botany"), _labelStyle, GUILayout.Width(120));
+            GUILayout.Label(String.Format("Kolonization"), _labelStyle, GUILayout.Width(120));
             GUILayout.EndHorizontal();
 
             var focusedPlanet = GetFocusedPlanet();
@@ -165,11 +165,14 @@ namespace KolonyTools
                 var geo = KolonizationManager.GetGeologyResearchBonus(p);
                 var kol = KolonizationManager.GetKolonizationResearchBonus(p);
                 var bot = KolonizationManager.GetBotanyResearchBonus(p);
+                var geoBoost = KolonizationManager.GetGeologyResearchBoosters(p);
+                var kolBoost = KolonizationManager.GetKolonizationResearchBoosters(p);
+                var botBoost = KolonizationManager.GetBotanyResearchBoosters(p);
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(String.Format("<color=#FFFFFF>{0}</color>", body.bodyName), _labelStyle, GUILayout.Width(135));
-                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", geo * 100d), _labelStyle, GUILayout.Width(80));
-                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", bot * 100d), _labelStyle, GUILayout.Width(80));
-                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}%</color>", kol * 100d), _labelStyle, GUILayout.Width(80));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}% ({1})</color>", geo * 100d, geoBoost), _labelStyle, GUILayout.Width(120));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}% ({1})</color>", bot * 100d, kolBoost), _labelStyle, GUILayout.Width(120));
+                GUILayout.Label(String.Format("<color=#FFD900>{0:n3}% ({1})</color>", kol * 100d, botBoost), _labelStyle, GUILayout.Width(120));
                 GUILayout.EndHorizontal();
             }
 

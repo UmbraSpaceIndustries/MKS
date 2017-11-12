@@ -12,5 +12,8 @@
         public double Science { get; set; }
         public double Rep { get; set; }
         public double Funds { get; set; }
+        public int RepBoosters { get; set; }
+        public int FundsBoosters { get; set; }
+        public int ScienceBoosters { get; set; }
     }
 }

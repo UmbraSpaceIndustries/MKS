@@ -67,6 +67,9 @@ namespace KolonyTools
                 rNode.AddValue("GeologyResearch", r.GeologyResearch);
                 rNode.AddValue("BotanyResearch", r.BotanyResearch);
                 rNode.AddValue("KolonizationResearch", r.KolonizationResearch);
+                rNode.AddValue("FundsBoosters", r.FundsBoosters);
+                rNode.AddValue("ScienceBoosters", r.ScienceBoosters);
+                rNode.AddValue("RepBoosters", r.RepBoosters);
                 rNode.AddValue("Science", r.Science);
                 rNode.AddValue("Rep", r.Rep);
                 rNode.AddValue("Funds", r.Funds);
@@ -156,6 +159,9 @@ namespace KolonyTools
             saveEntry.Science = logEntry.Science;
             saveEntry.Funds = logEntry.Funds;
             saveEntry.Rep = logEntry.Rep;
+            saveEntry.ScienceBoosters = logEntry.ScienceBoosters;
+            saveEntry.FundsBoosters = logEntry.FundsBoosters;
+            saveEntry.RepBoosters = logEntry.RepBoosters;
             saveEntry.LastUpdate = logEntry.LastUpdate;
             saveEntry.KolonyDate = logEntry.KolonyDate;
         }
