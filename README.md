@@ -5,7 +5,7 @@ This is the repository for the MKS and OKS mods for [Kerbal Space Program](http:
 
 MKS and OKS are the original works of RoverDude (GitHub user BobPalmer).  
 
-You can find the official repo for this mod on [Github](http://github.com/BobPalmer/MKS).  Releases, along with other USI products, can be found on [the USI Catalog Page](http://bobpalmer.github.io/UmbraSpaceIndustries/). 
+You can find the official repo for this mod on [Github](https://github.com/UmbraSpaceIndustries/MKS).  Releases, along with other USI products, can be found on [the USI Catalog Page](https://umbraspaceindustries.github.io/UmbraSpaceIndustries/). 
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
@@ -42,7 +42,7 @@ Pull Requests should be merged into the branch "DEVELOP".
 
 ### Download Link
 
-You can download the current version of MKS from [the USI Catalog Page](http://bobpalmer.github.io/UmbraSpaceIndustries).  Note that for the sake of my own sanity, only the current release version is supported.
+You can download the current version of MKS from [the USI Catalog Page](https://umbraspaceindustries.github.io/UmbraSpaceIndustries/).  Note that for the sake of my own sanity, only the current release version is supported.
 
 ### Other Contributors and Thanks!
 * PrivateFlip/Cyrik (Orbital Logistics code)
