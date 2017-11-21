@@ -9,6 +9,52 @@ namespace KolonyTools
 {
     public static class OrbitalLogisticsExtensions
     {
+        /// <summary>
+        /// Gets the 'mu' value for the <see cref="CelestialBody"/> (i.e. gravitional constant X body mass).
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public static double Mu(this CelestialBody body)
+        {
+            return body.Mass * 6.67408e-11;
+        }
+
+        /// <summary>
+        /// Calculates the average orbital velocity of a vessel, ignoring eccentricity.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <returns></returns>
+        public static double AverageOrbitalVelocity(this Vessel vessel)
+        {
+            double sma = vessel.packed && !vessel.loaded
+                ? vessel.protoVessel.orbitSnapShot.semiMajorAxis
+                : vessel.orbit.semiMajorAxis;
+
+            return OrbitalVelocity(vessel.mainBody, sma);
+        }
+
+        /// <summary>
+        /// Calculates orbital velocity for a circular orbit.
+        /// </summary>
+        /// <param name="body">The <see cref="CelestialBody"/> of the orbit.</param>
+        /// <param name="semiMajorAxis">The semi major axis of the orbit.</param>
+        /// <returns></returns>
+        public static double OrbitalVelocity(CelestialBody body, double semiMajorAxis)
+        {
+            return Math.Sqrt(body.Mu() * 1 / semiMajorAxis);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="body"></param>
+        /// <param name="semiMajorAxis"></param>
+        /// <returns></returns>
+        public static double OrbitalPeriod(CelestialBody body, double semiMajorAxis)
+        {
+            return Math.Sqrt(4 * Math.Pow(Math.PI, 2) / body.Mu() * Math.Pow(semiMajorAxis, 3));
+        }
+
         public static List<OrbitalLogisticsResource> GetResources(this Vessel vessel)
         {
             List<OrbitalLogisticsResource> resources;
@@ -196,7 +242,6 @@ namespace KolonyTools
         {
             return vessel.GetConverters().Where(mod => mod.IsActivated);
         }
-
         
         public static IEnumerable<ModuleResourceConverter> GetConverters(this Vessel vessel)
         {
@@ -209,37 +254,6 @@ namespace KolonyTools
             var mksParts = vessel.parts.Where(p => p.Modules.Contains("MKSModule"));
             return mksParts.Where(part => part.FindModuleImplementing<ModuleResourceConverter>() != null);
         }
-
-        //public static IEnumerable<OrbitalLogisticsResource> GetProduction(this Vessel vessel, bool output = true)
-        //{
-        //    var parts = GetActiveConverters(vessel);
-        //    var res = parts.SelectMany(conv =>
-        //    {
-        //        var list = output ? conv.Recipe.Outputs : conv.Recipe.Inputs;
-        //        return list.Select(resRatio => new OrbitalLogisticsResource
-        //        {
-        //            Name = resRatio.ResourceName,
-        //            //amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.Ratio
-        //            Amount = resRatio.Ratio
-        //        });
-        //    }).GroupBy(x => x.Name, x => x.Amount, (key,grp) => new OrbitalLogisticsResource { Amount = grp.Sum(), Name = key });
-        //    return res;
-        //}
-
-        //public static IEnumerable<OrbitalLogisticsResource> CalcBalance(IEnumerable<OrbitalLogisticsResource> input, IEnumerable<OrbitalLogisticsResource> output)
-        //{
-        //    return input.FullOuterJoin(output, x => x.Name, lresource => lresource.Name,
-        //        (lresource, mksLresource,name) =>
-        //            new OrbitalLogisticsResource
-        //            {
-                        
-        //                Amount = mksLresource.Amount - lresource.Amount,
-        //                Name = name
-        //            },
-        //            new OrbitalLogisticsResource{Amount = 0},
-        //            new OrbitalLogisticsResource { Amount = 0 });
-        //}
-
 
         //provided by sehe at http://stackoverflow.com/questions/5489987/linq-full-outer-join
         internal static IList<TR> FullOuterJoin<TA, TB, TK, TR>(
@@ -266,6 +280,5 @@ namespace KolonyTools
 
             return join.ToList();
         }
-
     }
 }

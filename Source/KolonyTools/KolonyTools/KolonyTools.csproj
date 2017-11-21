@@ -81,7 +81,6 @@
     <Compile Include="OrbitalLogistics\OrbitalLogisticsAllowedTransfers.cs" />
     <Compile Include="OrbitalLogistics\UI\OrbitalLogisticsGui_CreateTransfer.cs" />
     <Compile Include="OrbitalLogistics\OrbitalLogisticsResource.cs" />
-    <None Include="OrbitalLogistics\OrbitalLogisticsTransfer.cs" />
     <Compile Include="ModuleAutoJettisonTank.cs" />
     <Compile Include="ModuleBulkConverter.cs" />
     <Compile Include="Kolonization\KolonizationEntry.cs" />

@@ -97,8 +97,8 @@ namespace KolonyTools
             GUILayout.EndScrollView();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Total Mass:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150), GUILayout.MaxWidth(350));
-            GUILayout.Label(Transfer.TotalMass().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(50));
+            GUILayout.Label("Total Mass:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150), GUILayout.MaxWidth(300));
+            GUILayout.Label(Transfer.TotalMass().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(100));
             GUILayout.EndHorizontal();
 
             float totalCost = Transfer.CalculateCost();
@@ -120,8 +120,8 @@ namespace KolonyTools
             GUILayout.EndScrollView();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Total Cost:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150), GUILayout.MaxWidth(350));
-            GUILayout.Label(Transfer.CalculateCost().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(50));
+            GUILayout.Label("Total Cost:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150), GUILayout.MaxWidth(300));
+            GUILayout.Label(Transfer.CalculateCost().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(100));
             GUILayout.EndHorizontal();
 
             GUILayout.Label(string.Empty);
