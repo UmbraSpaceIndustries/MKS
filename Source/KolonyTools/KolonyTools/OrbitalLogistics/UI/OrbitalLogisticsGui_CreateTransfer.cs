@@ -10,7 +10,10 @@ namespace KolonyTools
     /// </summary>
     public class OrbitalLogisticsGui_CreateTransfer : Window
     {
-        #region Local instance variables
+        #region Local static and instance variables
+        private const string TOO_FEW_VESSELS_MESSAGE =
+            "This is the only vessel in the current sphere of influence that can participate in Orbital Logisitcs.";
+
         private ScenarioOrbitalLogistics _scenario;
         private ModuleOrbitalLogistics _module;
         private OrbitalLogisticsTransferRequest _transfer;
@@ -18,6 +21,7 @@ namespace KolonyTools
         private string _errorMessageText = string.Empty;
         private ComboBox _originVesselComboBox;
         private ComboBox _destinationVesselComboBox;
+        private int _orbLogVesselsInSoI = 0;
         private int _originVesselIndex = 0;
         private int _destinationVesselIndex = 0;
         private Vessel _originVessel;
@@ -48,6 +52,8 @@ namespace KolonyTools
             var vesselNames = _module.BodyVesselList
                 .Select(v => new GUIContent(v.vesselName))
                 .ToArray();
+
+            _orbLogVesselsInSoI = vesselNames.Length;
 
             // Setup gui style for combo boxes
             GUIStyle listStyle = new GUIStyle();
@@ -331,7 +337,16 @@ namespace KolonyTools
                         UIHelper.yellowLabelStyle, GUILayout.Width(150)
                     );
                     GUILayout.EndHorizontal();
-                    GUILayout.Label(_errorMessageText, UIHelper.redLabelStyle, GUILayout.Width(300));
+                    GUILayout.Label(_errorMessageText, UIHelper.yellowLabelStyle);
+                }
+            }
+            // Origin and destination vessel are the same, so...
+            else
+            {
+                // Display a message if there is only one vessel in the current SoI that is eligible for OrbLog
+                if (_orbLogVesselsInSoI < 2)
+                {
+                    GUILayout.Label(TOO_FEW_VESSELS_MESSAGE, UIHelper.yellowLabelStyle);
                 }
             }
 

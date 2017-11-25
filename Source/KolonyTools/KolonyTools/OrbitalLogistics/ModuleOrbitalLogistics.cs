@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
@@ -90,11 +91,12 @@ namespace KolonyTools
         {
             BodyVesselList.Clear();
 
+            // Allowed vessels are those in the same SoI as this part's vessel,
+            //   have a part with ModuleOrbitalLogistics enabled and are in an allowed situation
             foreach (Vessel vessel in FlightGlobals.Vessels)
             {
                 if (base.vessel.mainBody.name == vessel.mainBody.name
-                    && vessel.vesselType != VesselType.Debris && vessel.vesselType != VesselType.SpaceObject
-                    && vessel.vesselType != VesselType.Unknown && base.vessel.vesselType != VesselType.Flag
+                    && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null
                     && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
                 ) {
                     BodyVesselList.Add(vessel);
