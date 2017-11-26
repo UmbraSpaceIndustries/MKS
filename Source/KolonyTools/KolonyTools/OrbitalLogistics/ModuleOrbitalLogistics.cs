@@ -96,10 +96,32 @@ namespace KolonyTools
             foreach (Vessel vessel in FlightGlobals.Vessels)
             {
                 if (base.vessel.mainBody.name == vessel.mainBody.name
-                    && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null
                     && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
                 ) {
-                    BodyVesselList.Add(vessel);
+                    if (!vessel.packed && vessel.loaded
+                        && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
+                    {
+                        BodyVesselList.Add(vessel);
+                    }
+                    else
+                    {
+                        bool foundOrbLog = false;
+                        foreach (var part in vessel.protoVessel.protoPartSnapshots)
+                        {
+                            foreach (var module in part.modules)
+                            {
+                                if (module.moduleName == "ModuleOrbitalLogistics")
+                                {
+                                    BodyVesselList.Add(vessel);
+                                    foundOrbLog = true;
+                                    break;
+                                }
+                            }
+
+                            if (foundOrbLog)
+                                break;
+                        }
+                    }
                 }
             }
 
