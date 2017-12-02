@@ -7,9 +7,21 @@ namespace KolonyTools
     /// </summary>
     public class OrbitalLogisticsResource
     {
+        #region Local variables
+        protected double? _available;
+        protected double? _capacity;
+        #endregion
+
         #region Public instance properties
         public Vessel Vessel { get; protected set; }
         public PartResourceDefinition ResourceDefinition { get; protected set; }
+        /// <summary>
+        /// Shortcut to the <see cref="PartResourceDefinition.name"/> property.
+        /// </summary>
+        public string Name
+        {
+            get { return ResourceDefinition.name; }
+        }
         #endregion
 
         #region Constructors
@@ -27,28 +39,32 @@ namespace KolonyTools
         /// <returns></returns>
         public double GetAvailableAmount()
         {
-            double amount = 0;
+            // Return cached value, if possible
+            if (_available.HasValue)
+                return _available.Value;
 
+            // Calculate (and cache) the sum of the amount of the resource available in each part
+            //   on the vessel that can store the resource.
             if (Vessel.packed && !Vessel.loaded)
             {
-                amount = Vessel.protoVessel.protoPartSnapshots
+                _available = Vessel.protoVessel.protoPartSnapshots
                     .SelectMany(p => p.resources
-                        .Where(r => r.definition == ResourceDefinition)
+                        .Where(r => r.definition.id == ResourceDefinition.id)
                         .Select(r => new { r.amount })
                     )
                     .Aggregate(0d, (total, r) => total + r.amount);
             }
             else
             {
-                amount = Vessel.Parts
+                _available = Vessel.Parts
                     .SelectMany(p => p.Resources
-                        .Where(r => r.info == ResourceDefinition)
+                        .Where(r => r.info.id == ResourceDefinition.id)
                         .Select(r => new { r.amount })
                     )
                     .Aggregate(0d, (total, r) => total + r.amount);
             }
 
-            return amount;
+            return _available.Value;
         }
 
         /// <summary>
@@ -57,28 +73,32 @@ namespace KolonyTools
         /// <returns></returns>
         public double GetCapacity()
         {
-            double capacity = 0;
+            // Return cached value, if possible
+            if (_capacity.HasValue)
+                return _capacity.Value;
 
+            // Calculate (and cache) the sum of the capacities of each part on the vessel
+            //   that can store the resource.
             if (Vessel.packed && !Vessel.loaded)
             {
-                capacity = Vessel.protoVessel.protoPartSnapshots
+                _capacity = Vessel.protoVessel.protoPartSnapshots
                     .SelectMany(p => p.resources
-                        .Where(r => r.definition == ResourceDefinition)
+                        .Where(r => r.definition.id == ResourceDefinition.id)
                         .Select(r => new { r.maxAmount })
                     )
                     .Aggregate(0d, (total, r) => total + r.maxAmount);
             }
             else
             {
-                capacity = Vessel.Parts
+                _capacity = Vessel.Parts
                     .SelectMany(p => p.Resources
-                        .Where(r => r.info == ResourceDefinition)
+                        .Where(r => r.info.id == ResourceDefinition.id)
                         .Select(r => new { r.maxAmount })
                     )
                     .Aggregate(0d, (total, r) => total + r.maxAmount);
             }
 
-            return capacity;
+            return _capacity.Value;
         }
         #endregion
     }

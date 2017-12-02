@@ -75,7 +75,7 @@ namespace KolonyTools
                 listStyle: listStyle,
                 onChange: i =>
                 {
-                    UpdateSourceVessel(i);
+                    UpdateOriginVessel(i);
                 }
             );
             _originVesselComboBox.SelectedItemIndex = 0;
@@ -110,7 +110,7 @@ namespace KolonyTools
             // Display Previous button for origin vessel selection
             if (GUILayout.Button(UIHelper.leftArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(30), GUILayout.Height(20)))
             {
-                UpdateSourceVessel(GetPreviousVesselIndex(_originVesselIndex));
+                UpdateOriginVessel(GetPreviousVesselIndex(_originVesselIndex));
                 _originVesselComboBox.SelectedItemIndex = _originVesselIndex;
             }
 
@@ -120,7 +120,7 @@ namespace KolonyTools
             // Display Next button for source vessel selection
             if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(30), GUILayout.Height(20)))
             {
-                UpdateSourceVessel(GetNextVesselIndex(_originVesselIndex));
+                UpdateOriginVessel(GetNextVesselIndex(_originVesselIndex));
                 _originVesselComboBox.SelectedItemIndex = _originVesselIndex;
             }
             GUILayout.EndHorizontal();  // origin selection section
@@ -156,39 +156,39 @@ namespace KolonyTools
                 // Display transferable resources
                 _availableResourceScrollViewPosition = GUILayout.BeginScrollView(_availableResourceScrollViewPosition, GUILayout.MinHeight(130));
 
-                // Get amounts for transferrable resources
+                // Calculate and display available amount for transferrable resources
                 if (_originVessel != null && _destinationVessel != null)
                 {
-                    _originVesselResources = _originVessel.GetResources();
-                    _destinationVesselResources = _destinationVessel.GetResources();
-
                     string content;
                     double available;
-                    // Resource list header
+
+                    // Table header
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(22));
                     GUILayout.Label(" Resource", UIHelper.whiteLabelStyle, GUILayout.Width(165));
                     GUILayout.Label("Available", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150));
                     GUILayout.EndHorizontal();
 
-                    // Resource list items
+                    // Table rows
                     foreach (var resource in _originVesselResources)
                     {
+                        // Only display resources the origin and destination vessels have in common
                         if (_transferrableResources.Contains(resource.ResourceDefinition))
                         {
-                            // Build the button contents
+                            // String-ify the amount available for transfer
                             available = resource.GetAvailableAmount();
 
                             content = available.ToString("F0");
                             content += " / ";
                             content += resource.GetCapacity().ToString("F0");
 
+                            // Display the table row
                             GUILayout.BeginHorizontal();
                             if (GUILayout.Button(UIHelper.downArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                             {
                                 _selectedResource = resource.ResourceDefinition;
                             }
-                            GUILayout.Label(" " + resource.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.Width(165));
+                            GUILayout.Label(" " + resource.Name, UIHelper.yellowLabelStyle, GUILayout.Width(165));
                             GUILayout.Label(content, UIHelper.yellowLabelStyle, GUILayout.MinWidth(150));
                             GUILayout.EndHorizontal();
                         }
@@ -273,7 +273,8 @@ namespace KolonyTools
                         double amount = 0;
                         if (double.TryParse(_transferAmountText, out amount))
                         {
-                            _transfer.AddResource(originResource, amount);
+                            if (amount > 0)
+                                _transfer.AddResource(originResource, amount);
                         }
                     }
 
@@ -286,7 +287,7 @@ namespace KolonyTools
                 GUILayout.Label(string.Empty);
 
                 // Display transfer stats
-                if (_transfer != null && _transfer.Resources.Count > 0)
+                if (_transfer != null && _transfer.ResourceRequests.Count > 0)
                 {
                     double totalMass = _transfer.TotalMass();
                     float totalCost = _transfer.CalculateCost();
@@ -302,12 +303,12 @@ namespace KolonyTools
                     GUILayout.EndHorizontal();
 
                     // Transfer list items
-                    foreach (var transfer in _transfer.Resources.ToArray())
+                    foreach (var transfer in _transfer.ResourceRequests.ToArray())
                     {
                         GUILayout.BeginHorizontal();
                         if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                         {
-                            _transfer.Resources.Remove(transfer);
+                            _transfer.ResourceRequests.Remove(transfer);
                             _errorMessageText = string.Empty;
                         }
                         GUILayout.Label(" " + transfer.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(155));
@@ -353,7 +354,7 @@ namespace KolonyTools
             // Display Start and Cancel buttons
             GUILayout.BeginHorizontal();
             GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(80));
-            if (_transfer != null && _transfer.Resources.Count > 0)
+            if (_transfer != null && _transfer.ResourceRequests.Count > 0)
             {
                 if (GUILayout.Button("Start Transfer", UIHelper.buttonStyle, GUILayout.Width(110)))
                 {
@@ -383,16 +384,17 @@ namespace KolonyTools
         }
 
         /// <summary>
-        /// Change the selected source vessel.
+        /// Change the selected origin vessel.
         /// </summary>
         /// <param name="newVesselIndex"></param>
-        protected void UpdateSourceVessel(int newVesselIndex)
+        protected void UpdateOriginVessel(int newVesselIndex)
         {
             _errorMessageText = string.Empty;
 
             _selectedResource = null;
             _originVesselIndex = newVesselIndex;
             _originVessel = _module.BodyVesselList[_originVesselIndex];
+            _originVesselResources = _originVessel.GetResources();
 
             if (_destinationVessel != null)
             {
@@ -401,7 +403,7 @@ namespace KolonyTools
                 else
                 {
                     _transfer.Origin = _originVessel;
-                    _transfer.Resources.Clear();
+                    _transfer.ResourceRequests.Clear();
                 }
 
                 _transfer.CalculateDuration();
@@ -421,6 +423,7 @@ namespace KolonyTools
             _selectedResource = null;
             _destinationVesselIndex = newVesselIndex;
             _destinationVessel = _module.BodyVesselList[_destinationVesselIndex];
+            _destinationVesselResources = _destinationVessel.GetResources();
 
             if (_originVessel != null)
             {
@@ -429,7 +432,7 @@ namespace KolonyTools
                 else
                 {
                     _transfer.Destination = _destinationVessel;
-                    _transfer.Resources.Clear();
+                    _transfer.ResourceRequests.Clear();
                 }
 
                 _transfer.CalculateDuration();

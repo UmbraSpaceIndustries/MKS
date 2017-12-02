@@ -36,6 +36,10 @@ namespace KolonyTools
         /// <param name="windowId"></param>
         protected override void DrawWindowContents(int windowId)
         {
+            // Allocate some variables for later
+            GUIStyle labelStyle;
+            GUIStyle rAlignLabelStyle;
+
             GUILayout.BeginVertical();
 
             // Display pending transfers section header
@@ -57,8 +61,20 @@ namespace KolonyTools
                 if (transfer.Destination.mainBody != _module.vessel.mainBody && transfer.Origin.mainBody != _module.vessel.mainBody)
                     continue;
 
+                // Determine text color based on transfer status
+                if (transfer.Status == DeliveryStatus.Returning)
+                {
+                    labelStyle = UIHelper.redLabelStyle;
+                    rAlignLabelStyle = UIHelper.redRightAlignLabelStyle;
+                }
+                else
+                {
+                    labelStyle = UIHelper.yellowLabelStyle;
+                    rAlignLabelStyle = UIHelper.yellowRightAlignLabelStyle;
+                }
+
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(UIHelper.downArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
+                if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
                 {
                     if (ReviewTransferGui == null)
                         ReviewTransferGui = new OrbitalLogisticsGui_ReviewTransfer(transfer, this);
@@ -67,11 +83,11 @@ namespace KolonyTools
 
                     ReviewTransferGui.SetVisible(true);
                 }
-                GUILayout.Label(" " + transfer.Origin.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(155));
-                GUILayout.Label(transfer.Destination.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(155));
+                GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(155));
                 GUILayout.Label(
                     Utilities.FormatTime(transfer.GetArrivalTime() - Planetarium.GetUniversalTime()),
-                    UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(80)
+                    rAlignLabelStyle, GUILayout.Width(80)
                 );
                 GUILayout.EndHorizontal();
             }
@@ -96,8 +112,18 @@ namespace KolonyTools
                 if (transfer.Destination.mainBody != _module.vessel.mainBody && transfer.Origin.mainBody != _module.vessel.mainBody)
                     continue;
 
+                // Determine text color based on transfer status
+                if (transfer.Status == DeliveryStatus.Delivered)
+                {
+                    labelStyle = UIHelper.yellowLabelStyle;
+                }
+                else
+                {
+                    labelStyle = UIHelper.redLabelStyle;
+                }
+
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(UIHelper.downArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
+                if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
                 {
                     if (ReviewTransferGui == null)
                         ReviewTransferGui = new OrbitalLogisticsGui_ReviewTransfer(transfer, this);
@@ -106,9 +132,9 @@ namespace KolonyTools
 
                     ReviewTransferGui.SetVisible(true);
                 }
-                GUILayout.Label(" " + transfer.Origin.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(155));
-                GUILayout.Label(transfer.Destination.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(155));
-                GUILayout.Label(transfer.Status.ToString(), UIHelper.yellowLabelStyle, GUILayout.Width(80));
+                GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(80));
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
@@ -156,6 +182,18 @@ namespace KolonyTools
         public void AbortTransfer(OrbitalLogisticsTransferRequest transfer)
         {
             _scenario.AbortTransfer(transfer);
+        }
+
+        /// <summary>
+        /// Resumes a cancelled transfer via <see cref="ScenarioOrbitalLogistics"/>.
+        /// </summary>
+        /// <remarks>
+        /// Implementation of <see cref="ITransferRequestViewParent.ResumeTransfer(OrbitalLogisticsTransferRequest)"/>.
+        /// </remarks>
+        /// <param name="transfer"></param>
+        public void ResumeTransfer(OrbitalLogisticsTransferRequest transfer)
+        {
+            _scenario.ResumeTransfer(transfer);
         }
     }
 }

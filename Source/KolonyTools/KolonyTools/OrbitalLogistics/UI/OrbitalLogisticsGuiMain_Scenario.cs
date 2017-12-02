@@ -37,6 +37,7 @@ namespace KolonyTools
                 return;
 
             // Declare some temporary variables
+            GUIStyle labelStyle;
             OrbitalLogisticsTransferRequest transfer;
             OrbitalLogisticsTransferRequest[] pendingTransfers = _scenario.PendingTransfers.ToArray();
             OrbitalLogisticsTransferRequest[] expiredTransfers = _scenario.ExpiredTransfers.ToArray();
@@ -75,8 +76,18 @@ namespace KolonyTools
                 {
                     transfer = pendingTransfers[i];
 
+                    // Determine text color based on transfer status
+                    if (transfer.Status == DeliveryStatus.Returning)
+                    {
+                        labelStyle = UIHelper.redLabelStyle;
+                    }
+                    else
+                    {
+                        labelStyle = UIHelper.yellowLabelStyle;
+                    }
+
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(UIHelper.downArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
+                    if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
                     {
                         _selectedTransfer = transfer;
 
@@ -87,13 +98,13 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.Origin.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.Destination.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
-                    GUILayout.Label(transfer.TotalMass().ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
+                    GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), labelStyle, GUILayout.Width(80));
+                    GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(
                         Utilities.FormatTime(transfer.GetArrivalTime() - Planetarium.GetUniversalTime()),
-                        UIHelper.yellowLabelStyle, GUILayout.Width(90)
+                        labelStyle, GUILayout.Width(90)
                     );
                     if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                     {
@@ -134,7 +145,7 @@ namespace KolonyTools
             }
             else
             {
-                // Display pending transfer column headers
+                // Display expired transfer column headers
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(25));
                 GUILayout.Label(" Origin", UIHelper.whiteLabelStyle, GUILayout.Width(165));
@@ -149,8 +160,18 @@ namespace KolonyTools
                 {
                     transfer = expiredTransfers[i];
 
+                    // Determine text color based on transfer status
+                    if (transfer.Status == DeliveryStatus.Delivered)
+                    {
+                        labelStyle = UIHelper.yellowLabelStyle;
+                    }
+                    else
+                    {
+                        labelStyle = UIHelper.redLabelStyle;
+                    }
+
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(UIHelper.downArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
+                    if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(25), GUILayout.Height(22)))
                     {
                         _selectedTransfer = transfer;
 
@@ -161,11 +182,11 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.Origin.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.Destination.vesselName, UIHelper.yellowLabelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
-                    GUILayout.Label(transfer.TotalMass().ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
-                    GUILayout.Label(transfer.Status.ToString(), UIHelper.yellowLabelStyle, GUILayout.Width(90));
+                    GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), labelStyle, GUILayout.Width(80));
+                    GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
+                    GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(90));
                     if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                     {
                         _selectedTransfer = null;
@@ -244,6 +265,18 @@ namespace KolonyTools
         public void AbortTransfer(OrbitalLogisticsTransferRequest transfer)
         {
             _scenario.AbortTransfer(transfer);
+        }
+
+        /// <summary>
+        /// Resumes a cancelled transfer via <see cref="ScenarioOrbitalLogistics"/>.
+        /// </summary>
+        /// <remarks>
+        /// Implementation of <see cref="ITransferRequestViewParent.ResumeTransfer(OrbitalLogisticsTransferRequest)"/>.
+        /// </remarks>
+        /// <param name="transfer"></param>
+        public void ResumeTransfer(OrbitalLogisticsTransferRequest transfer)
+        {
+            _scenario.ResumeTransfer(transfer);
         }
     }
 }

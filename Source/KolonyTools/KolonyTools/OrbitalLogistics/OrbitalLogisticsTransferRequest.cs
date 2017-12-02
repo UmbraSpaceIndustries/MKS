@@ -6,13 +6,13 @@ using System.Linq;
 namespace KolonyTools
 {
     #region Helpers
-    public enum DeliveryStatus { PreLaunch, Launched, Cancelled, Partial, Delivered, Failed }
+    public enum DeliveryStatus { PreLaunch, Launched, Cancelled, Partial, Delivered, Failed, Returning }
     #endregion
 
     /// <summary>
     /// A request to transfer resources from one <see cref="Vessel"/> to another.
     /// </summary>
-    public class OrbitalLogisticsTransferRequest : IConfigNode
+    public class OrbitalLogisticsTransferRequest : IConfigNode, IComparable<OrbitalLogisticsTransferRequest>
     {
         #region Local static variables
         protected static Vessel.Situations SURFACE =
@@ -31,7 +31,7 @@ namespace KolonyTools
         protected const double ISP_GRAV_CONST = 9.807;
 
         // Values used to estimate transit time (in seconds)
-        protected const double PER_TONNE_LOAD_RATE = 5 * 60;
+        protected const double PER_TONNE_LOAD_RATE = 1 * 60;
         protected const double DOCKING_TIME = 5 * 60;
         protected const double REFUELING_TIME = 10 * 60;
         #endregion
@@ -66,7 +66,7 @@ namespace KolonyTools
         [Persistent]
         public double StartTime = 0;
 
-        public List<OrbitalLogisticsTransferRequestResource> Resources { get; set; }
+        public List<OrbitalLogisticsTransferRequestResource> ResourceRequests { get; set; }
 
         /// <summary>
         /// The <see cref="Vessel"/> resources will be deducted from.
@@ -131,7 +131,7 @@ namespace KolonyTools
             Destination = destination;
             Origin = origin;
 
-            Resources = new List<OrbitalLogisticsTransferRequestResource>();
+            ResourceRequests = new List<OrbitalLogisticsTransferRequestResource>();
         }
         #endregion
 
@@ -183,13 +183,13 @@ namespace KolonyTools
                 amount = available;
 
             // Check if there is already a transfer setup for the selected resource
-            var transferResource = Resources.Where(r => r.ResourceDefinition.id == resource.ResourceDefinition.id).SingleOrDefault();
+            var transferResource = ResourceRequests.Where(r => r.ResourceDefinition.id == resource.ResourceDefinition.id).SingleOrDefault();
 
             if (transferResource == null)
             {
                 // Add the resource to the transfer request
                 transferResource = new OrbitalLogisticsTransferRequestResource(resource.ResourceDefinition, amount);
-                Resources.Add(transferResource);
+                ResourceRequests.Add(transferResource);
             }
             else
                 transferResource.TransferAmount = amount;
@@ -204,6 +204,7 @@ namespace KolonyTools
         /// Approves and registers the transfer for delivery.
         /// </summary>
         /// <param name="transferList"></param>
+        /// <returns></returns>
         public bool Launch(List<OrbitalLogisticsTransferRequest> transferList, out string result)
         {
             if (transferList.Contains(this))
@@ -212,28 +213,50 @@ namespace KolonyTools
                 return true;
             }
 
-            // Deduct the cost of the transfer from available funds, if possible
             bool success = false;
-            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+            // If we are resuming a previously cancelled launch, do just the final launch tasks
+            if (Status == DeliveryStatus.Returning)
             {
-                float cost = CalculateCost();
-                if (Funding.CanAfford(cost))
+                DoFinalLaunchTasks(transferList);
+                result = "Resumed!";
+                success = true;
+            }
+            // For a new launch, do all the launch tasks
+            else
+            {
+                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 {
-                    Funding.Instance.AddFunds(-cost, TransactionReasons.None);
+                    // Deduct the cost of the transfer from available funds, if possible
+                    float cost = CalculateCost();
+                    if (Funding.CanAfford(cost))
+                    {
+                        Funding.Instance.AddFunds(-cost, TransactionReasons.None);
 
+                        success = DoLaunchTasks(transferList);
+                        result = "Launched!";
+                    }
+                    else
+                        result = "Insufficient funds!";
+                }
+                else
+                {
                     success = DoLaunchTasks(transferList);
                     result = "Launched!";
                 }
-                else
-                    result = "Insufficient funds!";
-            }
-            else
-            {
-                success = DoLaunchTasks(transferList);
-                result = "Launched!";
             }
 
             return success;
+        }
+
+        /// <summary>
+        /// Overload of <see cref="Launch(List{OrbitalLogisticsTransferRequest}, out string)"/>.
+        /// </summary>
+        /// <param name="transferList"></param>
+        /// <returns></returns>
+        public bool Launch(List<OrbitalLogisticsTransferRequest> transferList)
+        {
+            string result;
+            return Launch(transferList, out result);
         }
 
         /// <summary>
@@ -267,32 +290,41 @@ namespace KolonyTools
             bool deliveredAll = true;
             double deliveredAmount;
             double precisionTolerance;
-            foreach (var delivery in Resources)
+            foreach (var request in ResourceRequests)
             {
-                deliveredAmount = Origin.ExchangeResources(delivery.ResourceDefinition, -delivery.TransferAmount);
-                Destination.ExchangeResources(delivery.ResourceDefinition, Math.Abs(deliveredAmount));
+                // If transfer was cancelled, return resources to origin vessel
+                if (Status == DeliveryStatus.Returning)
+                {
+                    deliveredAmount = Origin.ExchangeResources(request.ResourceDefinition, request.TransferAmount);
+                }
+                // Otherwise, deliver resources to destination vessel
+                else
+                {
+                    deliveredAmount = Destination.ExchangeResources(request.ResourceDefinition, request.TransferAmount);
+                }
 
                 // Because with floating point math, 1 minus 1 doesn't necessarily equal 0.  ^_^
-                precisionTolerance = Math.Abs(delivery.TransferAmount) * 0.001;
-                deliveredAll &= Math.Abs(delivery.TransferAmount - Math.Abs(deliveredAmount)) <= precisionTolerance;
+                precisionTolerance = Math.Abs(request.TransferAmount) * 0.001;
+                deliveredAll &= Math.Abs(request.TransferAmount - Math.Abs(deliveredAmount)) <= precisionTolerance;
 
                 yield return null;
             }
 
-            Status = deliveredAll ? DeliveryStatus.Delivered : DeliveryStatus.Partial;
+            if (Status == DeliveryStatus.Returning)
+                Status = DeliveryStatus.Cancelled;
+            else
+                Status = deliveredAll ? DeliveryStatus.Delivered : DeliveryStatus.Partial;
         }
 
         /// <summary>
-        /// Cancel the transfer and in career mode, refund cost.
+        /// Cancel the transfer.
         /// </summary>
         public void Abort()
         {
-            if (Status == DeliveryStatus.Launched && HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+            if (Status == DeliveryStatus.Launched)
             {
-                Funding.Instance.AddFunds(CalculateCost(), TransactionReasons.None);
+                Status = DeliveryStatus.Returning;
             }
-
-            Status = DeliveryStatus.Cancelled;
         }
 
         /// <summary>
@@ -301,7 +333,7 @@ namespace KolonyTools
         /// <returns></returns>
         public double GetArrivalTime()
         {
-            if (Status == DeliveryStatus.Launched)
+            if (Status == DeliveryStatus.Launched || Status == DeliveryStatus.Returning)
                 return Duration + StartTime;
             else
                 return 0;
@@ -318,7 +350,7 @@ namespace KolonyTools
                 return _mass;
 
             float mass = 0;
-            foreach (var resource in Resources)
+            foreach (var resource in ResourceRequests)
             {
                 mass += (float)resource.Mass();
             }
@@ -523,7 +555,7 @@ namespace KolonyTools
         /// The algorithms used here try to approximate fuel usage based on estimated dV requirements to make the delivery.
         /// Some assumptions have to be made though in order to make these calcuations, so they aren't precise. We want
         /// orbital logistics to be more expensive than if the player flew the mission manually. We use multipliers to accomplish
-        /// that and can use them also to compensate for the variance between estimated vs actual fuel usage.
+        /// that and can use them also to compensate for any variance between estimated vs actual fuel usage.
         /// </remarks>
         /// <param name="dV"></param>
         /// <param name="isAtmospheric"><c>true</c> if the transfer passes through an atmosphere, <c>false</c> otherwise.</param>
@@ -567,12 +599,12 @@ namespace KolonyTools
         {
             ConfigNode.LoadObjectFromConfig(this, node);
 
-            if (Resources == null)
-                Resources = new List<OrbitalLogisticsTransferRequestResource>();
+            if (ResourceRequests == null)
+                ResourceRequests = new List<OrbitalLogisticsTransferRequestResource>();
 
             foreach (ConfigNode subNode in node.nodes)
             {
-                Resources.Add(ConfigNode.CreateObjectFromConfig<OrbitalLogisticsTransferRequestResource>(subNode));
+                ResourceRequests.Add(ConfigNode.CreateObjectFromConfig<OrbitalLogisticsTransferRequestResource>(subNode));
             }
         }
 
@@ -587,7 +619,7 @@ namespace KolonyTools
             node.name = "TRANSFER";
 
             ConfigNode resourceNode;
-            foreach (var resource in Resources)
+            foreach (var resource in ResourceRequests)
             {
                 resourceNode = ConfigNode.CreateConfigFromObject(resource);
                 resourceNode.name = "RESOURCE";
@@ -607,19 +639,37 @@ namespace KolonyTools
             if (transferList.Contains(this))
                 return false;
 
+            // Deduct the resources from the origin vessel
+            double deductedAmount;
+            foreach (var request in ResourceRequests)
+            {
+                deductedAmount = Origin.ExchangeResources(request.ResourceDefinition, -request.TransferAmount);
+                request.TransferAmount = Math.Abs(deductedAmount);
+            }
+
             // Since the mass and unit cost won't change after launch, cache them
             //   to prevent running the calculations repeatedly
-            Status = DeliveryStatus.PreLaunch;  // TotalMass and CalculateCost will returned cached values if Status is not PreLaunch
+            Status = DeliveryStatus.PreLaunch;  // TotalMass and CalculateCost will return cached values if Status is not PreLaunch
             _mass = TotalMass();
             _cost = CalculateCost();
 
             // Perform other launch tasks
+            DoFinalLaunchTasks(transferList);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Do just the final launch things.
+        /// </summary>
+        /// <param name="transferList"></param>
+        protected void DoFinalLaunchTasks(List<OrbitalLogisticsTransferRequest> transferList)
+        {
             CalculateDuration();
             StartTime = Planetarium.GetUniversalTime();
             Status = DeliveryStatus.Launched;
             transferList.Add(this);
-
-            return true;
+            transferList.Sort();
         }
 
         /// <summary>
@@ -684,6 +734,16 @@ namespace KolonyTools
         protected double RadToDeg(double angle)
         {
             return angle * 180 / Math.PI;
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="IComparable{T}.CompareTo(T)"/>.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CompareTo(OrbitalLogisticsTransferRequest other)
+        {
+            return GetArrivalTime().CompareTo(other.GetArrivalTime());
         }
         #endregion
     }

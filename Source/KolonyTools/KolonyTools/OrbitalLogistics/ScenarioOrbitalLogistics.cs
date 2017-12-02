@@ -58,11 +58,15 @@ namespace KolonyTools
                 transfer = new OrbitalLogisticsTransferRequest();
                 transfer.Load(subNode);
 
-                if (transfer.Status == DeliveryStatus.Launched)
+                if (transfer.Status == DeliveryStatus.Launched || transfer.Status == DeliveryStatus.Returning)
                     PendingTransfers.Add(transfer);
                 else
                     ExpiredTransfers.Add(transfer);
             }
+
+            // Sort transfers by arrival time
+            PendingTransfers.Sort();
+            ExpiredTransfers.Sort();
 
             _isLoaded = true;
         }
@@ -174,11 +178,12 @@ namespace KolonyTools
                 transfer = transferList[i];
 
                 // This should never happen but in case it does...
-                if (transfer.Status != DeliveryStatus.Launched)
+                if (transfer.Status != DeliveryStatus.Launched && transfer.Status != DeliveryStatus.Returning)
                 {
                     // Move the transfer out of pending into expired
                     PendingTransfers.Remove(transfer);
                     ExpiredTransfers.Add(transfer);
+                    ExpiredTransfers.Sort();
                 }
                 // Look for transfers that are ready for delivery
                 else if (transfer.GetArrivalTime() <= Planetarium.GetUniversalTime())
@@ -186,12 +191,13 @@ namespace KolonyTools
                     // Allow Unity to be even lazier about processing the delivery with another coroutine
                     StartCoroutine(transfer.Deliver());
 
-                    while (transfer.Status == DeliveryStatus.Launched)
+                    while (transfer.Status == DeliveryStatus.Launched || transfer.Status == DeliveryStatus.Returning)
                         yield return null;
 
                     // Move the transfer out of pending into expired
                     PendingTransfers.Remove(transfer);
                     ExpiredTransfers.Add(transfer);
+                    ExpiredTransfers.Sort();
                 }
             }
         }
@@ -209,8 +215,19 @@ namespace KolonyTools
             if (PendingTransfers.Contains(transfer))
             {
                 transfer.Abort();
+            }
+        }
+
+        /// <summary>
+        /// Resume the transfer.
+        /// </summary>
+        /// <param name="transfer"></param>
+        public void ResumeTransfer(OrbitalLogisticsTransferRequest transfer)
+        {
+            if (PendingTransfers.Contains(transfer))
+            {
                 PendingTransfers.Remove(transfer);
-                ExpiredTransfers.Add(transfer);
+                transfer.Launch(PendingTransfers);
             }
         }
     }

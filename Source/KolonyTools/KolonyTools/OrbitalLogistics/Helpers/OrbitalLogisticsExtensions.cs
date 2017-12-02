@@ -90,7 +90,7 @@ namespace KolonyTools
             // Sort by resource name
             resources.Sort((a, b) =>
             {
-                return a.ResourceDefinition.name.CompareTo(b.ResourceDefinition.name);
+                return a.Name.CompareTo(b.Name);
             });
 
             return resources;

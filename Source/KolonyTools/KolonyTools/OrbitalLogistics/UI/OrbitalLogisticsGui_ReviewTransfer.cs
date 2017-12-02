@@ -8,6 +8,7 @@ namespace KolonyTools
     public interface ITransferRequestViewParent
     {
         void AbortTransfer(OrbitalLogisticsTransferRequest transfer);
+        void ResumeTransfer(OrbitalLogisticsTransferRequest transfer);
     }
     #endregion
 
@@ -84,13 +85,13 @@ namespace KolonyTools
                 GUILayout.MinWidth(200), GUILayout.MaxWidth(400),
                 GUILayout.MinHeight(72), GUILayout.MaxHeight(200)
             );
-            foreach (OrbitalLogisticsTransferRequestResource resource in Transfer.Resources)
+            foreach (OrbitalLogisticsTransferRequestResource resource in Transfer.ResourceRequests)
             {
                 if (resource.TransferAmount > 0)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(resource.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(120), GUILayout.MaxWidth(320));
-                    GUILayout.Label(resource.TransferAmount.ToString("F1"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(50));
+                    GUILayout.Label(resource.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(100), GUILayout.MaxWidth(300));
+                    GUILayout.Label(resource.TransferAmount.ToString("F1"), UIHelper.yellowRightAlignLabelStyle, GUILayout.MinWidth(70));
                     GUILayout.EndHorizontal();
                 }
             }
@@ -110,11 +111,11 @@ namespace KolonyTools
                 GUILayout.MinWidth(200), GUILayout.MaxWidth(400),
                 GUILayout.MinHeight(72), GUILayout.MaxHeight(200)
             );
-            foreach (OrbitalLogisticsTransferRequestResource resource in Transfer.Resources)
+            foreach (OrbitalLogisticsTransferRequestResource resource in Transfer.ResourceRequests)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(resource.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(120), GUILayout.MaxWidth(320));
-                GUILayout.Label((totalCost * resource.Mass() / totalMass).ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(50));
+                GUILayout.Label(resource.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(100), GUILayout.MaxWidth(300));
+                GUILayout.Label((totalCost * resource.Mass() / totalMass).ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.MinWidth(70));
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
@@ -132,6 +133,14 @@ namespace KolonyTools
                 if (GUILayout.Button("Abort", UIHelper.buttonStyle, GUILayout.Width(95)))
                 {
                     _parentWindow.AbortTransfer(_transfer);
+                    SetVisible(false);
+                }
+            }
+            else if (Transfer.Status == DeliveryStatus.Returning)
+            {
+                if (GUILayout.Button("Resume", UIHelper.buttonStyle, GUILayout.Width(95)))
+                {
+                    _parentWindow.ResumeTransfer(_transfer);
                     SetVisible(false);
                 }
             }

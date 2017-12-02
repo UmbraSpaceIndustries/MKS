@@ -13,6 +13,8 @@ namespace KolonyTools
 
         static UIHelper()
         {
+            Color red = new Color(1, 0.4f, 0.4f);
+
             windowStyle = new GUIStyle(HighLogic.Skin.window);
             windowStyle.stretchWidth = false;
             windowStyle.stretchHeight = false;
@@ -34,7 +36,7 @@ namespace KolonyTools
             redLabelStyle = new GUIStyle(HighLogic.Skin.label);
             redLabelStyle.stretchWidth = false;
             redLabelStyle.stretchHeight = false;
-            redLabelStyle.normal.textColor = Color.red;
+            redLabelStyle.normal.textColor = red;
 
             yellowLabelStyle = new GUIStyle(HighLogic.Skin.label);
             yellowLabelStyle.stretchWidth = false;
@@ -49,7 +51,7 @@ namespace KolonyTools
             redCenterAlignLabelStyle = new GUIStyle(HighLogic.Skin.label);
             redCenterAlignLabelStyle.stretchWidth = false;
             redCenterAlignLabelStyle.stretchHeight = false;
-            redCenterAlignLabelStyle.normal.textColor = Color.red;
+            redCenterAlignLabelStyle.normal.textColor = red;
             redCenterAlignLabelStyle.alignment = TextAnchor.MiddleCenter;
 
             yellowCenterAlignLabelStyle = new GUIStyle(HighLogic.Skin.label);
@@ -67,7 +69,7 @@ namespace KolonyTools
             redRightAlignLabelStyle = new GUIStyle(HighLogic.Skin.label);
             redRightAlignLabelStyle.stretchWidth = false;
             redRightAlignLabelStyle.stretchHeight = false;
-            redRightAlignLabelStyle.normal.textColor = Color.red;
+            redRightAlignLabelStyle.normal.textColor = red;
             redRightAlignLabelStyle.alignment = TextAnchor.MiddleRight;
 
             yellowRightAlignLabelStyle = new GUIStyle(HighLogic.Skin.label);
