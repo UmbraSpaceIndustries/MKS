@@ -95,15 +95,15 @@ namespace KolonyTools
             //   have a part with ModuleOrbitalLogistics enabled and are in an allowed situation
             foreach (Vessel vessel in FlightGlobals.Vessels)
             {
-                if (base.vessel.mainBody.name == vessel.mainBody.name
-                    && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
-                ) {
+                if (vessel.mainBody.name == this.vessel.mainBody.name)
+                {
                     if (!vessel.packed && vessel.loaded
+                        && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
                         && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
                     {
                         BodyVesselList.Add(vessel);
                     }
-                    else
+                    else if (vessel.protoVessel.situation == (vessel.protoVessel.situation & VesselSituationsAllowedForTransfer))
                     {
                         bool foundOrbLog = false;
                         foreach (var part in vessel.protoVessel.protoPartSnapshots)
