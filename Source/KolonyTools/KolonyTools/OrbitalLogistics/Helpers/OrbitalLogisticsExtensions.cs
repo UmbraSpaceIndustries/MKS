@@ -7,90 +7,94 @@ using Object = System.Object;
 
 namespace KolonyTools
 {
-    public static class MKSLExtensions
+    public static class OrbitalLogisticsExtensions
     {
-        public static List<MKSLresource> GetResources(this Vessel vessel)
+        /// <summary>
+        /// Gets the 'mu' value for the <see cref="CelestialBody"/> (i.e. gravitional constant X body mass).
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public static double Mu(this CelestialBody body)
         {
-            List<MKSLresource> resources;
+            return body.Mass * 6.67408e-11;
+        }
+
+        /// <summary>
+        /// Calculates the average orbital velocity of a vessel, ignoring eccentricity.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <returns></returns>
+        public static double AverageOrbitalVelocity(this Vessel vessel)
+        {
+            double sma = vessel.packed && !vessel.loaded
+                ? vessel.protoVessel.orbitSnapShot.semiMajorAxis
+                : vessel.orbit.semiMajorAxis;
+
+            return OrbitalVelocity(vessel.mainBody, sma);
+        }
+
+        /// <summary>
+        /// Calculates orbital velocity for a circular orbit.
+        /// </summary>
+        /// <param name="body">The <see cref="CelestialBody"/> of the orbit.</param>
+        /// <param name="semiMajorAxis">The semi major axis of the orbit.</param>
+        /// <returns></returns>
+        public static double OrbitalVelocity(CelestialBody body, double semiMajorAxis)
+        {
+            return Math.Sqrt(body.Mu() * 1 / semiMajorAxis);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="body"></param>
+        /// <param name="semiMajorAxis"></param>
+        /// <returns></returns>
+        public static double OrbitalPeriod(CelestialBody body, double semiMajorAxis)
+        {
+            return Math.Sqrt(4 * Math.Pow(Math.PI, 2) / body.Mu() * Math.Pow(semiMajorAxis, 3));
+        }
+
+        public static List<OrbitalLogisticsResource> GetResources(this Vessel vessel)
+        {
+            List<OrbitalLogisticsResource> resources;
             
-            if (vessel.packed && !vessel.loaded) //inactive vessel
+            if (vessel.packed && !vessel.loaded) // inactive vessel
             {
-                resources = vessel.protoVessel.protoPartSnapshots.SelectMany(
-                    partSnapshot =>
-                        partSnapshot.resources.Select(res => res.resourceName)).Distinct().Select(resName => new MKSLresource { resourceName = resName })
+                resources = vessel.protoVessel.protoPartSnapshots
+                    .SelectMany(p => p.resources.Where(r => r.definition.density > 0).Select(r => r.definition))
+                    .Distinct()
+                    .Select(r => new OrbitalLogisticsResource(r, vessel))
                     .ToList();
-                vessel.GetResourceAmounts();
             }
-            else
+            else // active vessel
             {
                 var vResList = new List<PartResource>();
-                foreach (var p in vessel.Parts)
+                foreach (var part in vessel.Parts)
                 {
-                    var rCount = p.Resources.Count;
+                    var rCount = part.Resources.Count;
                     for (int i = 0; i < rCount; ++i)
                     {
-                        var res = p.Resources[i];
+                        var res = part.Resources[i];
                         vResList.Add(res);
                     }
                 }
-                resources =
-                    vResList.Select(res => res.resourceName).Distinct().Select(resName => new MKSLresource { resourceName = resName })
-                        .ToList();
-            }
-            return resources;
-        }
-        public static List<MKSLresource> GetResourceAmounts(this Vessel vessel)
-        {
-            List<MKSLresource> resources;
-
-            if (vessel.packed && !vessel.loaded) //inactive vessel
-            {
-                
-                resources = vessel.protoVessel.protoPartSnapshots.SelectMany(
-                    partSnapshot =>
-                        partSnapshot.resources.Select(res => new MKSLresource { resourceName = res.resourceName, amount = res.amount }))
-                    .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0 ,(total, res) => total + res.amount)})
+                resources = vResList
+                    .Where(r => r.info.density > 0)
+                    .Select(r => r.info)
+                    .Distinct()
+                    .Select(r => new OrbitalLogisticsResource(r, vessel))
                     .ToList();
             }
-            else
-            {
-                var vResList = new List<PartResource>();
-                foreach (var p in vessel.Parts)
-                {
-                    var rCount = p.Resources.Count;
-                    for (int i = 0; i < rCount; ++i)
-                    {
-                        var res = p.Resources[i];
-                        vResList.Add(res);
-                    }
-                }
 
-                resources =
-                    vResList.Select(res => new MKSLresource { resourceName = res.resourceName, amount = res.amount})
-                        .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0 ,(total, res) => total + res.amount)})
-                        .ToList();
-            }
+            // Sort by resource name
+            resources.Sort((a, b) =>
+            {
+                return a.Name.CompareTo(b.Name);
+            });
+
             return resources;
         }
-
-        public static List<MKSLresource> GetStorage(this Vessel vessel)
-        {
-            var vResList = new List<PartResource>();
-            foreach (var p in vessel.Parts)
-            {
-                var rCount = p.Resources.Count;
-                for (int i = 0; i < rCount; ++i)
-                {
-                    var res = p.Resources[i];
-                    vResList.Add(res);
-                }
-            }
-
-            return
-                    vResList.Select(res => new MKSLresource { resourceName = res.resourceName, amount = res.maxAmount })
-                        .GroupBy(res => res.resourceName).Select(x => new MKSLresource { resourceName = x.Key, amount = x.Aggregate(0.0, (total, res) => total + res.amount) })
-                        .ToList();
-        } 
 
         public static void Log(this ConfigNode node, string marker = "[MKS] ")
         {
@@ -238,7 +242,6 @@ namespace KolonyTools
         {
             return vessel.GetConverters().Where(mod => mod.IsActivated);
         }
-
         
         public static IEnumerable<ModuleResourceConverter> GetConverters(this Vessel vessel)
         {
@@ -251,37 +254,6 @@ namespace KolonyTools
             var mksParts = vessel.parts.Where(p => p.Modules.Contains("MKSModule"));
             return mksParts.Where(part => part.FindModuleImplementing<ModuleResourceConverter>() != null);
         }
-
-        public static IEnumerable<MKSLresource> GetProduction(this Vessel vessel, bool output = true)
-        {
-            var parts = GetActiveConverters(vessel);
-            var res = parts.SelectMany(conv =>
-            {
-                var list = output ? conv.Recipe.Outputs : conv.Recipe.Inputs;
-                return list.Select(resRatio => new MKSLresource
-                {
-                    resourceName = resRatio.ResourceName,
-                    //amount = conv.part.FindModuleImplementing<MKSModule>().GetEfficiencyRate()*resRatio.Ratio
-                    amount = resRatio.Ratio
-                });
-            }).GroupBy(x => x.resourceName, x => x.amount, (key,grp) => new MKSLresource { amount = grp.Sum(), resourceName = key });
-            return res;
-        }
-
-        public static IEnumerable<MKSLresource> CalcBalance(IEnumerable<MKSLresource> input, IEnumerable<MKSLresource> output)
-        {
-            return input.FullOuterJoin(output, x => x.resourceName, lresource => lresource.resourceName,
-                (lresource, mksLresource,name) =>
-                    new MKSLresource
-                    {
-                        
-                        amount = mksLresource.amount - lresource.amount,
-                        resourceName = name
-                    },
-                    new MKSLresource{amount = 0},
-                    new MKSLresource { amount = 0 });
-        }
-
 
         //provided by sehe at http://stackoverflow.com/questions/5489987/linq-full-outer-join
         internal static IList<TR> FullOuterJoin<TA, TB, TK, TR>(
@@ -308,6 +280,5 @@ namespace KolonyTools
 
             return join.ToList();
         }
-
     }
 }
