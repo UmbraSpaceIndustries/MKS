@@ -133,27 +133,14 @@ namespace KolonyTools
         /// <returns></returns>
         public static double GetTransportCapacity(this Vessel vessel)
         {
-            PartResourceDefinition liquidFuel = PartResourceLibrary.Instance.GetDefinition("LiquidFuel");
-            PartResourceDefinition oxidizer = PartResourceLibrary.Instance.GetDefinition("Oxidizer");
+            PartResourceDefinition transportCredits = PartResourceLibrary.Instance.GetDefinition("TransportCredits");
 
-            if (!vessel.HasResource(liquidFuel) || !vessel.HasResource(oxidizer))
+            if (!vessel.HasResource(transportCredits))
                 return 0;
 
-            OrbitalLogisticsResource liquidFuelResource = new OrbitalLogisticsResource(liquidFuel, vessel);
-            OrbitalLogisticsResource oxidizerResource = new OrbitalLogisticsResource(oxidizer, vessel);
+            OrbitalLogisticsResource transportCreditsResource = new OrbitalLogisticsResource(transportCredits, vessel);
 
-            double liquidFuelAvailable = liquidFuelResource.GetAvailableAmount();
-            double oxidizerAvailable = oxidizerResource.GetAvailableAmount();
-
-            // LF + Ox is consumed in a 9:11 ratio, so we have to account for that in the capacity calculation
-            if (liquidFuelAvailable / 9 == oxidizerAvailable / 11)
-                return liquidFuelAvailable + oxidizerAvailable;
-            else if (liquidFuelAvailable / 9 > oxidizerAvailable / 11)
-                // We have too much Liquid Fuel
-                return oxidizerAvailable + oxidizerAvailable * 9 / 11;
-            else
-                // We have too much Oxidizer
-                return liquidFuelAvailable + liquidFuelAvailable * 11 / 9;
+            return transportCreditsResource.GetAvailableAmount();
         }
 
         /// <summary>
@@ -178,14 +165,9 @@ namespace KolonyTools
                 return false;
 
             // Deduct resource units from vessel
-            PartResourceDefinition liquidFuel = PartResourceLibrary.Instance.GetDefinition("LiquidFuel");
-            PartResourceDefinition oxidizer = PartResourceLibrary.Instance.GetDefinition("Oxidizer");
+            PartResourceDefinition transportCredits = PartResourceLibrary.Instance.GetDefinition("TransportCredits");
 
-            double liquidFuelUnits = resourceUnits * 9 / 20;
-            double oxidizerUnits = resourceUnits * 11 / 20;
-
-            vessel.ExchangeResources(liquidFuel.id, -liquidFuelUnits);
-            vessel.ExchangeResources(oxidizer.id, -oxidizerUnits);
+            vessel.ExchangeResources(transportCredits.id, -resourceUnits);
 
             return true;
         }
