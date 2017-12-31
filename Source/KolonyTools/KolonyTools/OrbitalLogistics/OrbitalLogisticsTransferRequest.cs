@@ -23,9 +23,8 @@ namespace KolonyTools
         // Values used to estimate fuel usage
         protected const double INC_CHANGE_MODIFIER = 1.2;
         protected const double GRAV_LOSS_MODIFIER = 1.1;
-        protected const float COST_MULTIPLIER = 1.5f;
-        protected const float SHIP_RENTAL_FEE = 1000;
-        protected const double SHIP_DRY_MASS = 10;
+        protected const float FUEL_MULTIPLIER = 1.5f;
+        protected const double SHIP_DRY_MASS = 10;  // in tonnes/Mg
         protected const double VACUUM_ISP = 320;
         protected const double SEA_LVL_ISP = 250;
         protected const double ISP_GRAV_CONST = 9.807;
@@ -47,7 +46,7 @@ namespace KolonyTools
         protected float _mass;
 
         [Persistent(name = "Cost")]
-        protected float _cost;
+        protected float _fuelUnits;
 
         protected Vessel _destination;
         protected Vessel _origin;
@@ -137,38 +136,6 @@ namespace KolonyTools
 
         #region Public instance methods
         /// <summary>
-        /// Is destination vessel in orbit?
-        /// </summary>
-        public bool IsDestinationOrbiting()
-        {
-            return Destination.situation == Vessel.Situations.ORBITING;
-        }
-
-        /// <summary>
-        /// Is origin vessel in orbit?
-        /// </summary>
-        public bool IsOriginOrbiting()
-        {
-            return Origin.situation == Vessel.Situations.ORBITING;
-        }
-
-        /// <summary>
-        /// Is destination vessel on the ground?
-        /// </summary>
-        public bool IsDestinationLanded()
-        {
-            return Destination.situation == (Destination.situation & SURFACE);
-        }
-
-        /// <summary>
-        /// Is origin vessel on the ground?
-        /// </summary>
-        public bool IsOriginLanded()
-        {
-            return Origin.situation == (Origin.situation & SURFACE);
-        }
-
-        /// <summary>
         /// Add a resource to the transfer request.
         /// </summary>
         /// <param name="resource">The <see cref="OrbitalLogisticsResource"/> to transfer from the source <see cref="Vessel"/>.</param>
@@ -224,25 +191,18 @@ namespace KolonyTools
             // For a new launch, do all the launch tasks
             else
             {
-                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+                // Determine if the fuel requirements can be met
+                float fuelUnits = CalculateFuelUnits();
+                if (Origin.CanAffordTransport(fuelUnits))
                 {
-                    // Deduct the cost of the transfer from available funds, if possible
-                    float cost = CalculateCost();
-                    if (Funding.CanAfford(cost))
-                    {
-                        Funding.Instance.AddFunds(-cost, TransactionReasons.None);
+                    // Deduct the cost of the transfer and do other launch tasks
+                    Origin.DeductTransportCost(fuelUnits);
 
-                        success = DoLaunchTasks(transferList);
-                        result = "Launched!";
-                    }
-                    else
-                        result = "Insufficient funds!";
-                }
-                else
-                {
                     success = DoLaunchTasks(transferList);
                     result = "Launched!";
                 }
+                else
+                    result = "Insufficient funds!";
             }
 
             return success;
@@ -448,13 +408,13 @@ namespace KolonyTools
         }
 
         /// <summary>
-        /// Calculates the transfer cost.
+        /// Calculates the fuel units required for the transfer.
         /// </summary>
-        public float CalculateCost()
+        public float CalculateFuelUnits()
         {
-            // Cost and mass are cached during launch, so just return cached values
+            // Fuel required is cached at launch, so just return the cached value
             if (Status != DeliveryStatus.PreLaunch)
-                return _cost;
+                return _fuelUnits;
 
             CelestialBody mainBody = Origin.mainBody;
             
@@ -464,9 +424,9 @@ namespace KolonyTools
             var sourceSituation = sourceProtoVessel.situation;
             var targetSituation = targetProtoVessel.situation;
 
-            double cost = double.PositiveInfinity;
+            double fuelUnits = double.PositiveInfinity;
 
-            // Calculate cost based on source/target situation (i.e. landed or orbiting)
+            // Calculate fuel requirements based on source/target situation (i.e. landed or orbiting)
             // Both vessels on the ground
             if (sourceSituation == (sourceSituation & SURFACE) && targetSituation == (targetSituation & SURFACE))
             {
@@ -485,7 +445,7 @@ namespace KolonyTools
                 // Determine dV required to reach the target (i.e. a percentage of the dV required to achieve full orbit)
                 double dV = orbitV * anglePercent * GRAV_LOSS_MODIFIER;
 
-                cost = CalculateCostFromDeltaV(dV, mainBody.atmosphere);
+                fuelUnits = CalculateFuelNeededFromDeltaV(dV, mainBody.atmosphere);
             }
             // One or both vessels in orbit
             else
@@ -502,7 +462,7 @@ namespace KolonyTools
                     // Determine dV required to land/launch
                     double dV = velocity * INC_CHANGE_MODIFIER * GRAV_LOSS_MODIFIER;
 
-                    cost = CalculateCostFromDeltaV(dV, mainBody.atmosphere);
+                    fuelUnits = CalculateFuelNeededFromDeltaV(dV, mainBody.atmosphere);
                 }
                 // Both vessels in orbit
                 else if (sourceSituation == Vessel.Situations.ORBITING && targetSituation == Vessel.Situations.ORBITING)
@@ -528,7 +488,7 @@ namespace KolonyTools
                     // Determine difference in sma
                     double dSMA = highOrbitSMA - lowOrbitSMA;
 
-                    // If the orbits are similar, we need spend some extra fuel to get into a transfer orbit
+                    // If the orbits are similar, we need to spend some extra fuel to get into a transfer orbit
                     double transferV = 0;
                     if (dSMA < 10000)
                     {
@@ -541,37 +501,39 @@ namespace KolonyTools
                     double dV = lowOrbitV - highOrbitV + transferV;
 
                     // Factor in potential inclination changes to calculate the total cost
-                    cost = CalculateCostFromDeltaV(dV * INC_CHANGE_MODIFIER);
+                    fuelUnits = CalculateFuelNeededFromDeltaV(dV * INC_CHANGE_MODIFIER);
                 }
             }
 
-            return (float)cost * COST_MULTIPLIER + SHIP_RENTAL_FEE;
+            return (float)fuelUnits * FUEL_MULTIPLIER;
         }
 
         /// <summary>
-        /// Calculates fuel cost from deltaV.
+        /// Calculates fuel units needed for a given deltaV.
         /// </summary>
         /// <remarks>
         /// The algorithms used here try to approximate fuel usage based on estimated dV requirements to make the delivery.
-        /// Some assumptions have to be made though in order to make these calcuations, so they aren't precise. We want
+        /// Some assumptions have to be made though in order to make these calcuations, so they aren't precise. In the end, we want
         /// orbital logistics to be more expensive than if the player flew the mission manually. We use multipliers to accomplish
         /// that and can use them also to compensate for any variance between estimated vs actual fuel usage.
         /// </remarks>
         /// <param name="dV"></param>
         /// <param name="isAtmospheric"><c>true</c> if the transfer passes through an atmosphere, <c>false</c> otherwise.</param>
         /// <returns></returns>
-        protected double CalculateCostFromDeltaV(double dV, bool isAtmospheric = false)
+        protected double CalculateFuelNeededFromDeltaV(double dV, bool isAtmospheric = false)
         {
             // Determine launch ISP
             double launchISP = isAtmospheric ? SEA_LVL_ISP : VACUUM_ISP;
 
-            // Determine launch masses
+            // Determine the dry mass of the vessel
             double payloadMass = TotalMass();
             double dryMass = SHIP_DRY_MASS + payloadMass;
+
+            // Determine fuel mass required for the delivery
             double launchMass = dryMass * Math.Exp(dV / ISP_GRAV_CONST / launchISP);
             double launchFuelMass = launchMass - dryMass;
 
-            // Determine landing masses
+            // Determine fuel mass needed for the return trip
             double landingFuelMass;
             if (!isAtmospheric)
             {
@@ -583,12 +545,12 @@ namespace KolonyTools
                 landingFuelMass = landingMass - dryMass;
             }
 
-            // Determine fuel costs (liquid fuel/oxidizer is consumed in 9:11 ratio)
+            // Derive fuel units from total fuel mass (liquid fuel/oxidizer is consumed in 9:11 ratio)
             double totalFuelMass = launchFuelMass + landingFuelMass;
             double liquidFuelUnits = totalFuelMass * (9.0 / 20.0) / _liquidFuel.density;
             double oxidizerFuelUnits = totalFuelMass * (11.0 / 20.0) / _oxidizer.density;
 
-            return liquidFuelUnits * _liquidFuel.unitCost + oxidizerFuelUnits * _oxidizer.unitCost;
+            return liquidFuelUnits + oxidizerFuelUnits;
         }
 
         /// <summary>
@@ -647,11 +609,11 @@ namespace KolonyTools
                 request.TransferAmount = Math.Abs(deductedAmount);
             }
 
-            // Since the mass and unit cost won't change after launch, cache them
+            // Since the mass and fuel required won't change after launch, cache them
             //   to prevent running the calculations repeatedly
-            Status = DeliveryStatus.PreLaunch;  // TotalMass and CalculateCost will return cached values if Status is not PreLaunch
+            Status = DeliveryStatus.PreLaunch;  // TotalMass and CalculateFuelUnits will return cached values if Status is not PreLaunch
             _mass = TotalMass();
-            _cost = CalculateCost();
+            _fuelUnits = CalculateFuelUnits();
 
             // Perform other launch tasks
             DoFinalLaunchTasks(transferList);
