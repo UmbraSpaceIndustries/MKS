@@ -135,7 +135,7 @@ namespace KolonyTools
         {
             PartResourceDefinition transportCredits = PartResourceLibrary.Instance.GetDefinition("TransportCredits");
 
-            if (!vessel.HasResource(transportCredits))
+            if (transportCredits == null || !vessel.HasResource(transportCredits))
                 return 0;
 
             OrbitalLogisticsResource transportCreditsResource = new OrbitalLogisticsResource(transportCredits, vessel);
