@@ -44,7 +44,7 @@ namespace KolonyTools.AC
         {
             public StaticLoader()
             {
-                Debug.Log("InitStaticData");
+                //Debug.Log("InitStaticData");
                 for (int level = 1; level <= 5; level++)
                 {
                     var expValue = GetExperienceNeededFor(level);
@@ -74,19 +74,28 @@ namespace KolonyTools.AC
 
         public void Initialize(Rect guiRect)
         {
-            var uiScaleMultiplier = GameSettings.UI_SCALE;
+            //var uiScaleMultiplier = GameSettings.UI_SCALE;
 
             // the supplied rect will have the UI scalar already factored in
             //
             // to respect the player's UI scale wishes, work out what the unscaled rect
             // would be. Then we'll apply the scale again in OnGUI so all of our GUILayout elements
             // will respect the multiplier
-            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width / uiScaleMultiplier,
-                guiRect.height / uiScaleMultiplier);
+            //var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width / uiScaleMultiplier,
+            //    guiRect.height / uiScaleMultiplier);
+
+            var correctedRect = new Rect(guiRect.x, guiRect.y, guiRect.width, guiRect.height);
 
             _areaRect = correctedRect;
 
             enabled = true;
+
+            // Reset of the basic Stupidity and Courage if the customization of Kerbonauts is disabled during game
+            if (!KolonyACOptions.CustomKerbonautsEnabled)
+            {
+                KStupidity = 50;
+                KCourage = 50;
+            }
         }
 
         private void kHire()
@@ -95,7 +104,7 @@ namespace KolonyTools.AC
             {
                 double myFunds = Funding.Instance.Funds;
                 Funding.Instance.AddFunds(-costMath(), TransactionReasons.CrewRecruited);
-                Debug.Log("KSI :: Total Funds removed " + costMath());
+                //Debug.Log("KSI :: Total Funds removed " + costMath());
             }
 
             for (int i = 0; i < KBulki; i++)
@@ -143,12 +152,12 @@ namespace KolonyTools.AC
                 {
                     newKerb.experience = 9999;
                     newKerb.experienceLevel = 5;
-                    Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
+                    //Debug.Log("KSI :: Level set to 5 - Non-Career Mode default.");
                 }
             }
 
             // Refreshes the AC so that new kerbal shows on the available roster.
-            Debug.Log("PSH :: Hiring Function Completed.");
+            //Debug.Log("PSH :: Hiring Function Completed.");
             GameEvents.onGUIAstronautComplexDespawn.Fire();
             GameEvents.onGUIAstronautComplexSpawn.Fire();
 
@@ -216,11 +225,6 @@ namespace KolonyTools.AC
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double kredits = Funding.Instance.Funds;
-                if (costMath() > kredits)
-                {
-                    bText = "Not Enough Funds!";
-                    hTest = false;
-                }
                 if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
                     bText = "Roster is Full!";
@@ -228,7 +232,13 @@ namespace KolonyTools.AC
                 }
                 else
                 {
-                    hTest = true;
+                    if (costMath() > kredits)
+                    {
+                        bText = "Not Enough Funds!";
+                        hTest = false;
+                    }
+                    else
+                        hTest = true;
                 }
             }
             return bText;
@@ -390,15 +400,14 @@ namespace KolonyTools.AC
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
+                string statusText = hireStatus();
                 if (hTest)
                 {
-                    if (GUILayout.Button(hireStatus(), GUILayout.Width(200f)))
+                    if (GUILayout.Button(statusText, GUILayout.Width(200f)))
                         kHire();
                 }
-                if (!hTest)
-                {
-                    GUILayout.Button(hireStatus(), GUILayout.Width(200f));
-                }
+                else
+                    GUILayout.Button(statusText, GUILayout.Width(200f));
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -413,7 +422,7 @@ namespace KolonyTools.AC
             {
                 if (ac.ScrollListApplicants.Count > 0)
                 {
-                    Debug.Log("TRP: Clearing Applicant List");
+                    //Debug.Log("TRP: Clearing Applicant List");
                     ac.ScrollListApplicants.Clear(true);
                 }
             }

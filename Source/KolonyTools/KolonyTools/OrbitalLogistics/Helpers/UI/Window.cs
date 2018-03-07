@@ -25,17 +25,13 @@
  * is purely coincidental.
  */
 
-using KSP.IO;
 using KSP.UI.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace KolonyTools
 {
-    public abstract class Window<T> 
+    public abstract class Window
     {
         private int windowId;
         private string configNodeName;
@@ -62,8 +58,10 @@ namespace KolonyTools
             mouseDown = false;
             visible = false;
 
-            var texture = Utilities.LoadImage<T>(IOUtils.GetFilePathFor(typeof(T), "resize.png"));
-            resizeContent = (texture != null) ? new GUIContent(texture, "Drag to resize the window.") : new GUIContent("R", "Drag to resize the window.");
+            // DEV NOTE - tjd: Util.LoadImage is the only reason this is a generic class and ends up returning null in most cases anyway.
+            // var texture = Utilities.LoadImage<T>(IOUtils.GetFilePathFor(typeof(T), "resize.png"));
+            // resizeContent = (texture != null) ? new GUIContent(texture, "Drag to resize the window.") : new GUIContent("R", "Drag to resize the window.");
+            resizeContent = new GUIContent("R", "Drag to resize the window.");
 
             Resizable = true;
             HideCloseButton = false;
@@ -78,7 +76,6 @@ namespace KolonyTools
         {
             this.visible = newValue;
         }
-
 
         public void ToggleVisible()
         {
@@ -184,14 +181,6 @@ namespace KolonyTools
         {
             DrawWindowContents(windowId);
 
-            //if (!HideCloseButton)
-            //{
-            //    if (GUI.Button(new Rect(windowPos.width - 24, 4, 20, 20), "X", closeButtonStyle))
-            //    {
-            //        SetVisible(false);
-            //    }
-            //}
-
             if (Resizable)
             {
                 var resizeRect = new Rect(windowPos.width - 16, windowPos.height - 16, 16, 16);
@@ -203,22 +192,26 @@ namespace KolonyTools
             GUI.DragWindow();
         }
 
+        /// <summary>
+        /// Derived classes should implement this method to handle the drawing of their GUI window contents.
+        /// </summary>
+        /// <param name="windowId"></param>
         protected abstract void DrawWindowContents(int windowId);
 
         private void HandleWindowEvents(Rect resizeRect)
         {
-            var theEvent = Event.current;
-            if (theEvent != null)
+            var guiEvent = Event.current;
+            if (guiEvent != null)
             {
                 if (!mouseDown)
                 {
-                    if (theEvent.type == EventType.MouseDown && theEvent.button == 0 && resizeRect.Contains(theEvent.mousePosition))
+                    if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && resizeRect.Contains(guiEvent.mousePosition))
                     {
                         mouseDown = true;
-                        theEvent.Use();
+                        guiEvent.Use();
                     }
                 }
-                else if (theEvent.type != EventType.Layout)
+                else if (guiEvent.type != EventType.Layout)
                 {
                     if (Input.GetMouseButton(0))
                     {
@@ -235,6 +228,5 @@ namespace KolonyTools
                 }
             }
         }
-
     }
 }

@@ -54,6 +54,27 @@ namespace KolonyTools
                     lsm.targetScenes.Add(GameScenes.EDITOR);
                 }
             }
+
+            // Add Orbital Logisitics scenario to the game
+            var orbLog = game.scenarios.Find(s => s.moduleRef is ScenarioOrbitalLogistics);
+            if (orbLog == null)
+            {
+                game.AddProtoScenarioModule(
+                    typeof(ScenarioOrbitalLogistics),
+                    GameScenes.SPACECENTER, GameScenes.FLIGHT, GameScenes.TRACKSTATION
+                );
+            }
+            else
+            {
+                if (!orbLog.targetScenes.Contains(GameScenes.SPACECENTER))
+                    orbLog.targetScenes.Add(GameScenes.SPACECENTER);
+
+                if (!orbLog.targetScenes.Contains(GameScenes.FLIGHT))
+                    orbLog.targetScenes.Add(GameScenes.FLIGHT);
+
+                if (!orbLog.targetScenes.Contains(GameScenes.TRACKSTATION))
+                    orbLog.targetScenes.Add(GameScenes.TRACKSTATION);
+            }
         }
     }
 }
