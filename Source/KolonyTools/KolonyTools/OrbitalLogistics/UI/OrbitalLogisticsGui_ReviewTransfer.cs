@@ -102,7 +102,7 @@ namespace KolonyTools
             GUILayout.Label(Transfer.TotalMass().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(100));
             GUILayout.EndHorizontal();
 
-            float totalCost = Transfer.CalculateCost();
+            float totalCost = Transfer.CalculateFuelUnits();
             float totalMass = Transfer.TotalMass();
 
             GUILayout.Label("Transport Costs", UIHelper.labelStyle, GUILayout.Width(200));
@@ -122,7 +122,7 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Total Cost:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150), GUILayout.MaxWidth(300));
-            GUILayout.Label(Transfer.CalculateCost().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(100));
+            GUILayout.Label(Transfer.CalculateFuelUnits().ToString("F2"), UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(100));
             GUILayout.EndHorizontal();
 
             GUILayout.Label(string.Empty);

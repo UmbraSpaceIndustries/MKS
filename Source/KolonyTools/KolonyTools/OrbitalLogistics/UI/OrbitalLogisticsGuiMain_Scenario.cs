@@ -100,7 +100,7 @@ namespace KolonyTools
                     }
                     GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
                     GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), labelStyle, GUILayout.Width(80));
+                    GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(
                         Utilities.FormatTime(transfer.GetArrivalTime() - Planetarium.GetUniversalTime()),
@@ -184,7 +184,7 @@ namespace KolonyTools
                     }
                     GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
                     GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.CalculateCost().ToString("F2"), labelStyle, GUILayout.Width(80));
+                    GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(90));
                     if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))

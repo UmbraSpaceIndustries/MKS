@@ -13,13 +13,14 @@ namespace KolonyTools
         #region Local static and instance variables
         private const string TOO_FEW_VESSELS_MESSAGE =
             "This is the only vessel in the current sphere of influence that can participate in Orbital Logisitcs.";
+        private const string INSUFFICIENT_FUNDS_MESSAGE =
+            "This transfer exceeds the available payload capacity. Remove some items or increase payload capacity.";
 
         private ScenarioOrbitalLogistics _scenario;
         private ModuleOrbitalLogistics _module;
         private OrbitalLogisticsTransferRequest _transfer;
         private string _transferAmountText = string.Empty;
         private string _errorMessageText = string.Empty;
-        private ComboBox _originVesselComboBox;
         private ComboBox _destinationVesselComboBox;
         private int _orbLogVesselsInSoI = 0;
         private int _originVesselIndex = 0;
@@ -55,6 +56,9 @@ namespace KolonyTools
 
             _orbLogVesselsInSoI = vesselNames.Length;
 
+            // Set the origin vessel
+            UpdateOriginVessel(_module.BodyVesselList.IndexOf(_module.vessel));
+
             // Setup gui style for combo boxes
             GUIStyle listStyle = new GUIStyle();
             listStyle.normal.textColor = Color.white;
@@ -65,21 +69,7 @@ namespace KolonyTools
             listStyle.padding.top = 4;
             listStyle.padding.bottom = 4;
 
-            // Create gui combo boxes for selecting source and destination vessels
-            _originVesselComboBox = new ComboBox(
-                rect: new Rect(20, 30, 100, 20),
-                buttonContent: vesselNames[0],
-                buttonStyle: "button",
-                boxStyle: "box",
-                listContent: vesselNames,
-                listStyle: listStyle,
-                onChange: i =>
-                {
-                    UpdateOriginVessel(i);
-                }
-            );
-            _originVesselComboBox.SelectedItemIndex = 0;
-
+            // Create gui combo box for selecting destination vessel
             _destinationVesselComboBox = new ComboBox(
                 rect: new Rect(20, 30, 100, 20),
                 buttonContent: vesselNames[0],
@@ -103,27 +93,11 @@ namespace KolonyTools
         /// <param name="windowId"></param>
         protected override void DrawWindowContents(int windowId)
         {
-            // Origin vessel selection section header
+            // Origin vessel section header
             GUILayout.BeginHorizontal();
             GUILayout.Label("Origin", UIHelper.labelStyle, GUILayout.Width(80));
-
-            // Display Previous button for origin vessel selection
-            if (GUILayout.Button(UIHelper.leftArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(30), GUILayout.Height(20)))
-            {
-                UpdateOriginVessel(GetPreviousVesselIndex(_originVesselIndex));
-                _originVesselComboBox.SelectedItemIndex = _originVesselIndex;
-            }
-
-            // Display combo box for source vessel selection
-            _originVesselComboBox.Show();
-
-            // Display Next button for source vessel selection
-            if (GUILayout.Button(UIHelper.rightArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(30), GUILayout.Height(20)))
-            {
-                UpdateOriginVessel(GetNextVesselIndex(_originVesselIndex));
-                _originVesselComboBox.SelectedItemIndex = _originVesselIndex;
-            }
-            GUILayout.EndHorizontal();  // origin selection section
+            GUILayout.Label(_module.vessel.vesselName, UIHelper.whiteLabelStyle);
+            GUILayout.EndHorizontal();  // origin vessel section
 
             // Destination vessel selection section
             GUILayout.BeginHorizontal();
@@ -274,7 +248,15 @@ namespace KolonyTools
                         if (double.TryParse(_transferAmountText, out amount))
                         {
                             if (amount > 0)
+                            {
                                 _transfer.AddResource(originResource, amount);
+                                _transferAmountText = string.Empty;
+
+                                // Check if adding this transfer amount exceeds the current payload capacity
+                                _errorMessageText = !_originVessel.CanAffordTransport(_transfer.CalculateFuelUnits())
+                                    ? INSUFFICIENT_FUNDS_MESSAGE
+                                    : string.Empty;
+                            }
                         }
                     }
 
@@ -290,7 +272,7 @@ namespace KolonyTools
                 if (_transfer != null && _transfer.ResourceRequests.Count > 0)
                 {
                     double totalMass = _transfer.TotalMass();
-                    float totalCost = _transfer.CalculateCost();
+                    float totalCost = _transfer.CalculateFuelUnits();
 
                     _transferResourceScrollViewPosition = GUILayout.BeginScrollView(_transferResourceScrollViewPosition, GUILayout.MinHeight(130));
 
@@ -303,32 +285,38 @@ namespace KolonyTools
                     GUILayout.EndHorizontal();
 
                     // Transfer list items
-                    foreach (var transfer in _transfer.ResourceRequests.ToArray())
+                    foreach (var item in _transfer.ResourceRequests.ToArray())
                     {
                         GUILayout.BeginHorizontal();
                         if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                         {
-                            _transfer.ResourceRequests.Remove(transfer);
-                            _errorMessageText = string.Empty;
+                            _transfer.ResourceRequests.Remove(item);
+
+                            // Check if removing this resource put the transfer back within payload capacity limits
+                            if (_originVessel.CanAffordTransport(_transfer.CalculateFuelUnits()))
+                                _errorMessageText = string.Empty;
                         }
-                        GUILayout.Label(" " + transfer.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(155));
-                        GUILayout.Label(transfer.TransferAmount.ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
-                        GUILayout.Label((totalCost * transfer.Mass() / totalMass).ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
+                        GUILayout.Label(" " + item.ResourceDefinition.name, UIHelper.yellowLabelStyle, GUILayout.MinWidth(155));
+                        GUILayout.Label(item.TransferAmount.ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
+                        GUILayout.Label((totalCost * item.Mass() / totalMass).ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(80));
                         GUILayout.EndHorizontal();
                     }
                     GUILayout.EndScrollView();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Total Mass:", UIHelper.whiteLabelStyle, GUILayout.Width(90));
-                    GUILayout.Label(
-                        string.Format("{0:F2} / {1:F0}", totalMass, _module.MaxTransferMass),
-                        UIHelper.yellowLabelStyle, GUILayout.Width(150)
-                    );
+                    GUILayout.Label(totalMass.ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(150));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
+                    var costLabelStyle = _originVessel.CanAffordTransport(totalCost)
+                        ? UIHelper.yellowLabelStyle
+                        : UIHelper.redLabelStyle;
                     GUILayout.Label("Total Cost:", UIHelper.whiteLabelStyle, GUILayout.Width(90));
-                    GUILayout.Label(totalCost.ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(150));
+                    GUILayout.Label(
+                        string.Format("{0:F2} / {1:F0}", totalCost, _originVessel.GetTransportCapacity()),
+                        costLabelStyle, GUILayout.Width(150)
+                    );
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -338,7 +326,7 @@ namespace KolonyTools
                         UIHelper.yellowLabelStyle, GUILayout.Width(150)
                     );
                     GUILayout.EndHorizontal();
-                    GUILayout.Label(_errorMessageText, UIHelper.yellowLabelStyle);
+                    GUILayout.Label(_errorMessageText, UIHelper.redLabelStyle);
                 }
             }
             // Origin and destination vessel are the same, so...
@@ -354,7 +342,12 @@ namespace KolonyTools
             // Display Start and Cancel buttons
             GUILayout.BeginHorizontal();
             GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(80));
-            if (_transfer != null && _transfer.ResourceRequests.Count > 0)
+            if (_transfer == null || _transfer.ResourceRequests.Count < 1 || !_originVessel.CanAffordTransport(_transfer.CalculateFuelUnits()))
+            {
+                // Transfer isn't possible right now, so add a blank label in order to "center" the Cancel button
+                GUILayout.Label(string.Empty, GUILayout.Width(60));
+            }
+            else 
             {
                 if (GUILayout.Button("Start Transfer", UIHelper.buttonStyle, GUILayout.Width(110)))
                 {
@@ -367,11 +360,6 @@ namespace KolonyTools
                         ResetAndClose();
                 }
             }
-            else
-            {
-                // Add a blank label in order to "center" the Cancel button
-                GUILayout.Label(string.Empty, GUILayout.Width(60));
-            }
             if (GUILayout.Button("Cancel", UIHelper.buttonStyle, GUILayout.Width(100)))
             {
                 ResetAndClose();
@@ -379,7 +367,6 @@ namespace KolonyTools
             GUILayout.EndHorizontal();
 
             // Display the contents of the combo boxes
-            _originVesselComboBox.ShowRest();
             _destinationVesselComboBox.ShowRest();
         }
 

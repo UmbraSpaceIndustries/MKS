@@ -55,6 +55,11 @@ namespace KolonyTools
             return Math.Sqrt(4 * Math.Pow(Math.PI, 2) / body.Mu() * Math.Pow(semiMajorAxis, 3));
         }
 
+        /// <summary>
+        /// Gets the <see cref="PartResourceDefinition"/> for each of the resources (with mass) the vessel can store.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <returns></returns>
         public static List<OrbitalLogisticsResource> GetResources(this Vessel vessel)
         {
             List<OrbitalLogisticsResource> resources;
@@ -96,6 +101,77 @@ namespace KolonyTools
             return resources;
         }
 
+        /// <summary>
+        /// Determines if a <see cref="Vessel"/> can store a given <see cref="PartResourceDefinition"/>.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <param name="resource"></param>
+        /// <returns></returns>
+        public static bool HasResource(this Vessel vessel, PartResourceDefinition resource)
+        {
+            if (vessel.packed && !vessel.loaded) // inactive vessel
+            {
+                return vessel.protoVessel.protoPartSnapshots
+                    .Any(p => p.resources.Any(r => r.definition.id == resource.id));
+            }
+            else // active vessel
+            {
+                foreach (var part in vessel.Parts)
+                {
+                    if (part.Resources.Any(r => r.info.id == resource.id))
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current available amount of the currency used for transporting goods via Orbital Logistics.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <returns></returns>
+        public static double GetTransportCapacity(this Vessel vessel)
+        {
+            PartResourceDefinition transportCredits = PartResourceLibrary.Instance.GetDefinition("TransportCredits");
+
+            if (transportCredits == null || !vessel.HasResource(transportCredits))
+                return 0;
+
+            OrbitalLogisticsResource transportCreditsResource = new OrbitalLogisticsResource(transportCredits, vessel);
+
+            return transportCreditsResource.GetAvailableAmount();
+        }
+
+        /// <summary>
+        /// Determines if the vessel can fulfill the requirements to complete an Orbital Logistics transfer.
+        /// </summary>
+        /// <param name="resourceUnits">The amount of the transport resource required for the transfer.</param>
+        /// <returns></returns>
+        public static bool CanAffordTransport(this Vessel vessel, double resourceUnits)
+        {
+            return vessel.GetTransportCapacity() >= resourceUnits;
+        }
+
+        /// <summary>
+        /// Attempts to fulfill the requirements to complete an orbital logistics transfer.
+        /// </summary>
+        /// <param name="vessel"></param>
+        /// <param name="resourceUnits">The amount of the transport resource required for the transfer.</param>
+        /// <returns><c>true</c> if the requirements were met, <c>false</c> otherwise.</returns>
+        public static bool DeductTransportCost(this Vessel vessel, double resourceUnits)
+        {
+            if (!vessel.CanAffordTransport(resourceUnits))
+                return false;
+
+            // Deduct resource units from vessel
+            PartResourceDefinition transportCredits = PartResourceLibrary.Instance.GetDefinition("TransportCredits");
+
+            vessel.ExchangeResources(transportCredits.id, -resourceUnits);
+
+            return true;
+        }
+
         public static void Log(this ConfigNode node, string marker = "[MKS] ")
         {
             Debug.Log(marker+node.name);
@@ -124,32 +200,34 @@ namespace KolonyTools
         {
             return vessel.ExchangeResources(PartResourceLibrary.Instance.GetDefinition(resourceName), amount);
         }
+
         public static double ExchangeResources(this Vessel vessel, PartResourceDefinition resource, double amount)
         {
             vessel.Log("ExchangeResource: vessel="+vessel.name+", resource="+resource.name+", amount="+amount);
+
             if (Math.Abs(amount) < 0.000001)
-            {
                 return amount;
-            }
+
             double amountExchanged = 0;
-            var done = false;
+            bool done = false;
             
             if (vessel.packed && !vessel.loaded)
             {
                 vessel.Log("ExchangeResource:packed");
+
                 foreach (ProtoPartSnapshot p in vessel.protoVessel.protoPartSnapshots)
                 {
                     if (done)
-                    {
                         break;
-                    }
+
                     foreach (ProtoPartResourceSnapshot r in p.resources)
                     {
                         if (done)
-                        {
                             break;
-                        }   
-                        if (r.resourceName != resource.name) continue;
+
+                        if (r.resourceName != resource.name)
+                            continue;
+
                         double amountInPart = Convert.ToDouble(r.amount);
                         if (amount < 0)
                         {
@@ -167,7 +245,7 @@ namespace KolonyTools
                         }
                         else
                         {
-                            var max = Convert.ToDouble(r.maxAmount);
+                            double max = Convert.ToDouble(r.maxAmount);
                             if (max - amountInPart < amount - amountExchanged)
                             {
                                 amountExchanged += (max - amountInPart);
@@ -186,23 +264,22 @@ namespace KolonyTools
             else
             {
                 vessel.Log("ExchangeResource:loaded");
+
                 foreach (Part p in vessel.parts)
                 {
                     if (done)
-                    {
                         break;
-                    }
-                    var rCount = p.Resources.Count;
+
+                    int rCount = p.Resources.Count;
                     for (int i = 0; i < rCount; ++i)
                     {
-                        var r = p.Resources[i];
                         if (done)
-                        {
                             break;
-                        }
-                        if (r.info.id != resource.id) continue;
-                        //Func<Part, PartResource,double[], bool, string> getProcDbgString = (ip, ir,amountsInfo, pre) => string.Format("{5} resource on part {0} of {7} vessel {6} which has now {1:F2}/{2:F2} stored while {3:F2}/{4:F2} has already been transferred", ip.name, ir.amount, ir.maxAmount, amountsInfo[0], amountsInfo[1],pre?"About to process":"Processed",ip.vessel.vesselName,ip.vessel.loaded?"loaded":"unloaded");
-                        //Debug.Log("[MKS-Logistics] "+getProcDbgString(p,r,new []{amountExchanged,amount},true));
+
+                        var r = p.Resources[i];
+                        if (r.info.id != resource.id)
+                            continue;
+
                         if (amount < 0)
                         {
                             if (r.amount < Math.Abs(amount - amountExchanged))
@@ -231,11 +308,11 @@ namespace KolonyTools
                                 done = true;
                             }
                         }
-                        //Debug.Log("[MKS-Logistics] " + getProcDbgString(p, r, new[] { amountExchanged, amount }, false));
                     }
                 }
             }
-            return (amountExchanged);
+
+            return amountExchanged;
         }
 
         public static IEnumerable<ModuleResourceConverter> GetActiveConverters(this Vessel vessel)
