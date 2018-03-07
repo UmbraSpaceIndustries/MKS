@@ -1,3 +1,8 @@
+0.5.1 - 2017.03.06
+------------------
+Updated CryoTanks compatibility for better interop and consistency (Thanks Wyzard256!)
+Multiple kontainer amount/cost fixes (Thanks Wyzard256!)
+
 0.5.0 - 2017.10.09
 ------------------
 KSP 1.3.1

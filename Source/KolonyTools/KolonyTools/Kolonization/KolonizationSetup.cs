@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using KolonyTools.Kolonization;
 using UnityEngine;
@@ -18,10 +19,23 @@ namespace KolonyTools
 
         //Static data holding variables
         private static KolonizationConfig _Config;
+        private static List<AutoConverterConfig> _autoCon;
 
         public KolonizationConfig Config
         {
             get { return _Config ?? (_Config = LoadKolonizationConfig()); }
+        }
+
+        public List<AutoConverterConfig> AutoConverters
+        {
+            get
+            {
+                if (_autoCon == null)
+                {
+                    LoadAutoConverters();
+                }
+                return _autoCon;
+            }
         }
 
         private KolonizationConfig LoadKolonizationConfig()
@@ -52,6 +66,18 @@ namespace KolonyTools
                 finalSettings.PointsPerStar = Math.Max(settings.PointsPerStar, finalSettings.PointsPerStar);
             }
             return finalSettings;
+        }
+
+        private void LoadAutoConverters()
+        {
+            var converterNodes = GameDatabase.Instance.GetConfigNodes("AUTOCONVERTER_SETTINGS");
+            _autoCon = new List<AutoConverterConfig>();
+
+            foreach (var node in converterNodes)
+            {
+                var con = ResourceUtilities.LoadNodeProperties<AutoConverterConfig>(node);
+                _autoCon.Add(con);
+            }
         }
     }
 }
