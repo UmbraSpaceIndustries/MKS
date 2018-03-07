@@ -1,3 +1,27 @@
+0.53.2 - 2017.03.06
+-------------------
+Added Transport Credit support for OrbLog
+
+0.53.1 - 2017.03.06
+------------------
+Depencency Updates
+Fixed an issue where habitation time would have unpredictable effects when entering/leaving shared life support range
+Added antennas to the Karibou (Thanks Voicey99!)
+Fixed the fuel cell water output patch (Thanks Wyzard256!)
+Updated Kolonization Monitor to reflect crew count with booster traits (Thanks jd284!)
+Normalized Tundra decal orientation (Thanks Doktorjet!)
+Increased drill cost to balance with stock drills (Thanks Wyzard256!)
+Added LH2 boiloff for Karibou tanks if CryoTanks is installed (Thanks Wyzard256!)
+Removed duplicate resource from the Karibou short wheelbay (Thanks wile1411!)
+Fixed the Habitation capability of the Karibou Crew Cab (Thanks voicey99!)
+Orbital Logistics are back!
+- Both Tundra and Duna Logistics Modules can now initiate transfers.  
+- Both sending and receiving vessels require a logistics module to be present.
+Drills have received a balance pass.  Mass will tend to drop a bit, efficiency will slightly increase for manned drills, decrease for unmanned drills.  These tweaks are reflected on the USI Balance Worksheet.
+An issue causing extreme lag when working with parts that have swappable converters has been corrected, and the configs of all parts with swappable converters have been updated.
+
+
+
 0.53.0 - 2017.10.09
 ------------------
 KSP 1.3.1

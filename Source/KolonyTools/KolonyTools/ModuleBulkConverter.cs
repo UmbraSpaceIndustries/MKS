@@ -1,11 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KSP.UI.Screens.Editor;
 using USITools;
 using UnityEngine;
 
 namespace KolonyTools
 {
+    public class AutoConverterConfig : PartModule
+    {
+        public string InputResource;
+        public string OutputResource;
+        public float yield;
+    }
+
     public class ModuleBulkConverter : ModuleResourceConverter_USI
     {
         [KSPField] 
@@ -29,16 +37,39 @@ namespace KolonyTools
             var totalAbundance = planetResourceAbundance.Sum(r => r.Value);
 
             _resourceYields = new List<ResourceRatio>();
+            
             foreach (var res in planetResourceAbundance)
             {
                 if (res.Value > MinAbundance)
                 {
                     var resourceYield =  Yield * res.Value / totalAbundance;
-                    _resourceYields.Add(new ResourceRatio {
+                    var newYield = new ResourceRatio {
                         FlowMode = ResourceFlowMode.ALL_VESSEL,
                         Ratio = resourceYield,
                         ResourceName = res.Key,
-                        DumpExcess = true });
+                        DumpExcess = true };
+
+                    var con = KolonizationSetup.Instance.AutoConverters.Where(c => c.InputResource == res.Key).ToArray();
+                    var count = con.Count();
+                    if (count > 0)
+                    {
+                        for (int i = 0; i < count; ++i)
+                        {
+                            var thisCon = con[i];
+                            var conYield = new ResourceRatio
+                            {
+                                FlowMode = ResourceFlowMode.ALL_VESSEL,
+                                Ratio = newYield.Ratio * thisCon.yield,
+                                ResourceName = thisCon.OutputResource,
+                                DumpExcess = true
+                            };
+                            _resourceYields.Add(conYield);
+                        }
+                    }
+                    else
+                    {
+                        _resourceYields.Add(newYield);
+                    }
                 }
             }
         }
