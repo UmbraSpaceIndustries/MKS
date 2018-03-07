@@ -1,3 +1,7 @@
+0.6.0 - 2018.03.07
+------------------
+KSP 1.4.0 Compatibility
+
 0.5.1 - 2017.03.06
 ------------------
 Updated CryoTanks compatibility for better interop and consistency (Thanks Wyzard256!)

@@ -1,3 +1,7 @@
+3.0.0 - 2018.03.07
+------------------
+KSP 1.4.0 Compatibility
+
 2.0.2 - KSP 1.3
 ------------------
 - [Enhancement] Added a new standard category: Lights.
