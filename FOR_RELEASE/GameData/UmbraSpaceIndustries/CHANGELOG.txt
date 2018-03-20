@@ -1,3 +1,9 @@
+0.7.0 - 2018.03.13
+-----------------
+KSP 1.4.1 Compatibility
+Added Maintenance Supply loadouts to the KIS Kontainers (Thanks Voicey99!)
+Added CCK category for KIS Kontainers (Thanks Voicey99!)
+
 0.6.0 - 2018.03.07
 ------------------
 KSP 1.4.0 Compatibility
