@@ -9,26 +9,26 @@ You can find the official repo for this mod on [Github](https://github.com/Umbra
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
-* [USI Life Support](http://forum.kerbalspaceprogram.com/threads/116790)
-* [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
-* [Snacks](http://forum.kerbalspaceprogram.com/threads/90841) via the [E-Z Snack Oven](http://forum.kerbalspaceprogram.com/threads/92309)
+* [USI Life Support](https://forum.kerbalspaceprogram.com/index.php?/topic/105202-13-usi-life-support-050/)
+* [TAC Life Support](https://forum.kerbalspaceprogram.com/index.php?/topic/146465-141-tac-life-support-v0139-release-17th-march-2018/)
+* [Snacks](https://forum.kerbalspaceprogram.com/index.php?/topic/149604-141-snacks-friendly-simplified-life-support/) via the [E-Z Snack Oven](http://forum.kerbalspaceprogram.com/threads/92309)
 * [Extraplanetary Launchpads](http://forum.kerbalspaceprogram.com/threads/59545)
 
 NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only pick one!  USI-LS is the default, and will afford the most support and integration, but TAC-LS and Snacks! are also fully supported.
 
 ### Included Plugins/Mods
-* [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
-* [Firespitter Core](http://forum.kerbalspaceprogram.com/threads/24551)
+* [Module Manager](https://forum.kerbalspaceprogram.com/index.php?/topic/50533-141-module-manager-306-marsh-14th-2018-its-dangerous-to-go-alone-take-those-cats-with-you/)
+* [Firespitter Core](https://forum.kerbalspaceprogram.com/index.php?/topic/22583-firespitter-propeller-plane-and-helicopter-parts-v71-may-5th-for-ksp-10/&)
 
 ### Recommended mods
 (These are absolutely not required, but have aspects that make gameplay easier)
 
 * [KAS](http://forum.kerbalspaceprogram.com/threads/92514) (for linking up MKS modules and anchoring to the surface)
-* [Infernal Robotics](http://forum.kerbalspaceprogram.com/threads/116064) (for assembling bases)
+* [Infernal Robotics](https://forum.kerbalspaceprogram.com/index.php?/topic/170898-wip-infernal-robotics-next/) (for assembling bases)
 
 ### Compatible with
 
-* [Connected Living Space](http://forum.kerbalspaceprogram.com/threads/122126) (efficiency extensions)
+* [Connected Living Space](https://forum.kerbalspaceprogram.com/index.php?/topic/109972-131-connected-living-space-v1258-17-mar-2018-localization/) (efficiency extensions)
 
 ### FAQ, Documentation, Issues and Pull Requests
 
