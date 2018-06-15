@@ -9,6 +9,7 @@ You can find the official repo for this mod on [Github](https://github.com/Umbra
 
 ### Supported Mods
 (MKS includes additional functionality when these mods are present)
+
 * [USI Life Support](http://forum.kerbalspaceprogram.com/threads/116790)
 * [TAC Life Support](http://forum.kerbalspaceprogram.com/threads/40667?p=1382515&viewfull=1#post1382515)
 * [Snacks](http://forum.kerbalspaceprogram.com/threads/90841) via the [E-Z Snack Oven](http://forum.kerbalspaceprogram.com/threads/92309)
@@ -17,8 +18,12 @@ You can find the official repo for this mod on [Github](https://github.com/Umbra
 NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only pick one!  USI-LS is the default, and will afford the most support and integration, but TAC-LS and Snacks! are also fully supported.
 
 ### Included Plugins/Mods
+
 * [Module Manager](http://forum.kerbalspaceprogram.com/threads/55219)
 * [Firespitter Core](http://forum.kerbalspaceprogram.com/threads/24551)
+* [Community Resource Pack](https://forum.kerbalspaceprogram.com/index.php?/topic/83007-13-community-resource-pack/)
+* [Community Category Kit](https://forum.kerbalspaceprogram.com/index.php?/topic/149840-discussion-community-category-kit/)
+* [Ground Construction (core)](https://forum.kerbalspaceprogram.com/index.php?/topic/154167-143-ground-construction-2/)
 
 ### Recommended mods
 (These are absolutely not required, but have aspects that make gameplay easier)
