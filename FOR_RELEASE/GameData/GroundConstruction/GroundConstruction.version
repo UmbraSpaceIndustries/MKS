@@ -5,21 +5,21 @@
     "CHANGE_LOG_URL":"https://github.com/allista/GroundConstruction/blob/master/ChangeLog.md",
     "VERSION":
      {
-         "MAJOR":1,
-         "MINOR":2,
+         "MAJOR":2,
+         "MINOR":0,
          "PATCH":1,
          "BUILD":0
      },
     "KSP_VERSION_MIN":
      {
          "MAJOR":1,
-         "MINOR":3,
-         "PATCH":1
+         "MINOR":4,
+         "PATCH":3
      },
     "KSP_VERSION_MAX":
      {
          "MAJOR":1,
-         "MINOR":3,
-         "PATCH":1
+         "MINOR":4,
+         "PATCH":3
      }
 }

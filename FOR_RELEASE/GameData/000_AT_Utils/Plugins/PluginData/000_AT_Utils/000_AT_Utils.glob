@@ -1,11 +1,15 @@
+MeshesToSkip = flagtransform canopy
+BadParts = RadialDrill
+
 StylesConfig
 {
-	//available colors: normal (meaning white), grey, red, dark_red, green, dark_green, yellow, dark_yellow, cyan, magenta
-	EnabledButtonColor = green
-	ActiveButtonColor = yellow
-	InactiveButtonColor = grey
-	ConfirmButtonColor = green
-	AddButtonColor = green
-	CloseButtonColor = red
-	DangerButtonColor = red
+    //available colors: normal (meaning white), grey, red, dark_red, green, dark_green, yellow, dark_yellow, cyan, magenta
+    EnabledButtonColor = green
+    ActiveButtonColor = yellow
+    InactiveButtonColor = grey
+    ConfirmButtonColor = green
+    AddButtonColor = green
+    CloseButtonColor = red
+    DangerButtonColor = red
 }
+

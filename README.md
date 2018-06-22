@@ -19,6 +19,9 @@ NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only p
 ### Included Plugins/Mods
 * [Module Manager](https://forum.kerbalspaceprogram.com/index.php?/topic/50533-141-module-manager-306-marsh-14th-2018-its-dangerous-to-go-alone-take-those-cats-with-you/)
 * [Firespitter Core](https://forum.kerbalspaceprogram.com/index.php?/topic/22583-firespitter-propeller-plane-and-helicopter-parts-v71-may-5th-for-ksp-10/&)
+* [Community Resource Pack](https://forum.kerbalspaceprogram.com/index.php?/topic/83007-13-community-resource-pack/)
+* [Community Category Kit](https://forum.kerbalspaceprogram.com/index.php?/topic/149840-discussion-community-category-kit/)
+* [Ground Construction (core)](https://forum.kerbalspaceprogram.com/index.php?/topic/154167-143-ground-construction-2/)
 
 ### Recommended mods
 (These are absolutely not required, but have aspects that make gameplay easier)
