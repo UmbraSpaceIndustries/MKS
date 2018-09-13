@@ -2,19 +2,19 @@ UseStockAppLauncher = true
 
 AssemblyResource
 {
-	name = SpecializedParts
-	WorkPerMass = 15
-	EnergyPerMass = 1000
-	ComplexityWork = 17
+    name = SpecializedParts
+    WorkPerMass = 15
+    EnergyPerMass = 1000
+    ComplexityWork = 17
 }
 
 
 ConstructionResource
 {
-	name = MaterialKits
-	WorkPerMass = 10
-	EnergyPerMass = 10000
-	ComplexityWork = 13
+    name = MaterialKits
+    WorkPerMass = 10
+    EnergyPerMass = 10000
+    ComplexityWork = 13
 }
 
 WorkshopShutdownThreshold = 0.99
@@ -31,7 +31,7 @@ MaxGenericEfficiency      = 0.5
 ComplexityFactor = 1E-04
 
 VesselKitDensity = 0.5
-VesselKitMinSize = 0.5
+MinKitVolume = 0.02
 
 DeployMaxSpeed   = 0.1
 DeployMaxAV      = 1E-03
