@@ -7,12 +7,6 @@ namespace KolonyTools
 {
     public class ModuleEfficiencyPart : ModuleResourceConverter_USI
     {
-        [KSPField]
-        public double eMultiplier = 1d;
-        
-        [KSPField]
-        public string eTag = "";
-
         public float Governor = 1.0f;
 
         public override string GetInfo()
