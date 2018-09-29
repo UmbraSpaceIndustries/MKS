@@ -13,6 +13,9 @@ namespace KolonyTools
         #region KSPFields
         [KSPField(isPersistant = false, guiActive = false)]
         public float MaxTransferMass = 1000000f;
+
+        [KSPField(guiActive = true, guiName = "Available T-Credits")]
+        public string TransportCredits;
         #endregion
 
         #region Static class variables
@@ -25,6 +28,7 @@ namespace KolonyTools
 
         protected OrbitalLogisticsGuiMain_Module _mainGui;
         protected ScenarioOrbitalLogistics _scenario;
+        private double _nextCheckTime;
         #endregion
 
         /// <summary>
@@ -56,6 +60,21 @@ namespace KolonyTools
             // Hook into the ScenarioModule for Orbital Logistics
             if (_scenario == null)
                 _scenario = HighLogic.FindObjectOfType<ScenarioOrbitalLogistics>();
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="MonoBehaviour"/>.Update
+        /// </summary>
+        void Update()
+        {
+            // We're just displaying the current amount of TransportCredits on the vessel
+            //   This only needs to be done in flight and doesn't need to be done hyperactively.
+            //   Once per second is sufficient.
+            if (!HighLogic.LoadedSceneIsFlight || _nextCheckTime > Planetarium.GetUniversalTime())
+                return;
+
+            TransportCredits = vessel.GetTransportCapacity().ToString("N0");
+            _nextCheckTime = Planetarium.GetUniversalTime() + 1;
         }
 
         /// <summary>
