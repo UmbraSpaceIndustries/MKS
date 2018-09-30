@@ -5,10 +5,9 @@ using USITools;
 
 namespace KolonyTools
 {
+    [Obsolete("Use ModuleResourceConverter_USI instead.")]
     public class ModuleEfficiencyPart : ModuleResourceConverter_USI
     {
-        public float Governor = 1.0f;
-
         public override string GetInfo()
         {
             if (string.IsNullOrEmpty(eTag))
@@ -20,29 +19,10 @@ namespace KolonyTools
                 "Boost power: " + eMultiplier.ToString() + resourceConsumption;
         }
 
-        private double _curMult;
-
-        public double EfficiencyMultiplier
-        {
-            get
-            {
-                if (HighLogic.LoadedSceneIsEditor)
-                    return eMultiplier * Governor;
-                if (!IsActivated)
-                    _curMult = 0d;
-                return _curMult * Governor;
-            }
-            set
-            {
-                _curMult = value;
-            }
-        }
-
         protected override void PostProcess(ConverterResults result, double deltaTime)
         {
-            base.PostProcess(result,deltaTime);
-            EfficiencyMultiplier = result.TimeFactor/deltaTime;
+            base.PostProcess(result, deltaTime);
+            EfficiencyMultiplier = result.TimeFactor / deltaTime;
         }
     }
 }
-
