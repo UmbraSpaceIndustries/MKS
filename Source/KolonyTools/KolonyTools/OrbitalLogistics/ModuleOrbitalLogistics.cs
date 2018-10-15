@@ -11,10 +11,13 @@ namespace KolonyTools
     public class ModuleOrbitalLogistics : PartModule
     {
         #region KSPFields
+        [KSPField(isPersistant = true, guiActive = false, guiActiveEditor = false)]
+        public string ModuleId;
+
         [KSPField(isPersistant = false, guiActive = false)]
         public float MaxTransferMass = 1000000f;
 
-        [KSPField(guiActive = true, guiName = "Available T-Credits")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Available T-Credits")]
         public string TransportCredits;
         #endregion
 
@@ -102,6 +105,15 @@ namespace KolonyTools
             }
         }
 
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+
+            string moduleId = string.Empty;
+            if (!node.TryGetValue("ModuleId", ref moduleId) || string.IsNullOrEmpty(moduleId))
+                ModuleId = Guid.NewGuid().ToString();
+        }
+
         /// <summary>
         /// Make a list of all valid tranfer vessels on this celestial body.
         /// </summary>
@@ -145,6 +157,29 @@ namespace KolonyTools
 
             // Sort by vessel name
             BodyVesselList.Sort((a, b) => a.vesselName.CompareTo(b.vesselName));
+        }
+
+        public static string GetOrbLogModuleIdForVessel(Vessel v)
+        {
+            if (!v.packed && v.loaded)
+            {
+                return v.FindPartModuleImplementing<ModuleOrbitalLogistics>().ModuleId;
+            }
+            else
+            {
+                foreach (var part in v.protoVessel.protoPartSnapshots)
+                {
+                    foreach (var module in part.modules)
+                    {
+                        if (module.moduleName == "ModuleOrbitalLogistics")
+                        {
+                            return module.moduleValues.GetValue("moduleId") ?? "unassigned";
+                        }
+                    }
+                }
+            }
+
+            return "not found";
         }
     }
 }

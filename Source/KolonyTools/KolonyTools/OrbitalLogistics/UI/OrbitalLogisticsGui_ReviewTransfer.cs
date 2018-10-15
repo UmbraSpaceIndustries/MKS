@@ -56,12 +56,12 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("From:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(40), GUILayout.MaxWidth(240));
-            GUILayout.Label(Transfer.Origin.vesselName, UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(160));
+            GUILayout.Label(Transfer.OriginVesselName ?? "(Missing)", UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(160));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("To:", UIHelper.whiteLabelStyle, GUILayout.MinWidth(40), GUILayout.MaxWidth(240));
-            GUILayout.Label(Transfer.Destination.vesselName, UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(160));
+            GUILayout.Label(Transfer.DestinationVesselName ?? "(Missing)", UIHelper.yellowRightAlignLabelStyle, GUILayout.Width(160));
             GUILayout.EndHorizontal();
 
             _arrivalTime = Transfer.GetArrivalTime() - Planetarium.GetUniversalTime();
