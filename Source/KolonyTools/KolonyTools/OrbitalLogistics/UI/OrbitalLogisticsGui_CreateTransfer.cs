@@ -33,6 +33,7 @@ namespace KolonyTools
         private PartResourceDefinition _selectedResource;
         private List<OrbitalLogisticsResource> _originVesselResources;
         private List<OrbitalLogisticsResource> _destinationVesselResources;
+        private List<Vessel> _filteredVessels;
         #endregion
 
         public OrbitalLogisticsGui_CreateTransfer(ModuleOrbitalLogistics module, ScenarioOrbitalLogistics scenario)
@@ -50,11 +51,15 @@ namespace KolonyTools
         private void Start()
         {
             // Create list of vessels in current SoI
-            var vesselNames = _module.BodyVesselList
+            _filteredVessels = _module.BodyVesselList
+                .Where(v => v.id != _module.vessel.id)
+                .ToList();
+
+            var vesselNames = _filteredVessels
                 .Select(v => new GUIContent(v.vesselName))
                 .ToArray();
 
-            _orbLogVesselsInSoI = vesselNames.Length;
+            _orbLogVesselsInSoI = _module.BodyVesselList.Count;
 
             // Set the origin vessel
             UpdateOriginVessel(_module.BodyVesselList.IndexOf(_module.vessel));
@@ -124,8 +129,12 @@ namespace KolonyTools
             // Create some visual separation between sections
             GUILayout.Label(string.Empty);
 
-            // Only allow transfers between different vessels
-            if (_originVesselIndex != _destinationVesselIndex)
+            // Display a message if there is only one vessel in the current SoI that is eligible for OrbLog
+            if (_orbLogVesselsInSoI <= 1)
+            {
+                GUILayout.Label(TOO_FEW_VESSELS_MESSAGE, UIHelper.yellowLabelStyle);
+            }
+            else
             {
                 // Display transferable resources
                 _availableResourceScrollViewPosition = GUILayout.BeginScrollView(_availableResourceScrollViewPosition, GUILayout.MinHeight(130));
@@ -329,15 +338,6 @@ namespace KolonyTools
                     GUILayout.Label(_errorMessageText, UIHelper.redLabelStyle);
                 }
             }
-            // Origin and destination vessel are the same, so...
-            else
-            {
-                // Display a message if there is only one vessel in the current SoI that is eligible for OrbLog
-                if (_orbLogVesselsInSoI < 2)
-                {
-                    GUILayout.Label(TOO_FEW_VESSELS_MESSAGE, UIHelper.yellowLabelStyle);
-                }
-            }
 
             // Display Start and Cancel buttons
             GUILayout.BeginHorizontal();
@@ -409,7 +409,7 @@ namespace KolonyTools
 
             _selectedResource = null;
             _destinationVesselIndex = newVesselIndex;
-            _destinationVessel = _module.BodyVesselList[_destinationVesselIndex];
+            _destinationVessel = _filteredVessels[_destinationVesselIndex];
             _destinationVesselResources = _destinationVessel.GetResources();
 
             if (_originVessel != null)
@@ -436,7 +436,7 @@ namespace KolonyTools
         protected int GetPreviousVesselIndex(int index)
         {
             if (index == 0)
-                return _module.BodyVesselList.Count() - 1;
+                return _filteredVessels.Count() - 1;
             else
                 return index - 1;
         }
@@ -448,7 +448,7 @@ namespace KolonyTools
         /// <returns></returns>
         protected int GetNextVesselIndex(int index)
         {
-            if (index == _module.BodyVesselList.Count() - 1)
+            if (index == _filteredVessels.Count() - 1)
                 return 0;
             else
                 return index + 1;

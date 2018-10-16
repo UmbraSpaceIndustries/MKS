@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using UnityEngine;
 
 namespace KolonyTools
@@ -127,11 +127,13 @@ namespace KolonyTools
             {
                 if (vessel.mainBody.name == this.vessel.mainBody.name)
                 {
-                    if (!vessel.packed && vessel.loaded
-                        && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
-                        && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
+                    if (vessel.loaded)
                     {
-                        BodyVesselList.Add(vessel);
+                        if (vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
+                            && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
+                        {
+                            BodyVesselList.Add(vessel);
+                        }
                     }
                     else if (vessel.protoVessel.situation == (vessel.protoVessel.situation & VesselSituationsAllowedForTransfer))
                     {
@@ -159,27 +161,57 @@ namespace KolonyTools
             BodyVesselList.Sort((a, b) => a.vesselName.CompareTo(b.vesselName));
         }
 
-        public static string GetOrbLogModuleIdForVessel(Vessel v)
+        public static string GetOrbLogModuleIdForVessel(Vessel vessel)
         {
-            if (!v.packed && v.loaded)
+            if (vessel.loaded)
             {
-                return v.FindPartModuleImplementing<ModuleOrbitalLogistics>().ModuleId;
+                return vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>().ModuleId;
             }
             else
             {
-                foreach (var part in v.protoVessel.protoPartSnapshots)
+                foreach (var part in vessel.protoVessel.protoPartSnapshots)
                 {
                     foreach (var module in part.modules)
                     {
                         if (module.moduleName == "ModuleOrbitalLogistics")
                         {
-                            return module.moduleValues.GetValue("moduleId") ?? "unassigned";
+                            return module.moduleValues.GetValue("ModuleId") ?? "unassigned";
                         }
                     }
                 }
             }
 
             return "not found";
+        }
+
+        public static Vessel FindVesselByOrbLogModuleId(string moduleId)
+        {
+            foreach (Vessel vessel in FlightGlobals.Vessels)
+            {
+                if (vessel.loaded)
+                {
+                    var modules = vessel.FindPartModulesImplementing<ModuleOrbitalLogistics>();
+                    if (modules.Any(m => m.ModuleId == moduleId))
+                    {
+                        return vessel;
+                    }
+                }
+                else
+                {
+                    foreach (var part in vessel.protoVessel.protoPartSnapshots)
+                    {
+                        foreach (var module in part.modules)
+                        {
+                            if (module.moduleName == "ModuleOrbitalLogistics" && module.moduleValues.GetValue("ModuleId") == moduleId)
+                            {
+                                return vessel;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
