@@ -102,10 +102,7 @@ namespace KolonyTools
                     // If the origin disappeared, try to find it by its OrbLog module instead.
                     if (_origin == null)
                     {
-                        _origin = FlightGlobals.Vessels
-                            .Where(v => v.FindPartModulesImplementing<ModuleOrbitalLogistics>()
-                                .Any(m => m.ModuleId == _originModuleId))
-                            .FirstOrDefault();
+                        _origin = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_originModuleId);
                     }
                 }
 
@@ -138,10 +135,7 @@ namespace KolonyTools
                 // If the destination disappeared, try to find it by its OrbLog module instead.
                 if (_destination == null)
                 {
-                    _destination = FlightGlobals.Vessels
-                        .Where(v => v.FindPartModulesImplementing<ModuleOrbitalLogistics>()
-                            .Any(m => m.ModuleId == _originModuleId))
-                        .FirstOrDefault();
+                    _destination = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_destinationModuleId);
                 }
 
                 return _destination;
@@ -305,6 +299,14 @@ namespace KolonyTools
             // If either of the vessels is no longer in an allowed situation, fail.
             if (Origin.protoVessel.situation != (Origin.protoVessel.situation & ALLOWED_SITUATIONS)
                 || Destination.protoVessel.situation != (Destination.protoVessel.situation & ALLOWED_SITUATIONS))
+            {
+                Status = DeliveryStatus.Failed;
+                yield break;
+            }
+
+            // If the destination no longer has the OrbLog module it had when the transfer was initiated, fail.
+            var whoHasTheDestinationOrbLogModule = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_destinationModuleId);
+            if (Destination != whoHasTheDestinationOrbLogModule)
             {
                 Status = DeliveryStatus.Failed;
                 yield break;
