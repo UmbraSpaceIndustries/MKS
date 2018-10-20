@@ -21,7 +21,6 @@ WorkshopShutdownThreshold = 0.99
 MaxDistanceToWorkshop     = 300
 MinDistanceToWorkshop     = 50
 MaxDistanceEfficiency     = 0.2
-//MaxMetalworkPerHour       = 0.01
 
 VolumePerKerbal           = 8
 PartVolumeFactor          = 0.3
@@ -35,5 +34,7 @@ MinKitVolume = 0.02
 
 DeployMaxSpeed   = 0.1
 DeployMaxAV      = 1E-03
-DeploymentSpeed  = 0.5
+MaxDeploymentMomentum = 0.5
 MinDeploymentTime = 5
+
+//:mode=c#:
