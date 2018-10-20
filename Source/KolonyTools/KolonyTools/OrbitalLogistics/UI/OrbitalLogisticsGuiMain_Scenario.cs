@@ -98,8 +98,8 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(" " + transfer.OriginVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.DestinationVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
                     GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(
@@ -182,8 +182,8 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(" " + transfer.OriginVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(transfer.DestinationVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
                     GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(90));

@@ -42,6 +42,24 @@ namespace KolonyTools
         [Persistent(name = "OriginVesselId")]
         protected string _originId;
 
+        // Whenever a vessel is docked, it basically disappears from the game AND loses
+        //  its vessel id. When it is undocked, it receives a new vessel id. So we cache
+        //  the vessel names in the transfer request when it is created in order to avoid
+        //  UI issues when trying to find vessel names for *missing* vessels.
+        [Persistent(name = "DestinationVesselName")]
+        protected string _destinationName;
+
+        [Persistent(name = "OriginVesselName")]
+        protected string _originName;
+
+        // To help locate a vessel if it is a victim of vessel id reassignment surgery,
+        //  we'll cache the module id of the ModuleOrbitalLogistics that initiated the transfer.
+        [Persistent(name = "DestinationModuleId")]
+        protected string _destinationModuleId;
+
+        [Persistent(name = "OriginModuleId")]
+        protected string _originModuleId;
+
         [Persistent(name = "Mass")]
         protected float _mass;
 
@@ -70,6 +88,7 @@ namespace KolonyTools
         /// <summary>
         /// The <see cref="Vessel"/> resources will be deducted from.
         /// </summary>
+        /// <remarks>Use the <see cref="OriginVesselName"/> property for UI display purposes.</remarks>
         public Vessel Origin
         {
             get
@@ -79,6 +98,12 @@ namespace KolonyTools
                     _origin = FlightGlobals.Vessels
                         .Where(v => v.id.ToString() == _originId)
                         .SingleOrDefault();
+
+                    // If the origin disappeared, try to find it by its OrbLog module instead.
+                    if (_origin == null)
+                    {
+                        _origin = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_originModuleId);
+                    }
                 }
 
                 return _origin;
@@ -87,12 +112,15 @@ namespace KolonyTools
             {
                 _origin = value;
                 _originId = value.id.ToString();
+                _originName = value.vesselName;
+                _originModuleId = ModuleOrbitalLogistics.GetOrbLogModuleIdForVessel(value);
             }
         }
 
         /// <summary>
         /// The <see cref="Vessel"/> resources will be added to.
         /// </summary>
+        /// <remarks>Use the <see cref="DestinationVesselName"/> property for UI display purposes.</remarks>
         public Vessel Destination
         {
             get
@@ -104,12 +132,42 @@ namespace KolonyTools
                         .SingleOrDefault();
                 }
 
+                // If the destination disappeared, try to find it by its OrbLog module instead.
+                if (_destination == null)
+                {
+                    _destination = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_destinationModuleId);
+                }
+
                 return _destination;
             }
             set
             {
                 _destination = value;
                 _destinationId = value.id.ToString();
+                _destinationName = value.vesselName;
+                _destinationModuleId = ModuleOrbitalLogistics.GetOrbLogModuleIdForVessel(value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the <see cref="Vessel"/> resources will be added to. Use this for UI display purposes.
+        /// </summary>
+        public string DestinationVesselName
+        {
+            get
+            {
+                return Destination == null ? _destinationName : Destination.vesselName;
+            }
+        }
+
+        /// <summary>
+        /// The name of the <see cref="Vessel"/> resources will be removed from. Use this for UI display purposes.
+        /// </summary>
+        public string OriginVesselName
+        {
+            get
+            {
+                return Origin == null ? _originName : Origin.vesselName;
             }
         }
         #endregion
@@ -241,6 +299,14 @@ namespace KolonyTools
             // If either of the vessels is no longer in an allowed situation, fail.
             if (Origin.protoVessel.situation != (Origin.protoVessel.situation & ALLOWED_SITUATIONS)
                 || Destination.protoVessel.situation != (Destination.protoVessel.situation & ALLOWED_SITUATIONS))
+            {
+                Status = DeliveryStatus.Failed;
+                yield break;
+            }
+
+            // If the destination no longer has the OrbLog module it had when the transfer was initiated, fail.
+            var whoHasTheDestinationOrbLogModule = ModuleOrbitalLogistics.FindVesselByOrbLogModuleId(_destinationModuleId);
+            if (Destination != whoHasTheDestinationOrbLogModule)
             {
                 Status = DeliveryStatus.Failed;
                 yield break;
