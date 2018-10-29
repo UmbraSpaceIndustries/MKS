@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using KSP.UI.Screens.Editor;
 using USITools;
-using UnityEngine;
 
 namespace KolonyTools
 {
@@ -14,7 +12,7 @@ namespace KolonyTools
         public float yield;
     }
 
-    public class ModuleBulkConverter : ModuleResourceConverter_USI
+    public class MKS_BulkConverterSwapOption : USI_ConverterSwapOption
     {
         [KSPField] 
         public float Yield = 1f;
@@ -22,11 +20,35 @@ namespace KolonyTools
         [KSPField] 
         public float MinAbundance = 0f;
 
-        private static List<string> _blackList = new List<string>{"Dirt","ResourceLode"};
-
+        private static List<string> _blackList = new List<string> { "Dirt", "ResourceLode" };
         private int _lastLoadedPlanet = -1;
-
         private List<ResourceRatio> _resourceYields;
+
+        public override ConversionRecipe PrepareRecipe(ConversionRecipe recipe)
+        {
+            base.PrepareRecipe(recipe);
+
+            CheckYieldsAreLoaded(recipe.Inputs);
+            var staticOutputs = GetResourceNames(recipe.Outputs);
+
+            var count = _resourceYields.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                var resourceOutput = _resourceYields[i];
+                if (!staticOutputs.Contains(resourceOutput.ResourceName))
+                    recipe.Outputs.Add(new ResourceRatio(resourceOutput.ResourceName, resourceOutput.Ratio, true));
+            }
+
+            return recipe;
+        }
+
+        private void CheckYieldsAreLoaded(List<ResourceRatio> inputs)
+        {
+            if (vessel.mainBody.flightGlobalsIndex != _lastLoadedPlanet || _resourceYields == null)
+            {
+                LoadPlanetYields(inputs);
+            }
+        }
 
         private void LoadPlanetYields(List<ResourceRatio> inputs)
         {
@@ -74,6 +96,17 @@ namespace KolonyTools
             }
         }
 
+        private List<string> GetResourceNames(List<ResourceRatio> inputs)
+        {
+            var resNames = new List<string>();
+            var count = inputs.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                resNames.Add(inputs[i].ResourceName);
+            }
+            return resNames;
+        }
+
         private static Dictionary<string, double> GetResourceAbundance(int planetBodyIndex, List<string> inputResourcesNames)
         {
             Dictionary<string, double> planetResourceAbundance = new Dictionary<string, double>();
@@ -93,45 +126,6 @@ namespace KolonyTools
                 }
             }
             return planetResourceAbundance;
-        }
-
-        private List<string> GetResourceNames(List<ResourceRatio> inputs)
-        {
-            var resNames = new List<string>();
-            var count = inputs.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                resNames.Add(inputs[i].ResourceName);                
-            }
-            return resNames;
-        }
-
-        private void CheckYieldsAreLoaded(List<ResourceRatio> inputs)
-        {
-            if (vessel.mainBody.flightGlobalsIndex != _lastLoadedPlanet || _resourceYields == null)
-            {
-                LoadPlanetYields(inputs);
-            }
-        }
-
-        protected override ConversionRecipe PrepareRecipe(double deltatime)
-        {
-            if (!IsActivated)
-                return new ConversionRecipe();
-
-            var recipe = base.PrepareRecipe(deltatime);
-
-            CheckYieldsAreLoaded(recipe.Inputs);
-            var staticOutputs = GetResourceNames(recipe.Outputs);
-
-            var count = _resourceYields.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                var resourceOutput = _resourceYields[i];
-                if (!staticOutputs.Contains(resourceOutput.ResourceName))
-                    recipe.Outputs.Add(new ResourceRatio(resourceOutput.ResourceName, resourceOutput.Ratio, true));
-            }
-            return recipe;
         }
     }
 }

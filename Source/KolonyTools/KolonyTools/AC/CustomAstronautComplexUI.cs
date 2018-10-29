@@ -10,7 +10,7 @@ namespace KolonyTools.AC
 {
     class CustomAstronautComplexUI : MonoBehaviour
     {
-        private Rect _areaRect = new Rect(-500f, -500f, 200f, 200f);
+        private Rect _areaRect;
         private float KBulk = 1;
         private int KBulki = 1;
         private int crewWeCanHire = 10;
@@ -18,25 +18,26 @@ namespace KolonyTools.AC
         private static float KCourage = 50;
         private static bool KFearless = false;
         private static int KCareer = 0;
-        private List<Kolonist> _kolonists; private static int KLevel = 0;
+        private List<Kolonist> _kolonists;
+        private static int KLevel = 0;
         private string[] _recruitableKolonists;
         private string[] KLevelStringsZero = new string[1] { "Level 0" };
         private string[] KLevelStringsOne = new string[2] { "Level 0", "Level 1" };
         private string[] KLevelStringsTwo = new string[3] { "Level 0", "Level 1", "Level 2" };
         //private string[] KLevelStringsAll = new string[6] { "Level 0", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
         private static int KGender = 0;
-        private GUIContent KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
-        private GUIContent KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
-        private GUIContent KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+        private GUIContent KMale;
+        private GUIContent KFemale;
+        private GUIContent KGRandom;
         private GUIContent[] KGendArray;
-        Color basecolor = GUI.color;
+        Color basecolor;
         private float ACLevel = 0;
         private double KDead;
         private double DCost = 1;
-        KerbalRoster roster = HighLogic.CurrentGame.CrewRoster;
+        KerbalRoster roster;
         private bool hTest = true;
         private bool hasKredits = true;
-        private bool kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
+        private bool kerExp;
         private static string RecruitLevel = "RecruitementLevel";
 
         [KSPAddon(KSPAddon.Startup.Instantly, true)]
@@ -55,20 +56,30 @@ namespace KolonyTools.AC
 
         private void Awake()
         {
-            _kolonists = new List<Kolonist>();
-            _kolonists.Add(new Kolonist { Name = "Pilot", isBase = true, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" });
-            _kolonists.Add(new Kolonist { Name = "Scientist", isBase = true, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Engineer", isBase = true, Effects = "Repair, Converter, Drill, Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Kolonist", isBase = false, Effects = "RepBoost, FundsBoost, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Miner", isBase = false, Effects = "Drill, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Technician", isBase = false, Effects = "Converter, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Mechanic", isBase = false, Effects = "Repair, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Biologist", isBase = false, Effects = "Biology, ScienceBoost" });
-            _kolonists.Add(new Kolonist { Name = "Geologist", isBase = false, Effects = "Geology, FundsBoost" });
-            _kolonists.Add(new Kolonist { Name = "Farmer", isBase = false, Effects = "Agronomy, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Medic", isBase = false, Effects = "Medical, ScienceBoost, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Quartermaster", isBase = false, Effects = "Logistics, RepBoost" });
-            _kolonists.Add(new Kolonist { Name = "Scout", isBase = false, Effects = "Explorer" });
+            _areaRect = new Rect(-500f, -500f, 200f, 200f);
+            KMale = new GUIContent("Male", AssetBase.GetTexture("kerbalicon_recruit"));
+            KFemale = new GUIContent("Female", AssetBase.GetTexture("kerbalicon_recruit_female"));
+            KGRandom = new GUIContent("Random", "When this option is selected the kerbal might be male or female");
+            basecolor = GUI.color;
+            roster = HighLogic.CurrentGame.CrewRoster;
+            kerExp = HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().KerbalExperienceEnabled(HighLogic.CurrentGame.Mode);
+
+            _kolonists = new List<Kolonist>
+            {
+                new Kolonist { Name = "Pilot", isBase = true, Effects = "Autopilot, VesselControl, RepBoost, Logistics, Explorer" },
+                new Kolonist { Name = "Scientist", isBase = true, Effects = "Science, Experiment, Botany, Agronomy, Medical, ScienceBoost" },
+                new Kolonist { Name = "Engineer", isBase = true, Effects = "Repair, Converter, Drill, Geology, FundsBoost" },
+                new Kolonist { Name = "Kolonist", isBase = false, Effects = "RepBoost, FundsBoost, ScienceBoost" },
+                new Kolonist { Name = "Miner", isBase = false, Effects = "Drill, FundsBoost" },
+                new Kolonist { Name = "Technician", isBase = false, Effects = "Converter, FundsBoost" },
+                new Kolonist { Name = "Mechanic", isBase = false, Effects = "Repair, FundsBoost" },
+                new Kolonist { Name = "Biologist", isBase = false, Effects = "Biology, ScienceBoost" },
+                new Kolonist { Name = "Geologist", isBase = false, Effects = "Geology, FundsBoost" },
+                new Kolonist { Name = "Farmer", isBase = false, Effects = "Agronomy, ScienceBoost, RepBoost" },
+                new Kolonist { Name = "Medic", isBase = false, Effects = "Medical, ScienceBoost, RepBoost" },
+                new Kolonist { Name = "Quartermaster", isBase = false, Effects = "Logistics, RepBoost" },
+                new Kolonist { Name = "Scout", isBase = false, Effects = "Explorer" }
+            };
             KGendArray = new GUIContent[3] { KGRandom, KMale, KFemale };
         }
 
