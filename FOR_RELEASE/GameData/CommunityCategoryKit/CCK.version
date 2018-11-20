@@ -23,9 +23,9 @@
     "NAME": "Community Category Kit", 
     "URL": "https://raw.githubusercontent.com/BobPalmer/CommunityCategoryKit/master/FOR_RELEASE/GameData/CommunityCategoryKit/CCK.version", 
     "VERSION": {
-        "BUILD": 4, 
-        "MAJOR": 0, 
+        "MAJOR": 4, 
         "MINOR": 0, 
-        "PATCH": 0
-    }
+        "PATCH": 0,
+        "BUILD": 0     
+	}
 }

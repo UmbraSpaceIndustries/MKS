@@ -1,6 +1,7 @@
-1.0.0 - 2018.10.20
+1.0.0 - 2018.11.20
 ------------------
 KSP 1.5.0 Compatibility
+Fix FSfuelSwitch mass discrepancy in MountableSupPack & MountableLqdTank
 
 0.8.0 - 2018.06.22
 ------------------
