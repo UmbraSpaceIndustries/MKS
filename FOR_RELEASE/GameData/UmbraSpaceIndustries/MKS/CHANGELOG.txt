@@ -1,3 +1,27 @@
+1.1.0 - 2019.02.05
+------------------
+KSP 1.6.x Compatibility
+
+1.0.0 - 2018.11.20
+------------------
+KSP 1.5.0 Compatibility
+Microwave Tranceiver now works on unmanned bases (Thanks jd284!)
+Updated GC/ATI_Utils
+Fixes to Tundra LFO ratios (Thanks Wyzard256!)
+Fix Silicon Converter (Thanks boiler1!)
+Multiple fixes to Orbital Logistics!
+
+0.56.0 - 2018.06.22
+------------------
+KSP 1.4.4 Compatibility
+Updated LH2 tank capacity for cryotanks compatibility (Thanks Wyzard256!)
+Included latest version of Ground Construction!
+Set 'DumpExcess' to false for all logistics centers (Thanks LouisCyfer!)
+Fixed bug with depleted fuel amount (Thanks Darinth!)
+Fixed missing nodes on the Tundra ASM (Thanks Darinth!)
+EPL Compatibility updates (Thanks Voicey99!)
+Fixed drills not loading properly (Thanks MaximeBrean!)
+
 0.55.0 - 2018.03.13
 ------------------
 KSP 1.4.1 Compatibility

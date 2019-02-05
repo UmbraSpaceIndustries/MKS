@@ -1,3 +1,20 @@
+1.1.0 - 2019.02.05
+------------------
+KSP 1.6.x Compatibility
+
+1.0.1 - 2018.11.20
+------------------
+Fixed antimatter config name
+
+1.0.0 - 2018.10.20
+------------------
+KSP 1.5.0 Compatibility
+Normalized atmospheric resource harvesting values.
+
+0.11.0 - 2018.06.22
+------------------
+KSP 1.4.4 Compatibility
+
 0.10.0 - 2018.03.13
 -----------------
 KSP 1.4.1 Compatibility

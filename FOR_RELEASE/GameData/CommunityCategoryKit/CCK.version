@@ -7,25 +7,25 @@
     }, 
      "KSP_VERSION":{
          "MAJOR":1,
-         "MINOR":4,
-         "PATCH":1
+         "MINOR":6,
+         "PATCH":0
      },
      "KSP_VERSION_MIN":{
          "MAJOR":1,
-         "MINOR":4,
+         "MINOR":6,
          "PATCH":0
      },
      "KSP_VERSION_MAX":{
          "MAJOR":1,
-         "MINOR":4,
+         "MINOR":6,
          "PATCH":9
      }, 
     "NAME": "Community Category Kit", 
     "URL": "https://raw.githubusercontent.com/BobPalmer/CommunityCategoryKit/master/FOR_RELEASE/GameData/CommunityCategoryKit/CCK.version", 
     "VERSION": {
-        "BUILD": 0, 
-        "MAJOR": 3, 
-        "MINOR": 0, 
-        "PATCH": 0
-    }
+        "MAJOR": 4, 
+        "MINOR": 1, 
+        "PATCH": 0,
+        "BUILD": 0     
+	}
 }

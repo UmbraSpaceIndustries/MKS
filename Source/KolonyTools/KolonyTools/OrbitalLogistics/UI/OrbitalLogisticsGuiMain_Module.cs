@@ -58,7 +58,10 @@ namespace KolonyTools
             foreach (OrbitalLogisticsTransferRequest transfer in _scenario.PendingTransfers)
             {
                 // Only show transfers in the module's SoI
-                if (transfer.Destination.mainBody != _module.vessel.mainBody && transfer.Origin.mainBody != _module.vessel.mainBody)
+                if (transfer.Destination == null
+                    || transfer.Origin == null
+                    || (transfer.Destination.mainBody != _module.vessel.mainBody
+                        && transfer.Origin.mainBody != _module.vessel.mainBody))
                     continue;
 
                 // Determine text color based on transfer status
@@ -83,8 +86,8 @@ namespace KolonyTools
 
                     ReviewTransferGui.SetVisible(true);
                 }
-                GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(155));
-                GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(" " + transfer.OriginVesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(transfer.DestinationVesselName, labelStyle, GUILayout.Width(155));
                 GUILayout.Label(
                     Utilities.FormatTime(transfer.GetArrivalTime() - Planetarium.GetUniversalTime()),
                     rAlignLabelStyle, GUILayout.Width(80)
@@ -109,7 +112,10 @@ namespace KolonyTools
             foreach (OrbitalLogisticsTransferRequest transfer in _scenario.ExpiredTransfers)
             {
                 // Only show transfers in the module's SoI
-                if (transfer.Destination.mainBody != _module.vessel.mainBody && transfer.Origin.mainBody != _module.vessel.mainBody)
+                if (transfer.Destination == null
+                    || transfer.Origin == null
+                    || (transfer.Destination.mainBody != _module.vessel.mainBody
+                        && transfer.Origin.mainBody != _module.vessel.mainBody))
                     continue;
 
                 // Determine text color based on transfer status
@@ -132,8 +138,8 @@ namespace KolonyTools
 
                     ReviewTransferGui.SetVisible(true);
                 }
-                GUILayout.Label(" " + transfer.Origin.vesselName, labelStyle, GUILayout.Width(155));
-                GUILayout.Label(transfer.Destination.vesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(" " + transfer.OriginVesselName, labelStyle, GUILayout.Width(155));
+                GUILayout.Label(transfer.DestinationVesselName, labelStyle, GUILayout.Width(155));
                 GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(80));
                 GUILayout.EndHorizontal();
             }

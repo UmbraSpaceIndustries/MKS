@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using UnityEngine;
 
 namespace KolonyTools
@@ -11,8 +11,14 @@ namespace KolonyTools
     public class ModuleOrbitalLogistics : PartModule
     {
         #region KSPFields
+        [KSPField(isPersistant = true, guiActive = false, guiActiveEditor = false)]
+        public string ModuleId;
+
         [KSPField(isPersistant = false, guiActive = false)]
         public float MaxTransferMass = 1000000f;
+
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Available T-Credits")]
+        public string TransportCredits;
         #endregion
 
         #region Static class variables
@@ -25,6 +31,7 @@ namespace KolonyTools
 
         protected OrbitalLogisticsGuiMain_Module _mainGui;
         protected ScenarioOrbitalLogistics _scenario;
+        private double _nextCheckTime;
         #endregion
 
         /// <summary>
@@ -59,6 +66,21 @@ namespace KolonyTools
         }
 
         /// <summary>
+        /// Implementation of <see cref="MonoBehaviour"/>.Update
+        /// </summary>
+        void Update()
+        {
+            // We're just displaying the current amount of TransportCredits on the vessel
+            //   This only needs to be done in flight and doesn't need to be done hyperactively.
+            //   Once per second is sufficient.
+            if (!HighLogic.LoadedSceneIsFlight || _nextCheckTime > Planetarium.GetUniversalTime())
+                return;
+
+            TransportCredits = vessel.GetTransportCapacity().ToString("N0");
+            _nextCheckTime = Planetarium.GetUniversalTime() + 1;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="MonoBehaviour"/>.OnGUI
         /// </summary>
         void OnGUI()
@@ -83,6 +105,15 @@ namespace KolonyTools
             }
         }
 
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+
+            string moduleId = string.Empty;
+            if (!node.TryGetValue("ModuleId", ref moduleId) || string.IsNullOrEmpty(moduleId))
+                ModuleId = Guid.NewGuid().ToString();
+        }
+
         /// <summary>
         /// Make a list of all valid tranfer vessels on this celestial body.
         /// </summary>
@@ -96,11 +127,13 @@ namespace KolonyTools
             {
                 if (vessel.mainBody.name == this.vessel.mainBody.name)
                 {
-                    if (!vessel.packed && vessel.loaded
-                        && vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
-                        && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
+                    if (vessel.loaded)
                     {
-                        BodyVesselList.Add(vessel);
+                        if (vessel.situation == (vessel.situation & VesselSituationsAllowedForTransfer)
+                            && vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>() != null)
+                        {
+                            BodyVesselList.Add(vessel);
+                        }
                     }
                     else if (vessel.protoVessel.situation == (vessel.protoVessel.situation & VesselSituationsAllowedForTransfer))
                     {
@@ -126,6 +159,59 @@ namespace KolonyTools
 
             // Sort by vessel name
             BodyVesselList.Sort((a, b) => a.vesselName.CompareTo(b.vesselName));
+        }
+
+        public static string GetOrbLogModuleIdForVessel(Vessel vessel)
+        {
+            if (vessel.loaded)
+            {
+                return vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>().ModuleId;
+            }
+            else
+            {
+                foreach (var part in vessel.protoVessel.protoPartSnapshots)
+                {
+                    foreach (var module in part.modules)
+                    {
+                        if (module.moduleName == "ModuleOrbitalLogistics")
+                        {
+                            return module.moduleValues.GetValue("ModuleId") ?? "unassigned";
+                        }
+                    }
+                }
+            }
+
+            return "not found";
+        }
+
+        public static Vessel FindVesselByOrbLogModuleId(string moduleId)
+        {
+            foreach (Vessel vessel in FlightGlobals.Vessels)
+            {
+                if (vessel.loaded)
+                {
+                    var modules = vessel.FindPartModulesImplementing<ModuleOrbitalLogistics>();
+                    if (modules.Any(m => m.ModuleId == moduleId))
+                    {
+                        return vessel;
+                    }
+                }
+                else
+                {
+                    foreach (var part in vessel.protoVessel.protoPartSnapshots)
+                    {
+                        foreach (var module in part.modules)
+                        {
+                            if (module.moduleName == "ModuleOrbitalLogistics" && module.moduleValues.GetValue("ModuleId") == moduleId)
+                            {
+                                return vessel;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
