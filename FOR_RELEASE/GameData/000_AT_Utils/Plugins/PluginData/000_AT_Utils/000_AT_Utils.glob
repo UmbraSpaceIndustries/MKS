@@ -1,5 +1,5 @@
 MeshesToSkip = flagtransform canopy
-BadParts = RadialDrill MKS.Drill.02 MKS.Drill.03
+BadParts = RadialDrill MKS.Drill.02 MKS.Drill.03 dmFlexoTube
 
 StylesConfig
 {
