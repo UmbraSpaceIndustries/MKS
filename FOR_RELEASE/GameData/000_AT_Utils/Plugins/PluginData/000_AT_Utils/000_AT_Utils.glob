@@ -1,15 +1,78 @@
+LineWidthMult = 0.4
+MinLineWidthMult = 0.01
+
 MeshesToSkip = flagtransform canopy
 BadParts = RadialDrill MKS.Drill.02 MKS.Drill.03 dmFlexoTube
 
+Colors
+{
+	Enabled
+	{
+		html = #00FF00FF
+	}
+	Active
+	{
+		html = #FFEB04FF
+	}
+	Inactive
+	{
+		html = #808080FF
+	}
+	Confirm
+	{
+		html = #00FF00FF
+	}
+	Open
+	{
+		html = #00FF00FF
+	}
+	Close
+	{
+		html = #FF0000FF
+	}
+	Good
+	{
+		html = #00FF00FF
+	}
+	Warning
+	{
+		html = #FFEB04FF
+	}
+	Danger
+	{
+		html = #FF0000FF
+	}
+	Selected1
+	{
+		html = #00FFFFFF
+	}
+	Selected2
+	{
+		html = #FF00FFFF
+	}
+	FractionGradient
+	{
+		Item
+		{
+			html = #FF0000FF
+		}
+		Item
+		{
+			html = #FFEB04FF
+		}
+		Item
+		{
+			html = #FFFFFF
+		}
+		Item
+		{
+			html = #00FF00FF
+		}
+	}
+}
+
 StylesConfig
 {
-    //available colors: normal (meaning white), grey, red, dark_red, green, dark_green, yellow, dark_yellow, cyan, magenta
-    EnabledButtonColor = green
-    ActiveButtonColor = yellow
-    InactiveButtonColor = grey
-    ConfirmButtonColor = green
-    AddButtonColor = green
-    CloseButtonColor = red
-    DangerButtonColor = red
 }
+
 //:mode=c#:
