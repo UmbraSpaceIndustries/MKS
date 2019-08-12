@@ -78,6 +78,9 @@ namespace KolonyTools
         public DeliveryStatus Status = DeliveryStatus.PreLaunch;
 
         [Persistent]
+        public string StatusMessage;
+
+        [Persistent]
         public double Duration = 0;
 
         [Persistent]
@@ -286,6 +289,7 @@ namespace KolonyTools
             if (Origin == null || Destination == null)
             {
                 Status = DeliveryStatus.Failed;
+                StatusMessage = "The origin or destination vessel no longer exists.";
                 yield break;
             }
 
@@ -293,6 +297,7 @@ namespace KolonyTools
             if (Origin.mainBody != Destination.mainBody)
             {
                 Status = DeliveryStatus.Failed;
+                StatusMessage = "The origin and destination vessels are no longer in the same sphere of influence.";
                 yield break;
             }
 
@@ -301,6 +306,7 @@ namespace KolonyTools
                 || Destination.protoVessel.situation != (Destination.protoVessel.situation & ALLOWED_SITUATIONS))
             {
                 Status = DeliveryStatus.Failed;
+                StatusMessage = "The origin or destination vessel is no longer in an allowed situation for logistics transfers.";
                 yield break;
             }
 
@@ -309,6 +315,7 @@ namespace KolonyTools
             if (Destination != whoHasTheDestinationOrbLogModule)
             {
                 Status = DeliveryStatus.Failed;
+                StatusMessage = "The target logistics module could not be found on the destination vessel.";
                 yield break;
             }
 
@@ -339,7 +346,15 @@ namespace KolonyTools
             if (Status == DeliveryStatus.Returning)
                 Status = DeliveryStatus.Cancelled;
             else
-                Status = deliveredAll ? DeliveryStatus.Delivered : DeliveryStatus.Partial;
+            {
+                if (deliveredAll)
+                    Status = DeliveryStatus.Delivered;
+                else
+                {
+                    Status = DeliveryStatus.Partial;
+                    StatusMessage = "The destination vessel did not have enough available storage for the delivery.";
+                }
+            }
         }
 
         /// <summary>
