@@ -105,15 +105,6 @@ namespace KolonyTools
             }
         }
 
-        public override void OnLoad(ConfigNode node)
-        {
-            base.OnLoad(node);
-
-            string moduleId = string.Empty;
-            if (!node.TryGetValue("ModuleId", ref moduleId) || string.IsNullOrEmpty(moduleId))
-                ModuleId = Guid.NewGuid().ToString();
-        }
-
         /// <summary>
         /// Make a list of all valid tranfer vessels on this celestial body.
         /// </summary>
@@ -165,7 +156,13 @@ namespace KolonyTools
         {
             if (vessel.loaded)
             {
-                return vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>().ModuleId;
+                var module = vessel.FindPartModuleImplementing<ModuleOrbitalLogistics>();
+                if (string.IsNullOrEmpty(module.ModuleId))
+                {
+                    module.ModuleId = Guid.NewGuid().ToString();
+                }
+
+                return module.ModuleId;
             }
             else
             {
@@ -175,7 +172,14 @@ namespace KolonyTools
                     {
                         if (module.moduleName == "ModuleOrbitalLogistics")
                         {
-                            return module.moduleValues.GetValue("ModuleId") ?? "unassigned";
+                            var moduleId = module.moduleValues.GetValue("ModuleId") ?? string.Empty;
+                            if (string.IsNullOrEmpty(moduleId))
+                            {
+                                moduleId = Guid.NewGuid().ToString();
+                                module.moduleValues.SetValue("ModuleId", moduleId, true);
+                            }
+
+                            return moduleId;
                         }
                     }
                 }

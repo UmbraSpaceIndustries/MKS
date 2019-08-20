@@ -79,6 +79,14 @@ namespace KolonyTools
                 );
             GUILayout.EndHorizontal();
 
+            if (Transfer.Status == DeliveryStatus.Failed || Transfer.Status == DeliveryStatus.Partial)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Reason:", UIHelper.whiteLabelStyle, GUILayout.Width(100));
+                GUILayout.Label(Transfer.StatusMessage, UIHelper.redRightAlignLabelStyle, GUILayout.MinWidth(100), GUILayout.MaxWidth(300));
+                GUILayout.EndHorizontal();
+            }
+
             GUILayout.Label("Resource Quantities", UIHelper.labelStyle, GUILayout.Width(200));
             _quantityScrollPosition = GUILayout.BeginScrollView(
                 _quantityScrollPosition,
