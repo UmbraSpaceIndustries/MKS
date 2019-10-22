@@ -223,14 +223,14 @@ namespace KolonyTools
 
             switch (Event.current.GetTypeForControl(controlID))
             {
-                case EventType.mouseDown:
+                case EventType.MouseDown:
                     if (isTopmostMouseOver)
                     {
                         GUIUtility.hotControl = controlID;
                     }
                     break;
 
-                case EventType.mouseUp:
+                case EventType.MouseUp:
                     if (isTopmostMouseOver)
                     {
                         GUIUtility.hotControl = 0;
