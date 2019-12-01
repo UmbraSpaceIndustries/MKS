@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using KSP.UI.Screens;
 using UnityEngine;
+using KSP.Localization;
 
 //Borrowed from The Read Panda's excellent mod, TRP-Hire, with permission.
 
@@ -232,20 +233,20 @@ namespace KolonyTools.AC
         private string hireStatus()
         {
 
-            string bText = "Hire Applicant";
+            string bText = Localizer.Format("#LOC_USI_AC_hireStatus1");//"Hire Applicant"
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
                 double kredits = Funding.Instance.Funds;
                 if (HighLogic.CurrentGame.CrewRoster.GetActiveCrewCount() >= GameVariables.Instance.GetActiveCrewLimit(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.AstronautComplex)))
                 {
-                    bText = "Roster is Full!";
+                    bText = Localizer.Format("#LOC_USI_AC_hireStatus2");//"Roster is Full!"
                     hTest = false;
                 }
                 else
                 {
                     if (costMath() > kredits)
                     {
-                        bText = "Not Enough Funds!";
+                        bText = Localizer.Format("#LOC_USI_AC_hireStatus3");//"Not Enough Funds!"
                         hTest = false;
                     }
                     else
@@ -309,7 +310,7 @@ namespace KolonyTools.AC
 
             GUILayout.BeginArea(_areaRect);
             {
-                GUILayout.Label("Recruit new Kerbalnaut"); // Testing Renaming Label Works
+                GUILayout.Label(Localizer.Format("#LOC_USI_AC_Recruit")); // Testing Renaming Label Works//"Recruit new Kerbalnaut"
 
                 // Gender selection 
                 GUILayout.BeginHorizontal("box");
@@ -331,11 +332,11 @@ namespace KolonyTools.AC
                 // Adding a section for 'number/bulk hire' here using the int array kBulk 
                 if (cbulktest() < 1)
                 {
-                    GUILayout.Label("Bulk hire Option: You can not hire any more kerbals at this time!");
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_NomoreHire"));//"Bulk hire Option: You can not hire any more kerbals at this time!"
                 }
                 else
                 {
-                    GUILayout.Label("Bulk hire Selector: " + KBulki);
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_BulkHire", KBulki));//"Bulk hire Selector: " + 
                     KBulk = GUILayout.HorizontalSlider(KBulk, 1, cbulktest());
                     KBulki = Convert.ToInt32(KBulk);
 
@@ -348,24 +349,24 @@ namespace KolonyTools.AC
                 {
                     // Courage Brains and BadS flag selections
                     GUILayout.BeginVertical("box");
-                    GUILayout.Label("Courage:  " + Math.Truncate(KCourage));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_KCourage", Math.Truncate(KCourage)));//"Courage:  " + 
                     KCourage = GUILayout.HorizontalSlider(KCourage, 0, 100);
-                    GUILayout.Label("Stupidity:  " + Math.Truncate(KStupidity));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_KStupidity", Math.Truncate(KStupidity)));//"Stupidity:  " + 
                     KStupidity = GUILayout.HorizontalSlider(KStupidity, 0, 100);
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Is this Kerbal Fearless?");
-                    KFearless = GUILayout.Toggle(KFearless, "Fearless");
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_KFearless"));//"Is this Kerbal Fearless?"
+                    KFearless = GUILayout.Toggle(KFearless, Localizer.Format("#LOC_USI_AC_KFearlessToggle"));//"Fearless"
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
 
                     // Level selection
                     GUILayout.BeginVertical("box");
-                    GUILayout.Label("Select Your Level:");
+                    GUILayout.Label(Localizer.Format("#LOC_USI_AC_Levelselection"));//"Select Your Level:"
 
                     // If statements for level options
                     if (kerExp == false)
                     {
-                        GUILayout.Label("Level 5 - Mandatory for Career with no EXP enabled.");
+                        GUILayout.Label(Localizer.Format("#LOC_USI_AC_Levelselection2"));//"Level 5 - Mandatory for Career with no EXP enabled."
                     }
                     else
                     {
@@ -383,7 +384,7 @@ namespace KolonyTools.AC
                         }
                         if (ACLevel == 5)
                         {
-                            GUILayout.Label("Level 5 - Mandatory for Sandbox or Science Mode.");
+                            GUILayout.Label(Localizer.Format("#LOC_USI_AC_Levelselection3"));//"Level 5 - Mandatory for Sandbox or Science Mode."
                         }
                     }
                     GUILayout.EndVertical();
@@ -396,12 +397,12 @@ namespace KolonyTools.AC
                     //GUILayout.FlexibleSpace();
                     if (costMath() <= Funding.Instance.Funds)
                     {
-                        GUILayout.Label("Cost: " + costMath(), HighLogic.Skin.textField);
+                        GUILayout.Label(Localizer.Format("#LOC_USI_AC_Cost", costMath()), HighLogic.Skin.textField);//"Cost: " + 
                     }
                     else
                     {
                         GUI.color = Color.red;
-                        GUILayout.Label("Insufficient Funds - Cost: " + costMath(), HighLogic.Skin.textField);
+                        GUILayout.Label(Localizer.Format("#LOC_USI_AC_Cost2", costMath()), HighLogic.Skin.textField);//"Insufficient Funds - Cost: " + 
                         GUI.color = basecolor;
                     }
                     // GUILayout.FlexibleSpace();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using USITools;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -21,7 +22,7 @@ namespace KolonyTools
         [KSPField]
         public bool ApplyBonuses = true;
 
-        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
+        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]//
         public float Governor = 1.0f;
 
         [KSPField(isPersistant = true)]
