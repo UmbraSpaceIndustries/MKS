@@ -10,6 +10,7 @@ using USITools;
 using Random = System.Random;
 using KSP.UI.Screens;
 using PlanetaryLogistics;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -126,14 +127,14 @@ namespace KolonyTools
         {
             if(!HighLogic.LoadedSceneIsFlight)
             {
-                GUILayout.Label("Local transfers are only available in flight.", _labelStyle, GUILayout.Width(400));
+                GUILayout.Label(Localizer.Format("#LOC_USI_KolonyInventory_Label5"), _labelStyle, GUILayout.Width(400));//"Local transfers are only available in flight."
                 return;
             }
 
             CheckVessels();
             if (!_crewPresent || _participatingVessels.Count < 2)
             {
-                GUILayout.Label(String.Format("No other vessels, or no crew present"), _labelStyle, GUILayout.Width(400));
+                GUILayout.Label(Localizer.Format("#LOC_USI_KolonyInventory_Label6"), _labelStyle, GUILayout.Width(400));//String.Format("No other vessels, or no crew present")
                 return;
             }
 
@@ -163,7 +164,7 @@ namespace KolonyTools
             
             //Now our resources...
             if(_transferableResources.Count == 0)
-                GUILayout.Label("No transferrable resources present.", _labelStyle, GUILayout.Width(300));
+                GUILayout.Label(Localizer.Format("#LOC_USI_KolonyInventory_Label7"), _labelStyle, GUILayout.Width(300));//"No transferrable resources present."
 
             UpdateResourceList();
             var i = 0;

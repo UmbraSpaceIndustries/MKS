@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using KSP.UI.Screens;
 using PlanetaryLogistics;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -100,7 +101,7 @@ namespace KolonyTools
             }
 
             // Setup tab labels
-            _tabLabels = new[] { "Kolony Statistics", "Local Logistics", "Planetary Logistics", "Kolony Inventory", "Orbital Logistics" };
+            _tabLabels = new[] { Localizer.Format("#LOC_USI_Monitor_TabLabel1"), Localizer.Format("#LOC_USI_Monitor_TabLabel2"), Localizer.Format("#LOC_USI_Monitor_TabLabel3"), Localizer.Format("#LOC_USI_Monitor_TabLabel4"), Localizer.Format("#LOC_USI_Monitor_TabLabel5") };//"Kolony Statistics""Local Logistics""Planetary Logistics""Kolony Inventory""Orbital Logistics"
         }
 
         private void InitStyles()
@@ -126,7 +127,7 @@ namespace KolonyTools
                     return;
 
                 // Draw main window
-                _windowPosition = GUILayout.Window(12, _windowPosition, OnWindow, "Kolonization Dashboard", _windowStyle);
+                _windowPosition = GUILayout.Window(12, _windowPosition, OnWindow, Localizer.Format("#LOC_USI_Monitor_title"), _windowStyle);//"Kolonization Dashboard"
 
                 // Draw child windows
                 foreach (var window in _childWindows)
@@ -188,10 +189,10 @@ namespace KolonyTools
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(String.Format("Body Name"), _labelStyle, GUILayout.Width(135));
-            GUILayout.Label(String.Format("Geology"), _labelStyle, GUILayout.Width(120));
-            GUILayout.Label(String.Format("Botany"), _labelStyle, GUILayout.Width(120));
-            GUILayout.Label(String.Format("Kolonization"), _labelStyle, GUILayout.Width(120));
+            GUILayout.Label(String.Format(Localizer.Format("#LOC_USI_Monitor_StatsLabel1")), _labelStyle, GUILayout.Width(135));//"Body Name"
+            GUILayout.Label(String.Format(Localizer.Format("#LOC_USI_Monitor_StatsLabel2")), _labelStyle, GUILayout.Width(120));//"Geology"
+            GUILayout.Label(String.Format(Localizer.Format("#LOC_USI_Monitor_StatsLabel3")), _labelStyle, GUILayout.Width(120));//"Botany"
+            GUILayout.Label(String.Format(Localizer.Format("#LOC_USI_Monitor_StatsLabel4")), _labelStyle, GUILayout.Width(120));//"Kolonization"
             GUILayout.EndHorizontal();
 
             var focusedPlanet = GetFocusedPlanet();

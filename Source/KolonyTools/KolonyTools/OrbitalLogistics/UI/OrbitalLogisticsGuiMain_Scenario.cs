@@ -1,6 +1,7 @@
 ﻿using System;
 
 using UnityEngine;
+using KSP.Localization;
 
 namespace KolonyTools
 {

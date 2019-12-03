@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using USITools;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -169,7 +170,7 @@ namespace KolonyTools
         {
             if (!HighLogic.LoadedSceneIsFlight)
             {
-                GUILayout.Label("Kolony Inventory only available on active vessels.", _labelStyle, GUILayout.Width(400));
+                GUILayout.Label(Localizer.Format("#LOC_USI_KolonyInventory_Label"), _labelStyle, GUILayout.Width(400));//"Kolony Inventory only available on active vessels."
                 return;
             }
 
@@ -183,10 +184,10 @@ namespace KolonyTools
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("<color=#FFFFFF>Resource</color>", _labelStyle, GUILayout.Width(180));
-            GUILayout.Label("<color=#FFFFFF>Inventory</color>", _labelStyle, GUILayout.Width(190));
-            GUILayout.Label("<color=#FFFFFF>Rate</color>", _labelStyle, GUILayout.Width(80));
-            GUILayout.Label("<color=#FFFFFF>Supply</color>", _labelStyle, GUILayout.Width(150));
+            GUILayout.Label("<color=#FFFFFF>" + Localizer.Format("#LOC_USI_KolonyInventory_Label1") + "</color>", _labelStyle, GUILayout.Width(180));//Resource
+            GUILayout.Label("<color=#FFFFFF>" + Localizer.Format("#LOC_USI_KolonyInventory_Label2") + "</color>", _labelStyle, GUILayout.Width(190));//Inventory
+            GUILayout.Label("<color=#FFFFFF>" + Localizer.Format("#LOC_USI_KolonyInventory_Label3") + "</color>", _labelStyle, GUILayout.Width(80));//Rate
+            GUILayout.Label("<color=#FFFFFF>" + Localizer.Format("#LOC_USI_KolonyInventory_Label4") + "</color>", _labelStyle, GUILayout.Width(150));//Supply
             GUILayout.EndHorizontal();
 
             var count = _resourceList.Count;

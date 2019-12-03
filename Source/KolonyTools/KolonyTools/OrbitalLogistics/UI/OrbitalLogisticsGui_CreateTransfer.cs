@@ -2,6 +2,7 @@
 using System.Linq;
 
 using UnityEngine;
+using KSP.Localization;
 
 namespace KolonyTools
 {

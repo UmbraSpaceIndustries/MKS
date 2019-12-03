@@ -1,4 +1,5 @@
 using System.Linq;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -13,7 +14,7 @@ namespace KolonyTools
         [KSPField]
         public int MaxLevelLanded = 3; //Any other body
 
-        [KSPEvent(guiActive = true, guiName = "Conduct Training", active = true)]
+        [KSPEvent(guiActive = true, guiName = "#LOC_USI_SpaceAcademy_button", active = true)]//Conduct Training
         public void Training()
         {
             foreach (ProtoCrewMember crew in vessel.GetVesselCrew())
@@ -47,8 +48,7 @@ namespace KolonyTools
                     }
                     if (oldLevel < crew.experienceLevel)
                     {
-                        string msg = string.Format("{0} trained to level {1} {2}", crew.name, crew.experienceLevel,
-                            crew.experienceTrait.Title);
+                        string msg = Localizer.Format("#LOC_USI_SpaceAcademy_LvUpMsg", crew.name,crew.experienceLevel,crew.experienceTrait.Title);//string.Format("{0} trained to level {1} {2}", , ,)
                         ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                     }
                 }
