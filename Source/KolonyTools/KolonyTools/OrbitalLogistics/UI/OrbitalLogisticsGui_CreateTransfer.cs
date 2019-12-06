@@ -2,6 +2,7 @@
 using System.Linq;
 
 using UnityEngine;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -100,13 +101,13 @@ namespace KolonyTools
         {
             // Origin vessel section header
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Origin", UIHelper.labelStyle, GUILayout.Width(80));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.labelStyle, GUILayout.Width(80));//"Origin"
             GUILayout.Label(_module.vessel.vesselName, UIHelper.whiteLabelStyle);
             GUILayout.EndHorizontal();  // origin vessel section
 
             // Destination vessel selection section
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Destination", UIHelper.labelStyle, GUILayout.Width(80));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Destination"), UIHelper.labelStyle, GUILayout.Width(80));//"Destination"
 
             // Display Previous button for destination vessel selection
             if (GUILayout.Button(UIHelper.leftArrowSymbol, UIHelper.buttonStyle, GUILayout.Width(30), GUILayout.Height(20)))
@@ -132,7 +133,7 @@ namespace KolonyTools
             // Display a message if there is only one vessel in the current SoI that is eligible for OrbLog
             if (_orbLogVesselsInSoI <= 1)
             {
-                GUILayout.Label(TOO_FEW_VESSELS_MESSAGE, UIHelper.yellowLabelStyle);
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_TOOFEWVESSELSmsg"), UIHelper.yellowLabelStyle);//TOO_FEW_VESSELS_MESSAGE
             }
             else
             {
@@ -148,8 +149,8 @@ namespace KolonyTools
                     // Table header
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(22));
-                    GUILayout.Label(" Resource", UIHelper.whiteLabelStyle, GUILayout.Width(165));
-                    GUILayout.Label("Available", UIHelper.whiteLabelStyle, GUILayout.MinWidth(150));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Resource"), UIHelper.whiteLabelStyle, GUILayout.Width(165));//" Resource"
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Available"), UIHelper.whiteLabelStyle, GUILayout.MinWidth(150));//"Available"
                     GUILayout.EndHorizontal();
 
                     // Table rows
@@ -202,19 +203,19 @@ namespace KolonyTools
 
                     // Show selected resource
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Resource:", UIHelper.whiteLabelStyle, GUILayout.Width(80));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Resource"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Resource:"
                     GUILayout.Label(_selectedResource.name, UIHelper.yellowLabelStyle, GUILayout.Width(120));
                     GUILayout.EndHorizontal();
 
                     // Show origin amount
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Origin:", UIHelper.whiteLabelStyle, GUILayout.Width(80));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Origin:"
                     GUILayout.Label(sourceAvailabe.ToString("F1"), UIHelper.yellowLabelStyle, GUILayout.Width(120));
                     GUILayout.EndHorizontal();
 
                     // Show destination amount and capacity
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Destination:", UIHelper.whiteLabelStyle, GUILayout.Width(80));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Destination"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Destination:"
                     GUILayout.Label(
                         string.Format("{0:F1} / {1:F0}", destinationAvailable, destinationCapacity),
                         UIHelper.yellowLabelStyle,
@@ -228,11 +229,11 @@ namespace KolonyTools
                     GUILayout.BeginVertical();
 
                     // Show transfer amount header
-                    GUILayout.Label("Transfer Amount", UIHelper.centerAlignLabelStyle, GUILayout.Width(165));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_TransferAmount"), UIHelper.centerAlignLabelStyle, GUILayout.Width(165));//"Transfer Amount"
 
                     // Show fill button and text input box
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Fill", UIHelper.buttonStyle, GUILayout.Width(65), GUILayout.Height(25)))
+                    if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_Fillbtn"), UIHelper.buttonStyle, GUILayout.Width(65), GUILayout.Height(25)))//"Fill"
                     {
                         // Determine the amount needed fill the destination vessel with the selected resource
                         double difference = destinationCapacity - destinationAvailable;
@@ -250,7 +251,7 @@ namespace KolonyTools
                     );
                     GUILayout.EndHorizontal();
 
-                    if (GUILayout.Button("Add to Transfer", UIHelper.buttonStyle, GUILayout.Width(165)))
+                    if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_Addbtn"), UIHelper.buttonStyle, GUILayout.Width(165)))//"Add to Transfer"
                     {
                         // Parse the transfer amount
                         double amount = 0;
@@ -263,7 +264,7 @@ namespace KolonyTools
 
                                 // Check if adding this transfer amount exceeds the current payload capacity
                                 _errorMessageText = !_originVessel.CanAffordTransport(_transfer.CalculateFuelUnits())
-                                    ? INSUFFICIENT_FUNDS_MESSAGE
+                                    ? Localizer.Format("#LOC_USI_OrbitalLogistics_INSUFFICIENTFUNDSmsg")//INSUFFICIENT_FUNDS_MESSAGE
                                     : string.Empty;
                             }
                         }
@@ -288,9 +289,9 @@ namespace KolonyTools
                     // Transfer list header
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(22));
-                    GUILayout.Label(" Resource", UIHelper.whiteLabelStyle, GUILayout.MinWidth(155));
-                    GUILayout.Label("Quantity", UIHelper.whiteLabelStyle, GUILayout.Width(80));
-                    GUILayout.Label("Cost", UIHelper.whiteLabelStyle, GUILayout.Width(80));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Resource"), UIHelper.whiteLabelStyle, GUILayout.MinWidth(155));//" Resource"
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Quantity"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Quantity"
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Cost"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Cost"
                     GUILayout.EndHorizontal();
 
                     // Transfer list items
@@ -313,7 +314,7 @@ namespace KolonyTools
                     GUILayout.EndScrollView();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Total Mass:", UIHelper.whiteLabelStyle, GUILayout.Width(90));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_TotalMass"), UIHelper.whiteLabelStyle, GUILayout.Width(90));//"Total Mass:"
                     GUILayout.Label(totalMass.ToString("F2"), UIHelper.yellowLabelStyle, GUILayout.Width(150));
                     GUILayout.EndHorizontal();
 
@@ -321,7 +322,7 @@ namespace KolonyTools
                     var costLabelStyle = _originVessel.CanAffordTransport(totalCost)
                         ? UIHelper.yellowLabelStyle
                         : UIHelper.redLabelStyle;
-                    GUILayout.Label("Total Cost:", UIHelper.whiteLabelStyle, GUILayout.Width(90));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_TotalCost"), UIHelper.whiteLabelStyle, GUILayout.Width(90));//"Total Cost:"
                     GUILayout.Label(
                         string.Format("{0:F2} / {1:F0}", totalCost, _originVessel.GetTransportCapacity()),
                         costLabelStyle, GUILayout.Width(150)
@@ -329,7 +330,7 @@ namespace KolonyTools
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Transit Time:", UIHelper.whiteLabelStyle, GUILayout.Width(90));
+                    GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_TransitTime"), UIHelper.whiteLabelStyle, GUILayout.Width(90));//"Transit Time:"
                     GUILayout.Label(
                         Utilities.SecondsToKerbinTime(_transfer.Duration),
                         UIHelper.yellowLabelStyle, GUILayout.Width(150)
@@ -349,7 +350,7 @@ namespace KolonyTools
             }
             else 
             {
-                if (GUILayout.Button("Start Transfer", UIHelper.buttonStyle, GUILayout.Width(110)))
+                if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_Startbtn"), UIHelper.buttonStyle, GUILayout.Width(110)))//"Start Transfer"
                 {
                     if (GameSettings.VERBOSE_DEBUG_LOG)
                         Debug.Log("[MKS] OrbitalLogisiticsTransferCreateView.DrawWindowContents: Start Transfer button pressed.");
@@ -360,7 +361,7 @@ namespace KolonyTools
                         ResetAndClose();
                 }
             }
-            if (GUILayout.Button("Cancel", UIHelper.buttonStyle, GUILayout.Width(100)))
+            if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_Cancelbtn"), UIHelper.buttonStyle, GUILayout.Width(100)))//"Cancel"
             {
                 ResetAndClose();
             }

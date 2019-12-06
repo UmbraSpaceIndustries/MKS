@@ -21,7 +21,7 @@ namespace KolonyTools
         [KSPField]
         public bool ApplyBonuses = true;
 
-        [KSPField(guiName = "Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]
+        [KSPField(guiName = "#LOC_USI_Governor", isPersistant = true, guiActive = true, guiActiveEditor = false), UI_FloatRange(stepIncrement = 0.1f, maxValue = 1f, minValue = 0f)]//Governor
         public float Governor = 1.0f;
 
         [KSPField(isPersistant = true)]

@@ -1,10 +1,11 @@
 using System;
+using KSP.Localization;
 
 namespace KolonyTools
 {
     public class ModuleColonyRewards : PartModule
     {
-        [KSPEvent (active = true, guiActive = true, guiName = "Check Kolony Rewards")]
+        [KSPEvent (active = true, guiActive = true, guiName = "Check Kolony Rewards")]//
         private void CheckRewards()
         {
             if (!HighLogic.LoadedSceneIsFlight)
@@ -38,7 +39,7 @@ namespace KolonyTools
                 if (sci > 1)
                 {
                     ResearchAndDevelopment.Instance.AddScience((float)sci, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Science", sci);
+                    var msg = String.Format("Added {0:n2} Science", sci);//
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
 
@@ -48,7 +49,7 @@ namespace KolonyTools
                 if (fun > 1)
                 {
                     Funding.Instance.AddFunds(fun, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Funds", fun);
+                    var msg = String.Format("Added {0:n2} Funds", fun);//
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
             }
@@ -57,7 +58,7 @@ namespace KolonyTools
                 if (rep > 1)
                 {
                     Reputation.Instance.AddReputation((float)rep, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Reputation", rep);
+                    var msg = String.Format("Added {0:n2} Reputation", rep);//
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
             }

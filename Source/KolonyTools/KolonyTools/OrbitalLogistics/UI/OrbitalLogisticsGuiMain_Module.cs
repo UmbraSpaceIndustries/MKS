@@ -1,4 +1,5 @@
 using UnityEngine;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -43,15 +44,15 @@ namespace KolonyTools
             GUILayout.BeginVertical();
 
             // Display pending transfers section header
-            GUILayout.Label("Pending Transfers", UIHelper.labelStyle, GUILayout.Width(200));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_PendingTrans"), UIHelper.labelStyle, GUILayout.Width(200));//"Pending Transfers"
             _scrollPositionCurrentTransfers = GUILayout.BeginScrollView(_scrollPositionCurrentTransfers);
 
             // Display pending transfers column headers
             GUILayout.BeginHorizontal();
             GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(25));
-            GUILayout.Label(" Origin", UIHelper.whiteLabelStyle, GUILayout.Width(155));
-            GUILayout.Label("Destination", UIHelper.whiteLabelStyle, GUILayout.Width(155));
-            GUILayout.Label("Arrival Time", UIHelper.whiteRightAlignLabelStyle, GUILayout.Width(80));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.whiteLabelStyle, GUILayout.Width(155));//" Origin"
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Destination"), UIHelper.whiteLabelStyle, GUILayout.Width(155));//"Destination"
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_ArrivalTime2"), UIHelper.whiteRightAlignLabelStyle, GUILayout.Width(80));//"Arrival Time"
             GUILayout.EndHorizontal();
 
             // Display pending transfers
@@ -97,15 +98,15 @@ namespace KolonyTools
             GUILayout.EndScrollView();
 
             // Display expired transfers section header
-            GUILayout.Label("Expired Tranfers", UIHelper.labelStyle, GUILayout.Width(200));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_ExpiredTrans"), UIHelper.labelStyle, GUILayout.Width(200));//"Expired Tranfers"
             _scrollPositionPreviousTransfers = GUILayout.BeginScrollView(_scrollPositionPreviousTransfers);
 
             // Display expired transfers column headers
             GUILayout.BeginHorizontal();
             GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(25));
-            GUILayout.Label(" Origin", UIHelper.whiteLabelStyle, GUILayout.Width(155));
-            GUILayout.Label("Destination", UIHelper.whiteLabelStyle, GUILayout.Width(155));
-            GUILayout.Label("Status", UIHelper.whiteLabelStyle, GUILayout.Width(80));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.whiteLabelStyle, GUILayout.Width(155));//" Origin"
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Destination"), UIHelper.whiteLabelStyle, GUILayout.Width(155));//"Destination"
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Status2"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Status"
             GUILayout.EndHorizontal();
 
             // Display expired transfers
@@ -147,13 +148,13 @@ namespace KolonyTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(100));
-            if (GUILayout.Button("New Transfer", UIHelper.buttonStyle, GUILayout.Width(120)))
+            if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_NewTransferbtn"), UIHelper.buttonStyle, GUILayout.Width(120)))//"New Transfer"
             {
                 _module.MakeBodyVesselList();
 
                 CreateTransferGui = new OrbitalLogisticsGui_CreateTransfer(_module, _scenario);
             }
-            if (GUILayout.Button("Close", UIHelper.buttonStyle, GUILayout.Width(120)))
+            if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_Closebtn"), UIHelper.buttonStyle, GUILayout.Width(120)))//"Close"
             {
                 SetVisible(false);
             }
