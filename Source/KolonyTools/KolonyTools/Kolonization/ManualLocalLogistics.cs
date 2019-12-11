@@ -134,7 +134,7 @@ namespace KolonyTools
             CheckVessels();
             if (!_crewPresent || _participatingVessels.Count < 2)
             {
-                GUILayout.Label(Localizer.Format("#LOC_USI_KolonyInventory_Label6"), _labelStyle, GUILayout.Width(400));//String.Format("No other vessels, or no crew present")
+                GUILayout.Label(String.Format(Localizer.Format("#LOC_USI_KolonyInventory_Label6")), _labelStyle, GUILayout.Width(400));//"No other vessels, or no crew present"
                 return;
             }
 

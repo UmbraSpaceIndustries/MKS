@@ -101,7 +101,7 @@ namespace KolonyTools
             }
 
             // Setup tab labels
-            _tabLabels = new[] { Localizer.Format("#LOC_USI_Monitor_TabLabel1"), Localizer.Format("#LOC_USI_Monitor_TabLabel2"), Localizer.Format("#LOC_USI_Monitor_TabLabel3"), Localizer.Format("#LOC_USI_Monitor_TabLabel4"), Localizer.Format("#LOC_USI_Monitor_TabLabel5") };//"Kolony Statistics""Local Logistics""Planetary Logistics""Kolony Inventory""Orbital Logistics"
+            _tabLabels = new[] { Localizer.Format("#LOC_USI_Monitor_TabLabel1"),Localizer.Format("#LOC_USI_Monitor_TabLabel2"),Localizer.Format("#LOC_USI_Monitor_TabLabel3"),Localizer.Format("#LOC_USI_Monitor_TabLabel4"),Localizer.Format("#LOC_USI_Monitor_TabLabel5") };//"Kolony Statistics", "Local Logistics", "Planetary Logistics", "Kolony Inventory", "Orbital Logistics"
         }
 
         private void InitStyles()

@@ -50,7 +50,7 @@ namespace KolonyTools.AC
                 for (int level = 1; level <= 5; level++)
                 {
                     var expValue = GetExperienceNeededFor(level);
-                    KerbalRoster.AddExperienceType(RecruitLevel + level, "Recruited at level " + level + " on", 0.0f, expValue);
+                    KerbalRoster.AddExperienceType(RecruitLevel + level, Localizer.Format("#LOC_USI_AC_RecruitInfo", level), 0.0f, expValue);//"Recruited at level <<1>> on"
                 }
             }
         }
@@ -310,7 +310,7 @@ namespace KolonyTools.AC
 
             GUILayout.BeginArea(_areaRect);
             {
-                GUILayout.Label(Localizer.Format("#LOC_USI_AC_Recruit")); // Testing Renaming Label Works//"Recruit new Kerbalnaut"
+                GUILayout.Label(Localizer.Format("#LOC_USI_AC_Recruit")); // Testing Renaming Label Works"Recruit new Kerbalnaut"
 
                 // Gender selection 
                 GUILayout.BeginHorizontal("box");

@@ -49,7 +49,7 @@ namespace KolonyTools
 
             // Display pending transfer section header
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Pending Transfers", UIHelper.labelStyle, GUILayout.Width(200));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_PendingTrans"), UIHelper.labelStyle, GUILayout.Width(200));//"Pending Transfers"
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();
@@ -57,7 +57,7 @@ namespace KolonyTools
             if (pendingTransfers.Length == 0)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("None", UIHelper.whiteLabelStyle, GUILayout.Width(160));
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_None"), UIHelper.whiteLabelStyle, GUILayout.Width(160));//"None"
                 GUILayout.EndHorizontal();
             }
             else
@@ -65,11 +65,11 @@ namespace KolonyTools
                 // Display pending transfer column headers
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(25));
-                GUILayout.Label(" Origin", UIHelper.whiteLabelStyle, GUILayout.Width(165));
-                GUILayout.Label("Destination", UIHelper.whiteLabelStyle, GUILayout.Width(165));
-                GUILayout.Label("Cost", UIHelper.whiteLabelStyle, GUILayout.Width(80));
-                GUILayout.Label("Mass", UIHelper.whiteLabelStyle, GUILayout.Width(80));
-                GUILayout.Label("Arrival Time", UIHelper.whiteLabelStyle, GUILayout.Width(90));
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.whiteLabelStyle, GUILayout.Width(165));//" Origin"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Destination"), UIHelper.whiteLabelStyle, GUILayout.Width(165));//"Destination"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Cost"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Cost"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Mass"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Mass"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_ArrivalTime2"), UIHelper.whiteLabelStyle, GUILayout.Width(90));//"Arrival Time"
                 GUILayout.EndHorizontal();
 
                 // Display pending transfers
@@ -99,8 +99,8 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.OriginVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.DestinationVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(" " + transfer.OriginVesselName ?? Localizer.Format("#LOC_USI_OrbitalLogistics_Missing"), labelStyle, GUILayout.Width(165));//"(Missing)"
+                    GUILayout.Label(transfer.DestinationVesselName ?? Localizer.Format("#LOC_USI_OrbitalLogistics_Missing"), labelStyle, GUILayout.Width(165));//"(Missing)"
                     GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(
@@ -133,7 +133,7 @@ namespace KolonyTools
 
             // Display expired transfer section header
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Expired Transfers", UIHelper.labelStyle, GUILayout.Width(200));
+            GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_ExpiredTrans"), UIHelper.labelStyle, GUILayout.Width(200));//"Expired Transfers"
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();
@@ -141,7 +141,7 @@ namespace KolonyTools
             if (expiredTransfers.Length == 0)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("None", UIHelper.whiteLabelStyle, GUILayout.Width(160));
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_None"), UIHelper.whiteLabelStyle, GUILayout.Width(160));//"None"
                 GUILayout.EndHorizontal();
             }
             else
@@ -149,11 +149,11 @@ namespace KolonyTools
                 // Display expired transfer column headers
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(25));
-                GUILayout.Label(" Origin", UIHelper.whiteLabelStyle, GUILayout.Width(165));
-                GUILayout.Label("Destination", UIHelper.whiteLabelStyle, GUILayout.Width(165));
-                GUILayout.Label("Cost", UIHelper.whiteLabelStyle, GUILayout.Width(80));
-                GUILayout.Label("Mass", UIHelper.whiteLabelStyle, GUILayout.Width(80));
-                GUILayout.Label("Status", UIHelper.whiteLabelStyle, GUILayout.Width(90));
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Origin"), UIHelper.whiteLabelStyle, GUILayout.Width(165));//" Origin"
+                GUILayout.Label(Localizer.Format(" #LOC_USI_OrbitalLogistics_Destination"), UIHelper.whiteLabelStyle, GUILayout.Width(165));//"Destination"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Cost"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Cost"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Mass"), UIHelper.whiteLabelStyle, GUILayout.Width(80));//"Mass"
+                GUILayout.Label(Localizer.Format("#LOC_USI_OrbitalLogistics_Status2"), UIHelper.whiteLabelStyle, GUILayout.Width(90));//"Status"
                 GUILayout.EndHorizontal();
 
                 // Diplay expired transfers
@@ -183,8 +183,8 @@ namespace KolonyTools
 
                         ReviewTransferGui.SetVisible(true);
                     }
-                    GUILayout.Label(" " + transfer.OriginVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
-                    GUILayout.Label(transfer.DestinationVesselName ?? "(Missing)", labelStyle, GUILayout.Width(165));
+                    GUILayout.Label(" " + transfer.OriginVesselName ?? Localizer.Format("#LOC_USI_OrbitalLogistics_Missing"), labelStyle, GUILayout.Width(165));//"(Missing)"
+                    GUILayout.Label(transfer.DestinationVesselName ?? Localizer.Format("#LOC_USI_OrbitalLogistics_Missing"), labelStyle, GUILayout.Width(165));//"(Missing)"
                     GUILayout.Label(transfer.CalculateFuelUnits().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.TotalMass().ToString("F2"), labelStyle, GUILayout.Width(80));
                     GUILayout.Label(transfer.Status.ToString(), labelStyle, GUILayout.Width(90));
@@ -212,7 +212,7 @@ namespace KolonyTools
                 // Display clear all expired transfers button
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(string.Empty, UIHelper.labelStyle, GUILayout.Width(300));
-                if (GUILayout.Button("Clear All", UIHelper.buttonStyle, GUILayout.Width(80), GUILayout.Height(25)))
+                if (GUILayout.Button(Localizer.Format("#LOC_USI_OrbitalLogistics_ClearAllbtn"), UIHelper.buttonStyle, GUILayout.Width(80), GUILayout.Height(25)))//"Clear All"
                 {
                     _selectedTransfer = null;
 

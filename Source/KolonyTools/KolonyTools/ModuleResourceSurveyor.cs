@@ -4,6 +4,7 @@ using System.Linq;
 using Smooth.Slinq.Test;
 using UnityEngine;
 using Random = System.Random;
+using KSP.Localization;
 
 
 namespace KolonyTools
@@ -45,7 +46,7 @@ namespace KolonyTools
 
         private ModuleAnimationGroup _ani;
 
-        [KSPEvent(guiActive = true, guiName = "Scan for resource lodes", active = true)]
+        [KSPEvent(guiActive = true, guiName = "#LOC_USI_ResourceSurveyor_ResourceScan", active = true)]//Scan for resource lodes
         public void ResourceScan()
         {
             PerformScan();
@@ -64,7 +65,7 @@ namespace KolonyTools
 
             if (_ani != null && !_ani.isDeployed)
             {
-                msg = string.Format("Must deploy first!");
+                msg = string.Format(Localizer.Format("#LOC_USI_ResourceSurveyor_msg1"));//"Must deploy first!"
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
@@ -73,14 +74,14 @@ namespace KolonyTools
             if(altModifier > ResourceUtilities.FLOAT_TOLERANCE 
                 && (vessel.altitude < minAlt || vessel.altitude > minAlt*2d))
             {
-                msg = string.Format("Must perform scan at an altitude between {0:0}km and {1:0}km.", minAlt/1000, minAlt*2/1000);
+                msg = Localizer.Format("#LOC_USI_ResourceSurveyor_msg2", string.Format("{0:0}km", minAlt / 1000), string.Format("{0:0}km.", minAlt * 2 / 1000));//Must perform scan at an altitude between <<1>> and <<2>>
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
 
             if (FlightGlobals.currentMainBody == FlightGlobals.GetHomeBody() && !allowHomeBody)
             {
-                msg = string.Format("There are no resource lodes available on " + FlightGlobals.GetHomeBody().bodyName + "!");
+                msg = Localizer.Format("#LOC_USI_ResourceSurveyor_msg3", FlightGlobals.GetHomeBody().bodyName);//string.Format("There are no resource lodes available on " +  + "!")
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
@@ -111,7 +112,7 @@ namespace KolonyTools
 
             if (numLodes >= maxLodes)
             {
-                msg = string.Format("Too many resource lodes active - Harvest some first!");
+                msg = string.Format(Localizer.Format("#LOC_USI_ResourceSurveyor_msg4"));//"Too many resource lodes active - Harvest some first!"
                 ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 return;
             }
@@ -126,7 +127,7 @@ namespace KolonyTools
             lode.longitude = RandomizePosition(part.vessel.longitude, lodeRange);
             lode.altitude = null;
             CreateLode(lode);
-            msg = string.Format("A new resource lode has been discovered and added to your map!");
+            msg = string.Format(Localizer.Format("#LOC_USI_ResourceSurveyor_msg5"));//"A new resource lode has been discovered and added to your map!"
             ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
         }
 
