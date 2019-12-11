@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using USITools;
+using KSP.Localization;
 
 namespace KolonyTools
 {
@@ -41,24 +42,24 @@ namespace KolonyTools
         {
             var output = new StringBuilder();
 
-            output.AppendLine("Contributes to bonuses research");
+            output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info1"));//"Contributes to bonuses research"
 
             if (ApplyBonuses)
             {
-                output.AppendLine("Benefits from bonuses:");
-                output.AppendLine("  Geology Research");
+                output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info2"));//"Benefits from bonuses:"
+                output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info3"));//"  Geology Research"
                 if (BonusEffect == "RepBoost")
-                    output.AppendLine("  Kolonization Research");
+                    output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info4"));//"  Kolonization Research"
                 else if (BonusEffect == "ScienceBoost")
-                    output.AppendLine("  Botany Research");
+                    output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info5"));//"  Botany Research"
             }
 
             if (_bonusTags != null && _bonusTags.Any())
             {
-                output.AppendLine("Benefits from Efficiency Parts:");
+                output.AppendLine(Localizer.Format("#LOC_USI_MKSModule_info6"));//"Benefits from Efficiency Parts:"
                 for (int i = 0; i < _bonusTags.Count; i++)
                 {
-                    output.AppendLine(string.Format("  {0} (consumption {1})", _bonusTags[i], EfficiencyMultiplier));
+                    output.AppendLine(string.Format("  {0} (consumption {1})", _bonusTags[i], EfficiencyMultiplier));//
                 }
             }
 

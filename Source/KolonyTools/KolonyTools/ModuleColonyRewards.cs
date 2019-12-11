@@ -5,7 +5,7 @@ namespace KolonyTools
 {
     public class ModuleColonyRewards : PartModule
     {
-        [KSPEvent (active = true, guiActive = true, guiName = "Check Kolony Rewards")]//
+        [KSPEvent (active = true, guiActive = true, guiName = "#LOC_USI_ColonyRewards_CheckRewards")]//Check Kolony Rewards
         private void CheckRewards()
         {
             if (!HighLogic.LoadedSceneIsFlight)
@@ -39,7 +39,7 @@ namespace KolonyTools
                 if (sci > 1)
                 {
                     ResearchAndDevelopment.Instance.AddScience((float)sci, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Science", sci);//
+                    var msg = Localizer.Format("#LOC_USI_ColonyRewards_msg1", String.Format("{0:n2}", sci));//"Added <<1>> Science"
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
 
@@ -49,7 +49,7 @@ namespace KolonyTools
                 if (fun > 1)
                 {
                     Funding.Instance.AddFunds(fun, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Funds", fun);//
+                    var msg = Localizer.Format("#LOC_USI_ColonyRewards_msg2", String.Format("{0:n2}", fun));//Added <<1>>  Funds
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
             }
@@ -58,7 +58,7 @@ namespace KolonyTools
                 if (rep > 1)
                 {
                     Reputation.Instance.AddReputation((float)rep, TransactionReasons.ContractReward);
-                    var msg = String.Format("Added {0:n2} Reputation", rep);//
+                    var msg = Localizer.Format("#LOC_USI_ColonyRewards_msg3", String.Format("{0:n2}", rep));//Added <<1>> Reputation
                     ScreenMessages.PostScreenMessage(msg, 5f, ScreenMessageStyle.UPPER_CENTER);
                 }
             }
