@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace KolonyTools
-{ 
+﻿namespace KolonyTools
+{
     public class KolonyACOptions : GameParameters.CustomParameterNode
     {
         [GameParameters.CustomParameterUI("Customized Kerbonauts", toolTip = "If enabled, allows the customization of new Kerbonauts.", autoPersistance = true)]
@@ -29,7 +24,7 @@ namespace KolonyTools
         public bool AlternateKolonistCost = true;
 
         [GameParameters.CustomIntParameterUI("Kolonist Cost", toolTip = "Base cost for secondary professions", autoPersistance = true, minValue = 0, maxValue = 1000000, stepSize = 1000)]
-        public int KolonistCost = 1000;
+        public int KolonistCost = 25000;
 
         [GameParameters.CustomParameterUI("Enable Hiring Cost Cap", toolTip = "If enabled, puts a hard cap on the cost of a new hire", autoPersistance = true)]
         public bool CostCap = true;
