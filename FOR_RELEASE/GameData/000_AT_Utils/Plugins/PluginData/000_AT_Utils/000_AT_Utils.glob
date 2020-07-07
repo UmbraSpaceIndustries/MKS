@@ -2,7 +2,7 @@ LineWidthMult = 0.4
 MinLineWidthMult = 0.01
 
 MeshesToSkip = flagtransform canopy
-BadParts = RadialDrill MKS.Drill.02 MKS.Drill.03 dmFlexoTube
+BadParts = RadialDrill MKS.Drill.02 MKS.Drill.03 dmFlexoTube UniversalDrill
 
 Colors
 {
