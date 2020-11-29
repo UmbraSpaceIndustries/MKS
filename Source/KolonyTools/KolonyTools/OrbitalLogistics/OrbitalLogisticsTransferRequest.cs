@@ -99,7 +99,7 @@ namespace KolonyTools
                 if (_origin == null)
                 {
                     _origin = FlightGlobals.Vessels
-                        .Where(v => v.id.ToString() == _originId)
+                        .Where(v => v.persistentId.ToString() == _originId || v.id.ToString() == _originId)
                         .SingleOrDefault();
 
                     // If the origin disappeared, try to find it by its OrbLog module instead.
@@ -114,7 +114,7 @@ namespace KolonyTools
             set
             {
                 _origin = value;
-                _originId = value.id.ToString();
+                _originId = value.persistentId.ToString();
                 _originName = value.vesselName;
                 _originModuleId = ModuleOrbitalLogistics.GetOrbLogModuleIdForVessel(value);
             }
@@ -131,7 +131,7 @@ namespace KolonyTools
                 if (_destination == null)
                 {
                     _destination = FlightGlobals.Vessels
-                        .Where(v => v.id.ToString() == _destinationId)
+                        .Where(v => v.persistentId.ToString() == _destinationId || v.id.ToString() == _destinationId)
                         .SingleOrDefault();
                 }
 
@@ -146,7 +146,7 @@ namespace KolonyTools
             set
             {
                 _destination = value;
-                _destinationId = value.id.ToString();
+                _destinationId = value.persistentId.ToString();
                 _destinationName = value.vesselName;
                 _destinationModuleId = ModuleOrbitalLogistics.GetOrbLogModuleIdForVessel(value);
             }
