@@ -343,6 +343,8 @@ namespace WOLF
 
         private void SelectDepot(int index)
         {
+            if (!HasDepots)
+                return;
             _selectedDepotIndex = index;
             var depot = _depots[index];
             CacheDepotResources(depot);

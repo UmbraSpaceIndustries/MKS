@@ -1,6 +1,6 @@
-1.4.0 - 2020.09.26
+1.4.0 - 2020.12.20
 ------------------
-KSP 1.10 Compatibility
+KSP 1.11 Compatibility
 Fixed issues with the LightGlobe and KSP 1.10
 Updated shaders for numerous Tundra parts that had weird artefacting
 Atlas parts are here!  10m and 20m massive domes for habitation and argriculture
