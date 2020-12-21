@@ -65,6 +65,10 @@
       <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
@@ -147,7 +151,7 @@
     <PostBuildEvent Condition="'$(OS)' != 'Unix'">"D:\Games\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>D:\Games\pdb2mdb\pdb2mdb.exe $(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent />
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 Other similar extension points exist, see Microsoft.Common.targets.

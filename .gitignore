@@ -3,6 +3,9 @@ Models/Kerbitrail_Tube/Temp/UnityLockfile
 *.force
 *.db
 *.zip
+*.dll
+*.mdb
+*.pdb
 
 # Windows image file caches
 Thumbs.db

@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{47CCB592-108F-4804-9FF5-45EBE7907976}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WOLF</RootNamespace>
+    <AssemblyName>USI_WOLF</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\WOLF\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="USITools">
+      <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="DepotResourceViewModel.cs" />
+    <Compile Include="GUI\Helpers\ComboBox.cs" />
+    <Compile Include="GUI\Helpers\UIHelper.cs" />
+    <Compile Include="GUI\Helpers\Utilities.cs" />
+    <Compile Include="GUI\Helpers\Window.cs" />
+    <Compile Include="GUI\WOLF_GuiConfirmationDialog.cs" />
+    <Compile Include="GUI\WOLF_GuiFilters.cs" />
+    <Compile Include="GUI\WOLF_GuiManageTransfers.cs" />
+    <Compile Include="GUI\WOLF_PlanningMonitor.cs" />
+    <Compile Include="GUI\WOLF_RouteMonitor.cs" />
+    <Compile Include="GUI\WOLF_ScenarioMonitor.cs" />
+    <Compile Include="Helpers\WOLF_Exceptions.cs" />
+    <Compile Include="HopperMetadata.cs" />
+    <Compile Include="Interfaces\IDepotRegistry.cs" />
+    <Compile Include="Interfaces\IHopperRegistry.cs" />
+    <Compile Include="Interfaces\IRecipeProvider.cs" />
+    <Compile Include="Interfaces\IRoute.cs" />
+    <Compile Include="Interfaces\IRouteRegistry.cs" />
+    <Compile Include="Interfaces\IRegistryCollection.cs" />
+    <Compile Include="Messenger.cs" />
+    <Compile Include="Modules\WOLF_AbstractPartModule.cs" />
+    <Compile Include="Modules\WOLF_CrewModule.cs" />
+    <Compile Include="Modules\WOLF_DepotModule.cs" />
+    <Compile Include="Modules\WOLF_HarvesterModule.cs" />
+    <Compile Include="Modules\WOLF_HopperBay.cs" />
+    <Compile Include="Modules\WOLF_HopperModule.cs" />
+    <Compile Include="Modules\WOLF_HopperSwapOption.cs" />
+    <Compile Include="Modules\WOLF_RecipeOption.cs" />
+    <Compile Include="Modules\WOLF_RecipeOptionController.cs" />
+    <Compile Include="Modules\WOLF_ScenarioModule.cs" />
+    <Compile Include="Modules\WOLF_SurveyModule.cs" />
+    <Compile Include="Modules\WOLF_TransporterModule.cs" />
+    <Compile Include="NegotiationResults.cs" />
+    <Compile Include="Depot.cs" />
+    <Compile Include="Interfaces\IDepot.cs" />
+    <Compile Include="Interfaces\IResourceStream.cs" />
+    <Compile Include="Poof.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="ResourceStream.cs" />
+    <Compile Include="RewardsManager.cs" />
+    <Compile Include="Route.cs" />
+    <Compile Include="ScenarioPersister.cs" />
+    <Compile Include="Interfaces\IPersistenceAware.cs" />
+    <Compile Include="Interfaces\IRecipe.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recipe.cs" />
+    <Compile Include="Modules\WOLF_ConverterModule.cs" />
+    <Compile Include="WOLF_GameParameters.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

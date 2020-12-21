@@ -6,6 +6,7 @@ AssemblyResource
     WorkPerMass = 15
     EnergyPerMass = 1000
     ComplexityWork = 17
+    MaxRecycleRatio = 0.3
 }
 
 
@@ -15,6 +16,7 @@ ConstructionResource
     WorkPerMass = 10
     EnergyPerMass = 10000
     ComplexityWork = 13
+    MaxRecycleRatio = 0.5
 }
 
 WorkshopShutdownThreshold = 0.99
@@ -28,6 +30,7 @@ MinGenericEfficiency      = 0.05
 MaxGenericEfficiency      = 0.5
 
 ComplexityFactor = 1E-04
+FinalizationWorkPerMass = 0.5
 
 VesselKitDensity = 0.5
 MinKitVolume = 0.02
@@ -36,5 +39,13 @@ DeployMaxSpeed   = 0.1
 DeployMaxAV      = 1E-03
 MaxDeploymentMomentum = 0.5
 MinDeploymentTime = 5
+
+EasingFrames = 120
+        
+MaxDockingCos = 0.999
+MaxDockingDist = 0.2
+
+RecycleRate = 1
+RecycleEnergyRatio = 0.1
 
 //:mode=c#:
