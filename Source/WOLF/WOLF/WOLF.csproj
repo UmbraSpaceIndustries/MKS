@@ -117,6 +117,7 @@
     <Compile Include="Modules\WOLF_ScenarioModule.cs" />
     <Compile Include="Modules\WOLF_SurveyModule.cs" />
     <Compile Include="Modules\WOLF_TransporterModule.cs" />
+    <Compile Include="Modules\WOLF_AbstractTransporterModule.cs" />
     <Compile Include="NegotiationResults.cs" />
     <Compile Include="Depot.cs" />
     <Compile Include="Interfaces\IDepot.cs" />
