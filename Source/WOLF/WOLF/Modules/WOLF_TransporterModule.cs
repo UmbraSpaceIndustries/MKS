@@ -53,7 +53,8 @@ namespace WOLF
             if (massDelta < 1d && massDelta > ROUTE_ZERO_COST_TOLERANCE)
                 massDelta = 1d;
 
-            return Math.Max(Convert.ToInt32(Math.Round(massDelta * ROUTE_COST_MULTIPLIER, MidpointRounding.AwayFromZero)), 0);
+            var routeCost = Math.Round(massDelta * ROUTE_COST_MULTIPLIER, MidpointRounding.AwayFromZero);
+            return Math.Max(Convert.ToInt32(routeCost), 0);
         }
 
         private int CalculateRoutePayload()
