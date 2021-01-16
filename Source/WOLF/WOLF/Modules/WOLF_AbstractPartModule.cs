@@ -10,7 +10,7 @@ namespace WOLF
     [KSPModule("Converter")]
     public abstract class WOLF_AbstractPartModule : PartModule, IRecipeProvider
     {
-        protected double _nextBiomeUpdate = 0d;
+        protected double _nextLazyUpdate = 0d;
         protected IRegistryCollection _registry;
         protected WOLF_ScenarioModule _scenario;
 
@@ -248,16 +248,24 @@ namespace WOLF
 
         protected virtual void Update()
         {
-            // Display current biome in PAW
             if (HighLogic.LoadedSceneIsFlight)
             {
                 var now = Planetarium.GetUniversalTime();
-                if (now >= _nextBiomeUpdate)
+                if (now >= _nextLazyUpdate)
                 {
-                    _nextBiomeUpdate = now + 1d;  // wait one second between biome updates
-                    CurrentBiome = GetVesselBiome();
+                    _nextLazyUpdate = now + 1d;  // wait one second between biome updates
+                    LazyUpdate();
                 }
             }
+        }
+
+        /// <summary>
+        /// Called during Update, but just every second once
+        /// </summary>
+        protected virtual void LazyUpdate()
+        {
+            // Display current biome in PAW
+            CurrentBiome = GetVesselBiome();
         }
     }
 }

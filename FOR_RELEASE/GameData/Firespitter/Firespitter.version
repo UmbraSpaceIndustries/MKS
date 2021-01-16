@@ -3,12 +3,12 @@
   "URL": "https://raw.githubusercontent.com/snjo/Firespitter/master/For%20release/Firespitter/Firespitter.version",
   "VERSION": {
     "MAJOR": 7,
-    "MINOR": 16,
+    "MINOR": 17,
     "PATCH": 0
   },
      "KSP_VERSION":{
          "MAJOR":1,
-         "MINOR":8,
+         "MINOR":11,
          "PATCH":0
      },
      "KSP_VERSION_MIN":{
@@ -18,7 +18,7 @@
      },
      "KSP_VERSION_MAX":{
          "MAJOR":1,
-         "MINOR":10,
-         "PATCH":9
+         "MINOR":11,
+         "PATCH":99
      }
 }

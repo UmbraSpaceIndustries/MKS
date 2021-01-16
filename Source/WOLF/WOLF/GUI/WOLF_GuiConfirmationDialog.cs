@@ -10,10 +10,10 @@ namespace WOLF
         private static string YES_BUTTON_TEXT = "#autoLOC_USI_WOLF_TRANSPORTER_UI_YES_MESSAGE"; // "Yes";
         private static string NO_BUTTON_TEXT = "#autoLOC_USI_WOLF_TRANSPORTER_UI_NO_MESSAGE"; // "No";
 
-        private readonly WOLF_TransporterModule _transporterModule;
+        private readonly WOLF_AbstractTransporterModule _transporterModule;
         #endregion
 
-        public WOLF_GuiConfirmationDialog(WOLF_TransporterModule transporterModule)
+        public WOLF_GuiConfirmationDialog(WOLF_AbstractTransporterModule transporterModule)
             : base("Confirm Route Cancellation", 300, 150)
         {
             Debug.Log("[WOLF] GuiConfirmationDialog created.");
