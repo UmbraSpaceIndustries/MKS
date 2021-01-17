@@ -1,3 +1,7 @@
+1.5.0 - TBD
+------------------
+Updated density and volume of Glykerol
+
 1.4.2 - 2020.12.20
 ------------------
 KSP 1.11 Compatibility
