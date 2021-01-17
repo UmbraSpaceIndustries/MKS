@@ -1,3 +1,11 @@
+1.5.0 - TBD
+------------------
+Added stock inventory storage to the Salamander and Scout-II
+All Ranger parts may now be stored in the stock inventory system.  
+The Range Anchor Hub now behaves like a ground attachable item in stock.
+KIS support has been deprecated.  Flex-O-Tube will remain as an optional community patch.
+Global Construction is no longer bundled, Konstruction is now the default ship construction mod.
+
 1.4.1 - 2020.12.21
 ------------------
 Pulled out GC

@@ -1,3 +1,10 @@
+1.4.1 - TBD
+------------------
+Fixed Akita Seat CTT Placement
+All KIS support has been deprecated in favor of the stock inventory system
+Added KonFab - In-Situ Parts Fabrication, and supporting parts
+Added EVA Construction enhancements
+
 1.4.0 - 2020.12.20
 ------------------
 KSP 1.11 Compatibility
