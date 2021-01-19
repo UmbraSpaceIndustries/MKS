@@ -188,6 +188,16 @@ namespace WOLF
 
             ParseWolfRecipe();
 
+            if (IsConnectedToDepot)
+            {
+                // Hook into vessel destroyed event to release resources back to depot
+                if (vessel != null)
+                {
+                    vessel.OnJustAboutToBeDestroyed += OnVesselDestroyed;
+                    GameEvents.OnVesselRecoveryRequested.Add(OnVesselRecovered);
+                }
+            }
+
             // CurrentBiome is used in VerifyDepotConnection
             CurrentBiome = WOLF_AbstractPartModule.GetVesselBiome(vessel);
             VerifyDepotConnection();
