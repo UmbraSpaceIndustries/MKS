@@ -126,7 +126,7 @@ namespace WOLF
             if (IsConnectedToDepot)
             {
                 StopResourceConverter();
-                OnVesselDestroyed();
+                ReleaseResources();
                 IsConnectedToDepot = false;
                 Events["DisconnectFromDepotEvent"].guiActive = false;
                 Events["ConnectToDepotEvent"].guiActive = true;
@@ -188,30 +188,9 @@ namespace WOLF
 
             ParseWolfRecipe();
 
-            // If we were previously connected to a depot, make sure we still are
-            if (IsConnectedToDepot)
-            {
-                var body = vessel.mainBody.name;
-                var biome = WOLF_AbstractPartModule.GetVesselBiome(vessel);
-                var depot = _registry.GetDepot(DepotBody, DepotBiome);
-
-                if (depot == null || depot.Body != body || depot.Biome != biome)
-                {
-                    Debug.LogWarning("[WOLF] Hopper lost connection to its depot.");
-                    Messenger.DisplayMessage(LOST_CONNECTION_MESSAGE);
-                    StopResourceConverter();
-                    ReleaseResources();
-                }
-                else
-                {
-                    // Hook into vessel destroyed event to release resources back to depot
-                    if (vessel != null)
-                    {
-                        vessel.OnJustAboutToBeDestroyed += OnVesselDestroyed;
-                        GameEvents.OnVesselRecoveryRequested.Add(OnVesselRecovered);
-                    }
-                }
-            }
+            // CurrentBiome is used in VerifyDepotConnection
+            CurrentBiome = WOLF_AbstractPartModule.GetVesselBiome(vessel);
+            VerifyDepotConnection();
 
             Events["ConnectToDepotEvent"].guiActive = !IsConnectedToDepot;
             Events["DisconnectFromDepotEvent"].guiActive = IsConnectedToDepot;
@@ -269,14 +248,40 @@ namespace WOLF
 
         protected virtual void Update()
         {
-            // Display current biome in PAW
             if (HighLogic.LoadedSceneIsFlight)
             {
                 var now = Planetarium.GetUniversalTime();
                 if (now >= _nextBiomeUpdate)
                 {
+                    // Display current biome in PAW
                     _nextBiomeUpdate = now + 1d;  // wait one second between biome updates
                     CurrentBiome = WOLF_AbstractPartModule.GetVesselBiome(vessel);
+
+                    VerifyDepotConnection();
+                }
+            }
+        }
+        private void VerifyDepotConnection()
+        {
+            if (IsConnectedToDepot)
+            {
+                var body = vessel.mainBody.name;
+                var depot = _registry.GetDepot(DepotBody, DepotBiome);
+
+                if (depot == null || depot.Body != body || depot.Biome != CurrentBiome)
+                {
+                    Debug.LogWarning("[WOLF] Hopper lost connection to its depot.");
+                    Messenger.DisplayMessage(LOST_CONNECTION_MESSAGE);
+                    DisconnectFromDepotEvent();
+                }
+                else
+                {
+                    // Hook into vessel destroyed event to release resources back to depot
+                    if (vessel != null)
+                    {
+                        vessel.OnJustAboutToBeDestroyed += OnVesselDestroyed;
+                        GameEvents.OnVesselRecoveryRequested.Add(OnVesselRecovered);
+                    }
                 }
             }
         }
