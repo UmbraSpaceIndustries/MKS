@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using WOLF.Modules;
 using Random = UnityEngine.Random;
 
 namespace WOLF
@@ -109,8 +110,9 @@ namespace WOLF
             if (!_childWindows.Contains(_routeMonitor.ManageTransfersGui))
                 _childWindows.Add(_routeMonitor.ManageTransfersGui);
 
-            // Check for missing hoppers
-            StartCoroutine(CheckForMissingHoppers());
+            // Check for missing hoppers (FlightGlobals.vessels do not get loaded in editor, so skip this)
+            if (!_isEditor)
+                StartCoroutine(CheckForMissingHoppers());
         }
 
         private IEnumerator CheckForMissingHoppers()
@@ -120,13 +122,34 @@ namespace WOLF
                 yield return null;
             }
 
+            if (!FlightGlobals.ready)
+            {
+                //In some scenes it will never be ready
+                //If not ready sometimes FlightGlobals.Vessels are loaded, sometimes not
+                //We should give it a bit of time to load
+                var notBefore = Planetarium.GetUniversalTime() + 2;
+                while (!FlightGlobals.ready && Planetarium.GetUniversalTime() < notBefore)
+                {
+                    yield return null;
+                }
+
+                if (!FlightGlobals.ready)
+                {
+                    if (FlightGlobals.Vessels.Count == 0)
+                    {
+                        //Probably vessels do not get loaded in this scene (i.E editor), abort CheckForMissingHoppers just to be sure
+                        yield break;
+                    }
+                }
+            }
+
             var hoppers = _wolfRegistry.GetHoppers();
+            var hopperIds = GetConnectedHopperIds();
             if (hoppers.Count > 0)
             {
-                var hopperIds = GetHopperIds();
                 foreach (var hopper in hoppers)
                 {
-                    if (!hopperIds.Contains(hopper.Id))
+                    if (!hopperIds.Keys.Contains(hopper.Id))
                     {
                         Debug.LogWarning("[WOLF] ScenarioMonitor: Hopper with ID " + hopper.Id + " was not found in game.");
                         var resourcesToRelease = new Dictionary<string, int>();
@@ -145,19 +168,97 @@ namespace WOLF
                     }
                 }
             }
+
+            //Fix broken saveStates, there should never be a hopperId without reference in registry
+            if (hopperIds.Count > 0)
+            {
+                foreach (var hopperId in hopperIds)
+                {
+                    if (hoppers.All(h => h.Id != hopperId.Key))
+                    {
+                        Debug.LogWarning($"[WOLF] ScenarioMonitor: Hopper with ID {hopperId.Key} was not found in registry.");
+                        var vessel = FlightGlobals.Vessels.First(v => v.persistentId == hopperId.Value);
+                        IRecipe wolfRecipe = null;
+                        string biome = null;
+                        string body = null;
+                        string converterName = null;
+                        if (vessel.loaded)
+                        {
+                            var hopperModule = vessel.FindPartModulesImplementing<WOLF_HopperModule>().FirstOrDefault(e => e.HopperId == hopperId.Key);
+                            wolfRecipe = hopperModule?.WolfRecipe;
+                            biome = hopperModule?.CurrentBiome;
+                            converterName = hopperModule?.ConverterName;
+                            body = vessel.mainBody.name;
+                        }
+                        else
+                        {
+                            foreach (var part in vessel.protoVessel.protoPartSnapshots)
+                            {
+                                var hopperModule = part.FindModule(nameof(WOLF_HopperModule));
+                                string currentHopperId = null;
+                                if (hopperModule != null
+                                    && hopperModule.moduleValues.TryGetValue(nameof(WOLF_HopperModule.HopperId), ref currentHopperId)
+                                    && currentHopperId == hopperId.Key)
+                                {
+                                    body = PSystemManager.Instance.localBodies.FirstOrDefault(b => b.flightGlobalsIndex == vessel.protoVessel.orbitSnapShot.ReferenceBodyIndex)?.name;
+                                    biome = hopperModule.moduleValues.GetValue("DepotBiome") ?? string.Empty;
+                                    var bayModule = part.FindModule(nameof(WOLF_HopperBay));
+                                    if (bayModule != null)
+                                    {
+                                        var swapOptions = part.partPrefab.Modules.GetModules<WOLF_HopperSwapOption>().ToArray();
+                                        int currentLoadout = 0;
+                                        if (bayModule.moduleValues.TryGetValue(nameof(WOLF_HopperBay.currentLoadout),
+                                            ref currentLoadout) && currentLoadout < swapOptions.Length)
+                                        {
+                                            var option = swapOptions[currentLoadout];
+                                            converterName = option.ConverterName;
+                                            var inputIngredients = WOLF_AbstractPartModule.ParseRecipeIngredientList(option.InputResources);
+                                            if (inputIngredients != null)
+                                            {
+                                                wolfRecipe = new Recipe(inputIngredients, new Dictionary<string, int>());
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (wolfRecipe != null && _wolfRegistry.TryGetDepot(body, biome, out var depot))
+                        {
+                            Debug.Log($"[WOLF] ScenarioMonitor: Add Hopper with ID {hopperId.Key} to registry ({body},{biome} - {converterName}).");
+                            var result = depot.NegotiateConsumer(wolfRecipe.InputIngredients);
+                            if (result is FailedNegotiationResult)
+                            {
+                                Debug.LogError("[WOLF] Could not negotiate hopper resources");
+                                //As this happens only for broken saveStates we should not skip creating the hopper in registry for now even tough this will be a free hopper
+                            }
+                            var newHopperId = _wolfRegistry.CreateHopper(depot, wolfRecipe);
+                            _wolfRegistry.GetHoppers().First(h => h.Id == newHopperId).Id = hopperId.Key;
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"[WOLF] ScenarioMonitor: Unable to add hopper with ID {hopperId.Key} to registry.");
+                        }
+                    }
+                }
+            }
         }
 
-        private List<string> GetHopperIds()
+        private Dictionary<string, uint> GetConnectedHopperIds()
         {
             var vessels = FlightGlobals.Vessels;
-            List<string> hopperIds = new List<string>();
+            Dictionary<string, uint> hopperIds = new Dictionary<string, uint>();
             foreach (var vessel in vessels)
             {
                 if (vessel.loaded)
                 {
                     var modules = vessel.FindPartModulesImplementing<WOLF_HopperModule>();
-                    var ids = modules.Select(m => m.HopperId);
-                    hopperIds.AddRange(ids);
+                    foreach (var hopperModule in modules)
+                    {
+                        if(hopperModule.IsConnectedToDepot)
+                            hopperIds.Add(hopperModule.HopperId, vessel.persistentId);
+                    }
                 }
                 else
                 {
@@ -165,12 +266,16 @@ namespace WOLF
                     {
                         foreach (var module in part.modules)
                         {
-                            if (module.moduleName == "WOLF_HopperModule")
+                            if (module.moduleName == nameof(WOLF_HopperModule))
                             {
-                                var id = module.moduleValues.GetValue("HopperId") ?? string.Empty;
+                                var id = module.moduleValues.GetValue(nameof(WOLF_HopperModule.HopperId)) ?? string.Empty;
                                 if (!string.IsNullOrEmpty(id))
                                 {
-                                    hopperIds.Add(id);
+                                    string isConnected = null;;
+                                    if (module.moduleValues.TryGetValue(nameof(WOLF_HopperModule.IsConnectedToDepot), ref isConnected) && isConnected.Equals("True", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        hopperIds.Add(id, vessel.persistentId);
+                                    }
                                 }
                             }
                         }
