@@ -73,7 +73,8 @@ namespace WOLF
                 Messenger.DisplayMessage(Messenger.MISSING_DEPOT_MESSAGE);
                 return;
             }
-            var otherDepotModules = vessel.FindPartModulesImplementing<WOLF_DepotModule>();
+            var otherDepotModules = vessel.FindPartModulesImplementing<WOLF_DepotModule>()
+                .Where(p => !(p is WOLF_SurveyModule));
             if (otherDepotModules.Any())
             {
                 Messenger.DisplayMessage(Messenger.INVALID_DEPOT_PART_ATTACHMENT_MESSAGE);
