@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\WOLF\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
