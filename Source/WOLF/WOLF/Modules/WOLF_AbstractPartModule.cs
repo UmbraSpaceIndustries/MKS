@@ -109,8 +109,6 @@ namespace WOLF
             vessel.checkLanded();
             vessel.checkSplashed();
 
-            ExperimentSituations experimentSituation = ScienceUtil.GetExperimentSituation(vessel);
-
             switch (vessel.situation)
             {                
                 case Situations.LANDED:
@@ -228,7 +226,7 @@ namespace WOLF
                     Debug.LogError(Messenger.RECIPE_PARSE_FAILURE_MESSAGE);
                     return null;
                 }
-                for (int i = 0; i < tokens.Length - 1; i = i + 2)
+                for (int i = 0; i < tokens.Length - 1; i += 2)
                 {
                     var resource = tokens[i];
                     var quantityString = tokens[i + 1];

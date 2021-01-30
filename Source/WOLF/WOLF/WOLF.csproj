@@ -106,6 +106,7 @@
     <Compile Include="Interfaces\IRegistryCollection.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="Modules\WOLF_AbstractPartModule.cs" />
+    <Compile Include="Modules\WOLF_CargoModule.cs" />
     <Compile Include="Modules\WOLF_CrewModule.cs" />
     <Compile Include="Modules\WOLF_DepotModule.cs" />
     <Compile Include="Modules\WOLF_HarvesterModule.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="Modules\WOLF_ScenarioModule.cs" />
     <Compile Include="Modules\WOLF_SurveyModule.cs" />
     <Compile Include="Modules\WOLF_TransporterModule.cs" />
-    <Compile Include="Modules\WOLF_AbstractTransporterModule.cs" />
     <Compile Include="NegotiationResults.cs" />
     <Compile Include="Depot.cs" />
     <Compile Include="Interfaces\IDepot.cs" />

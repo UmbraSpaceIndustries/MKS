@@ -65,7 +65,6 @@ namespace WOLF
             var crewModule = vessel.vesselModules
                 .Where(m => m is WOLF_CrewModule)
                 .FirstOrDefault() as WOLF_CrewModule;
-            IRecipe crewRecipe;
             if (crewModule == null)
             {
                 DisplayMessage("BUG: Could not find crew module.");
@@ -76,11 +75,9 @@ namespace WOLF
                 DisplayMessage(CREW_NOT_ELIGIBLE_MESSAGE);
                 return;
             }
-            else
-            {
-                crewRecipe = crewModule.GetCrewRecipe();
-                recipes.Add(crewRecipe);
-            }
+
+            var crewRecipe = crewModule.GetCrewRecipe();
+            recipes.Add(crewRecipe);
 
             // Negotiate recipes with the depot
             var body = vessel.mainBody.name;
