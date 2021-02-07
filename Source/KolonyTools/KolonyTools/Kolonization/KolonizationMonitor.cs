@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using KSP.UI.Screens;
 using PlanetaryLogistics;
+using USITools.UITools;
 
 namespace KolonyTools
 {
