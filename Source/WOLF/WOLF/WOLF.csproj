@@ -82,9 +82,14 @@
       <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USITools.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="USIToolsUI">
+      <HintPath>..\..\..\..\..\KSP_DEV\GameData\000_USITools\USIToolsUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="CrewRoute.cs" />
     <Compile Include="DepotResourceViewModel.cs" />
     <Compile Include="GUI\Helpers\ComboBox.cs" />
     <Compile Include="GUI\Helpers\UIHelper.cs" />
@@ -98,16 +103,23 @@
     <Compile Include="GUI\WOLF_ScenarioMonitor.cs" />
     <Compile Include="Helpers\WOLF_Exceptions.cs" />
     <Compile Include="HopperMetadata.cs" />
+    <Compile Include="Interfaces\ICargo.cs" />
+    <Compile Include="Interfaces\ICorporeal.cs" />
+    <Compile Include="Interfaces\ICrewRoute.cs" />
+    <Compile Include="Interfaces\ICrewRouteRegistry.cs" />
     <Compile Include="Interfaces\IDepotRegistry.cs" />
     <Compile Include="Interfaces\IHopperRegistry.cs" />
     <Compile Include="Interfaces\IRecipeProvider.cs" />
     <Compile Include="Interfaces\IRoute.cs" />
     <Compile Include="Interfaces\IRouteRegistry.cs" />
     <Compile Include="Interfaces\IRegistryCollection.cs" />
+    <Compile Include="Interfaces\ITerminalRegistry.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="Modules\WOLF_AbstractPartModule.cs" />
     <Compile Include="Modules\WOLF_CargoModule.cs" />
+    <Compile Include="Modules\WOLF_CrewCargoModule.cs" />
     <Compile Include="Modules\WOLF_CrewModule.cs" />
+    <Compile Include="Modules\WOLF_CrewTransporterModule.cs" />
     <Compile Include="Modules\WOLF_DepotModule.cs" />
     <Compile Include="Modules\WOLF_HarvesterModule.cs" />
     <Compile Include="Modules\WOLF_HopperBay.cs" />
@@ -117,6 +129,8 @@
     <Compile Include="Modules\WOLF_RecipeOptionController.cs" />
     <Compile Include="Modules\WOLF_ScenarioModule.cs" />
     <Compile Include="Modules\WOLF_SurveyModule.cs" />
+    <Compile Include="Modules\WOLF_TerminalModule.cs" />
+    <Compile Include="Modules\WOLF_TerminalScenario.cs" />
     <Compile Include="Modules\WOLF_TransporterModule.cs" />
     <Compile Include="NegotiationResults.cs" />
     <Compile Include="Depot.cs" />
@@ -133,9 +147,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="Modules\WOLF_ConverterModule.cs" />
+    <Compile Include="TerminalMetadata.cs" />
     <Compile Include="WOLF_GameParameters.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\WOLFUI\WOLFUI.csproj">
+      <Project>{c4ce0137-31ba-400b-8778-b58057f0d66c}</Project>
+      <Name>WOLFUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

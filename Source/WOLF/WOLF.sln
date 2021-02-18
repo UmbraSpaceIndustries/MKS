@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WOLF", "WOLF\WOLF.csproj", "{47CCB592-108F-4804-9FF5-45EBE7907976}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WOLF.Tests.Unit", "WOLF.Tests.Unit\WOLF.Tests.Unit.csproj", "{4D364EBD-396E-4E28-ACAF-1247C67FDE5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WOLFUI", "WOLFUI\WOLFUI.csproj", "{C4CE0137-31BA-400B-8778-B58057F0D66C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4D364EBD-396E-4E28-ACAF-1247C67FDE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D364EBD-396E-4E28-ACAF-1247C67FDE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D364EBD-396E-4E28-ACAF-1247C67FDE5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4CE0137-31BA-400B-8778-B58057F0D66C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CE0137-31BA-400B-8778-B58057F0D66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CE0137-31BA-400B-8778-B58057F0D66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4CE0137-31BA-400B-8778-B58057F0D66C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

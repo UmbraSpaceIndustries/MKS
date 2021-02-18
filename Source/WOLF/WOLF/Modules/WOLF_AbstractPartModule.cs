@@ -7,14 +7,15 @@ using Situations = Vessel.Situations;
 
 namespace WOLF
 {
-    [KSPModule("Converter")]
     public abstract class WOLF_AbstractPartModule : PartModule, IRecipeProvider
     {
+        protected string _moduleName = "#LOC_USI_WOLF_GenericPartModuleName";
         protected double _nextLazyUpdate = 0d;
         protected IRegistryCollection _registry;
         protected WOLF_ScenarioModule _scenario;
 
-        protected static string CURRENT_BIOME_GUI_NAME = "#autoLOC_USI_WOLF_CURRENT_BIOME_GUI_NAME"; // "Current biome";
+        protected static string CURRENT_BIOME_GUI_NAME
+            = "#autoLOC_USI_WOLF_CURRENT_BIOME_GUI_NAME"; // "Current biome";
         protected static readonly List<string> KSC_BIOMES = new List<string>
         {
             "KSC",
@@ -26,8 +27,15 @@ namespace WOLF
 
         public IRecipe WolfRecipe { get; private set; }
 
-        [KSPField(guiActive = true, guiActiveEditor = false, guiName = "Current biome test", isPersistant = false)]
+        [KSPField(
+            guiActive = true,
+            guiActiveEditor = false,
+            guiName = "Current biome test",
+            isPersistant = false)]
         public string CurrentBiome = "???";
+
+        [KSPField]
+        public string ModuleName;
 
         [KSPField]
         public string PartInfo = "Input something, get something else out.";
@@ -38,7 +46,11 @@ namespace WOLF
         [KSPField]
         public string OutputResources = string.Empty;
 
-        [KSPEvent(guiName = "Connect to WOLF", active = true, guiActive = true, guiActiveEditor = false)]
+        [KSPEvent(
+            guiName = "Connect to WOLF",
+            active = true,
+            guiActive = true,
+            guiActiveEditor = false)]
         public void ConnectToDepotEvent()
         {
             ConnectToDepot();
@@ -104,6 +116,11 @@ namespace WOLF
             return info.ToString();
         }
 
+        public override string GetModuleDisplayName()
+        {
+            return ModuleName ?? _moduleName;
+        }
+
         public static string GetVesselBiome(Vessel vessel)
         {
             vessel.checkLanded();
@@ -115,14 +132,24 @@ namespace WOLF
                 case Situations.SPLASHED:
                 case Situations.PRELAUNCH:
                     if (string.IsNullOrEmpty(vessel.landedAt))
-                        return ScienceUtil.GetExperimentBiome(vessel.mainBody, vessel.latitude, vessel.longitude);
+                    {
+                        return ScienceUtil.GetExperimentBiome(
+                            vessel.mainBody,
+                            vessel.latitude,
+                            vessel.longitude);
+                    }
                     else
+                    {
                         return GetVesselLandedAtBiome(vessel.landedAt);
+                    }
                 case Situations.ORBITING:
-                    var altitude = ScienceUtil.GetExperimentSituation(vessel) == ExperimentSituations.InSpaceLow
-                        ? "" : "High";
-                    var ecc = vessel.GetOrbit().eccentricity > 0.1d
-                        ? "Eccentric" : "";
+                    var altitude =
+                        ScienceUtil.GetExperimentSituation(vessel) == ExperimentSituations.InSpaceLow ?
+                        "" :
+                        "High";
+                    var ecc = vessel.GetOrbit().eccentricity > 0.1d ?
+                        "Eccentric" :
+                        "";
                     var suffix = string.Empty;
                     if (!string.IsNullOrEmpty(altitude))
                     {
@@ -184,7 +211,13 @@ namespace WOLF
         {
             base.OnStart(state);
 
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_CURRENT_BIOME_GUI_NAME", out string currentBiomeGuiName))
+            Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_GenericPartModuleName",
+                out _moduleName);
+
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_CURRENT_BIOME_GUI_NAME",
+                out string currentBiomeGuiName))
             {
                 CURRENT_BIOME_GUI_NAME = currentBiomeGuiName;
             }

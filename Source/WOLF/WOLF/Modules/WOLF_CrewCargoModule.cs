@@ -5,29 +5,27 @@ using UnityEngine;
 
 namespace WOLF
 {
-    public class WOLF_CargoModule : PartModule, ICargo
+    public class WOLF_CrewCargoModule : PartModule, ICargo
     {
-        protected const string WOLF_UI_GROUP_NAME = "usi-wolf";
-        protected const string WOLF_UI_GROUP_DISPLAY_NAME = "WOLF Cargo";
+        protected const string PAW_GROUP_NAME = "usi-wolf-crew-cargo";
 
-        protected string _partInfoDetails = "#LOC_USI_WOLF_CargoCrate_PartInfo_Details";
-        protected string _partInfoSummary = "#LOC_USI_WOLF_CargoCrate_PartInfo_Summary";
-        protected string _moduleName = "#LOC_USI_WOLF_CargoModuleName";
+        protected string _partInfoDetails = "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Details";
+        protected string _partInfoSummary = "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Summary";
+        protected string _moduleName = "#LOC_USI_WOLF_CrewCargoModuleName";
 
         #region KSP fields
+        [KSPField(
+            groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
+            groupName = PAW_GROUP_NAME,
+            guiActive = true,
+            guiActiveEditor = true)]
+        public int Berths = 1;
+
         [KSPField]
         public string ModuleName;
 
         [KSPField]
         public string PartInfo;
-
-        [KSPField(
-            guiName = "#LOC_USI_WOLF_PAW_CargoCrate_Payload_Field_Label",
-            groupName = WOLF_UI_GROUP_NAME,
-            groupDisplayName = WOLF_UI_GROUP_DISPLAY_NAME,
-            guiActive = true,
-            guiActiveEditor = true)]
-        public int Payload = 1;
 
         [KSPField(isPersistant = true)]
         public string RouteId = string.Empty;
@@ -56,14 +54,20 @@ namespace WOLF
         protected void GetLocalizedTextValues()
         {
             Localizer.TryGetStringByTag(
-                "#LOC_USI_WOLF_CargoCrate_PartInfo_Details",
+                "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Details",
                 out _partInfoDetails);
 
             if (Localizer.TryGetStringByTag(
-                "#LOC_USI_WOLF_PAW_CargoCrate_Payload_Field_Label",
-                out string payloadFieldLabel))
+                "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
+                out var pawGroupDisplayName))
             {
-                Fields[nameof(Payload)].guiName = payloadFieldLabel;
+                Fields[nameof(Berths)].group.displayName = pawGroupDisplayName;
+            }
+            if (Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_PAW_CrewCargoModule_BerthsDisplayName",
+                out var pawDisplayName))
+            {
+                Fields[nameof(Berths)].guiName = pawDisplayName;
             }
         }
 
@@ -74,7 +78,7 @@ namespace WOLF
 
         public int GetPayload()
         {
-            return Payload;
+            return Berths;
         }
 
         public override void OnAwake()
@@ -88,9 +92,9 @@ namespace WOLF
         {
             base.OnStart(state);
 
-            if (Payload < 1)
+            if (Berths < 1)
             {
-                Payload = 1;
+                Berths = 1;
             }
 
             var missingRouteId = string.IsNullOrEmpty(RouteId);
@@ -99,7 +103,8 @@ namespace WOLF
             if (missingRouteId ^ missingVesselId)
             {
                 ClearRoute();
-                Debug.LogWarning("[WOLF] Cargo crate reset unexpectedly (found an orphaned route or vessel id).");
+                Debug.LogWarning(
+                    "[WOLF] Crew cargo crate reset unexpectedly (orphaned route or vessel id).");
             }
         }
 
@@ -109,9 +114,9 @@ namespace WOLF
             {
                 throw new Exception("Route id cannot be null or empty.");
             }
-            if (RouteId == routeId)
+            if (routeId == RouteId)
             {
-                throw new Exception("Cargo crate is already on this route.");
+                throw new Exception("Crew cargo crate is already on this route.");
             }
 
             RouteId = routeId;

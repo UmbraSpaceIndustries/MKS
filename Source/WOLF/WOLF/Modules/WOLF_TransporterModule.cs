@@ -24,24 +24,24 @@ namespace WOLF
         protected static readonly int MINIMUM_PAYLOAD = 1;
         protected static readonly double ROUTE_COST_MULTIPLIER = 1d;
         protected static readonly double ROUTE_ZERO_COST_TOLERANCE = 0.1d;
+        protected const string PAW_GROUP_NAME = "usi-wolf-transporter";
+        protected const string PAW_GROUP_DISPLAY_NAME = "WOLF Transporter";
 
         private readonly WOLF_GuiConfirmationDialog _confirmationDialog;
-        protected List<WOLF_CargoModule> _cargoModules;
+        protected List<ICargo> _cargoModules;
 
-        protected const string WOLF_UI_GROUP_NAME = "usi-wolf";
-        protected const string WOLF_UI_GROUP_DISPLAY_NAME = "WOLF Transporter";
-
+        #region KSP fields
         [KSPField(
-            groupName = WOLF_UI_GROUP_NAME,
-            groupDisplayName = WOLF_UI_GROUP_DISPLAY_NAME,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME,
             guiActive = false,
             guiActiveEditor = false,
             guiName = "Origin depot")]
         public string OriginDepotDisplay = string.Empty;
 
         [KSPField(
-            groupName = WOLF_UI_GROUP_NAME,
-            groupDisplayName = WOLF_UI_GROUP_DISPLAY_NAME,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME,
             guiActive = true,
             guiActiveEditor = false,
             guiName = "Route cost")]
@@ -51,8 +51,8 @@ namespace WOLF
         public string RouteId = string.Empty;
 
         [KSPField(
-            groupName = WOLF_UI_GROUP_NAME,
-            groupDisplayName = WOLF_UI_GROUP_DISPLAY_NAME,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME,
             guiName = "Route payload",
             guiActive = true,
             guiActiveEditor = true,
@@ -60,8 +60,8 @@ namespace WOLF
         public int RoutePayload;
 
         [KSPField(
-            groupName = WOLF_UI_GROUP_NAME,
-            groupDisplayName = WOLF_UI_GROUP_DISPLAY_NAME,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME,
             guiName = "Credits / Payload",
             guiActive = false,
             guiActiveEditor = false,
@@ -79,27 +79,73 @@ namespace WOLF
 
         [KSPField(isPersistant = true)]
         public string OriginBiome;
+        #endregion
 
-        public WOLF_TransporterModule() : base()
+        #region KSP actions and events
+        [KSPAction("Connect to origin depot")]
+        public void ConnectToOriginAction(KSPActionParam param)
         {
-            _confirmationDialog = new WOLF_GuiConfirmationDialog(this);
+            ConnectToOriginEvent();
         }
 
-        private void CacheCargoModules()
+        [KSPEvent(
+            guiActive = true,
+            guiActiveEditor = false,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME)]
+        public void ConnectToOriginEvent()
         {
-            _cargoModules = vessel?.FindPartModulesImplementing<WOLF_CargoModule>();
-        }
-
-        [KSPEvent(guiActive = true, guiActiveEditor = false)]
-        public void CancelRouteEvent()
-        {
-            _confirmationDialog.SetVisible(true);
+            ConnectToOrigin();
         }
 
         [KSPAction("Cancel route")]
         public void CancelRouteAction(KSPActionParam param)
         {
             CancelRouteEvent();
+        }
+
+        [KSPEvent(
+            guiActive = true,
+            guiActiveEditor = false,
+            groupName = PAW_GROUP_NAME,
+            groupDisplayName = PAW_GROUP_DISPLAY_NAME)]
+        public void CancelRouteEvent()
+        {
+            _confirmationDialog.SetVisible(true);
+        }
+        #endregion
+
+        public WOLF_TransporterModule() : base()
+        {
+            _confirmationDialog = new WOLF_GuiConfirmationDialog(this);
+        }
+
+        protected virtual void CacheCargoModules()
+        {
+            var modules = vessel?.FindPartModulesImplementing<WOLF_CargoModule>();
+            if (modules != null)
+            {
+                _cargoModules = new List<ICargo>();
+                foreach (var module in modules)
+                {
+                    _cargoModules.Add(module);
+                }
+            }
+            else
+            {
+                _cargoModules = null;
+            }
+        }
+
+        protected virtual bool CanConnectToOrigin()
+        {
+            var deployCheckResult = CanConnectToDepot();
+            if (!string.IsNullOrEmpty(deployCheckResult))
+            {
+                DisplayMessage(deployCheckResult);
+                return false;
+            }
+            return true;
         }
 
         public void ConfirmCancelRoute()
@@ -117,10 +163,8 @@ namespace WOLF
             }
 
             // Check for issues that would prevent deployment
-            var deployCheckResult = CanConnectToDepot();
-            if (!string.IsNullOrEmpty(deployCheckResult))
+            if (!CanConnectToOrigin())
             {
-                DisplayMessage(deployCheckResult);
                 return;
             }
 
@@ -147,18 +191,6 @@ namespace WOLF
             TogglePawItems();
 
             Messenger.DisplayMessage(ROUTE_STARTED_MESSAGE);
-        }
-
-        [KSPAction("Connect to origin depot")]
-        public void ConnectToOriginAction(KSPActionParam param)
-        {
-            ConnectToOriginEvent();
-        }
-
-        [KSPEvent(guiActive = true, guiActiveEditor = false)]
-        public void ConnectToOriginEvent()
-        {
-            ConnectToOrigin();
         }
 
         // We'll piggyback on the base class ConnectToDepotEvent to
@@ -188,47 +220,19 @@ namespace WOLF
                 return;
             }
 
-            var originDepot = _registry.GetDepot(OriginBody, OriginBiome);
-            var routeCost = CalculateRouteCost();
-            if (routeCost > 0)
-            {
-                // Make sure origin depot has enough TransportCredits to support the route
-                var originTransportCredits = originDepot.GetResources()
-                    .Where(r => r.ResourceName == "TransportCredits")
-                    .FirstOrDefault();
-                if (originTransportCredits == null)
-                {
-                    DisplayMessage(string.Format(INSUFFICIENT_TRANSPORT_CREDITS_MESSAGE, routeCost));
-                    return;
-                }
-                if (originTransportCredits.Available < routeCost)
-                {
-                    DisplayMessage(string.Format(INSUFFICIENT_TRANSPORT_CREDITS_MESSAGE, routeCost - originTransportCredits.Available));
-                    return;
-                }
-            }
-
             try
             {
-                _registry.CreateRoute(OriginBody, OriginBiome, destinationBody, destinationBiome, routePayload);
-                if (routeCost > 0)
+                if (TryNegotiateRoute(destinationBody, destinationBiome, routePayload))
                 {
-                    originDepot.NegotiateConsumer(new Dictionary<string, int> { { "TransportCredits", routeCost } });
+                    // Add rewards
+                    var homeworld = FlightGlobals.GetHomeBodyName();
+                    if (destinationBody == homeworld && OriginBody != destinationBody)
+                    {
+                        RewardsManager.AddTransportFunds(routePayload);
+                    }
+
+                    ResetRoute();
                 }
-
-                if (OriginBody == destinationBody)
-                    DisplayMessage(string.Format(Messenger.SUCCESSFUL_DEPLOYMENT_MESSAGE, OriginBody));
-                else
-                    DisplayMessage(string.Format(Messenger.SUCCESSFUL_DEPLOYMENT_MESSAGE, OriginBody + " and " + destinationBody));
-
-                // Add rewards
-                var homeworld = FlightGlobals.GetHomeBodyName();
-                if (destinationBody == homeworld && OriginBody != destinationBody)
-                {
-                    RewardsManager.AddTransportFunds(routePayload);
-                }
-
-                ResetRoute();
             }
             catch (Exception ex)
             {
@@ -250,7 +254,7 @@ namespace WOLF
             return Math.Max(Convert.ToInt32(routeCost), 0);
         }
 
-        protected virtual int CalculateRoutePayload()
+        protected virtual int CalculateRoutePayload(bool verifyRoute = true)
         {
             if (_cargoModules == null || _cargoModules.Count < 1)
             {
@@ -258,8 +262,8 @@ namespace WOLF
             }
 
             return _cargoModules
-                .Where(m => m.VerifyRoute(RouteId))
-                .Sum(m => m.Payload);
+                .Where(m => !verifyRoute || m.VerifyRoute(RouteId))
+                .Sum(m => m.GetPayload());
         }
 
         public override string GetInfo()
@@ -267,25 +271,8 @@ namespace WOLF
             return PartInfo;
         }
 
-        protected override void LazyUpdate()
+        protected virtual void GetLocalizedTextValues()
         {
-            base.LazyUpdate();
-
-            UpdatePawItems();
-        }
-
-        void OnGUI()
-        {
-            if (_confirmationDialog.IsVisible())
-            {
-                _confirmationDialog.DrawWindow();
-            }
-        }
-
-        public override void OnStart(StartState state)
-        {
-            base.OnStart(state);
-
             if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_TRASNPORTER_UI_CONFIRMATION_DIALOG_WINDOW_TITLE", out string confirmationDialogTitle))
             {
                 _confirmationDialog.WindowTitle = confirmationDialogTitle;
@@ -347,12 +334,55 @@ namespace WOLF
             Events[nameof(ConnectToOriginEvent)].guiName = CONNECT_TO_ORIGIN_GUI_NAME;
             Actions[nameof(ConnectToOriginAction)].guiName = CONNECT_TO_ORIGIN_GUI_NAME;
 
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_TRANSPORTER_CONNECT_TO_DESTINATION_GUI_NAME", out string destinationGuiName))
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_TRANSPORTER_CONNECT_TO_DESTINATION_GUI_NAME",
+                out string destinationGuiName))
             {
                 CONNECT_TO_DESTINATION_GUI_NAME = destinationGuiName;
             }
             Events[nameof(ConnectToDepotEvent)].guiName = CONNECT_TO_DESTINATION_GUI_NAME;
             Actions[nameof(ConnectToDepotAction)].guiName = CONNECT_TO_DESTINATION_GUI_NAME;
+
+            var pawGroupDisplayName = "#LOC_USI_WOLF_PAW_TransporterModule_GroupDisplayName";
+            Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_PAW_TransporterModule_GroupDisplayName",
+                out pawGroupDisplayName);
+
+            Events[nameof(CancelRouteEvent)].group.displayName = pawGroupDisplayName;
+            Events[nameof(ConnectToOriginEvent)].group.displayName = pawGroupDisplayName;
+            Events[nameof(ConnectToDepotEvent)].group.name = PAW_GROUP_NAME;
+            Events[nameof(ConnectToDepotEvent)].group.displayName = pawGroupDisplayName;
+            Fields[nameof(OriginDepotDisplay)].group.displayName = pawGroupDisplayName;
+            Fields[nameof(RouteCost)].group.displayName = pawGroupDisplayName;
+            Fields[nameof(RoutePayload)].group.displayName = pawGroupDisplayName;
+            Fields[nameof(RoutePayloadCost)].group.displayName = pawGroupDisplayName;
+        }
+
+        protected override void LazyUpdate()
+        {
+            base.LazyUpdate();
+
+            UpdatePawItems();
+        }
+
+        void OnGUI()
+        {
+            if (_confirmationDialog.IsVisible())
+            {
+                _confirmationDialog.DrawWindow();
+            }
+        }
+
+        public override void OnAwake()
+        {
+            base.OnAwake();
+
+            GetLocalizedTextValues();
+        }
+
+        public override void OnStart(StartState state)
+        {
+            base.OnStart(state);
 
             CacheCargoModules();
             TogglePawItems();
@@ -382,7 +412,7 @@ namespace WOLF
             TogglePawItems();
         }
 
-        private void ShowOriginDepot()
+        protected void ShowOriginDepot()
         {
             if (!string.IsNullOrEmpty(OriginBody) && !string.IsNullOrEmpty(OriginBiome))
             {
@@ -404,12 +434,71 @@ namespace WOLF
             MonoUtilities.RefreshPartContextWindow(part);
         }
 
+        protected virtual bool TryNegotiateRoute(
+            string destinationBody,
+            string destinationBiome,
+            int routePayload)
+        {
+            var originDepot = _registry.GetDepot(OriginBody, OriginBiome);
+            var routeCost = CalculateRouteCost();
+            if (routeCost > 0)
+            {
+                // Make sure origin depot has enough TransportCredits to support the route
+                var originTransportCredits = originDepot.GetResources()
+                    .Where(r => r.ResourceName == "TransportCredits")
+                    .FirstOrDefault();
+                if (originTransportCredits == null)
+                {
+                    DisplayMessage(string.Format(
+                        INSUFFICIENT_TRANSPORT_CREDITS_MESSAGE,
+                        routeCost));
+                    return false;
+                }
+                if (originTransportCredits.Available < routeCost)
+                {
+                    DisplayMessage(string.Format(
+                        INSUFFICIENT_TRANSPORT_CREDITS_MESSAGE,
+                        routeCost - originTransportCredits.Available));
+                    return false;
+                }
+            }
+
+            _registry.CreateRoute(
+                OriginBody,
+                OriginBiome,
+                destinationBody,
+                destinationBiome,
+                routePayload);
+            if (routeCost > 0)
+            {
+                originDepot.NegotiateConsumer(new Dictionary<string, int>
+                {
+                    { "TransportCredits", routeCost }
+                });
+            }
+
+            if (OriginBody == destinationBody)
+            {
+                DisplayMessage(string.Format(
+                    Messenger.SUCCESSFUL_DEPLOYMENT_MESSAGE,
+                    OriginBody));
+            }
+            else
+            {
+                DisplayMessage(string.Format(
+                    Messenger.SUCCESSFUL_DEPLOYMENT_MESSAGE,
+                    $"{OriginBody} and {destinationBody}"));
+            }
+
+            return true;
+        }
+
         protected virtual void UpdatePawItems()
         {
             if (HighLogic.LoadedSceneIsEditor)
             {
                 CacheCargoModules();
-                RoutePayload = _cargoModules.Sum(m => m.Payload);
+                RoutePayload = _cargoModules.Sum(m => m.GetPayload());
             }
             else if (IsConnectedToOrigin)
             {

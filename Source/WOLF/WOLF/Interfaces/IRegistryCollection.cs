@@ -1,6 +1,11 @@
 ﻿namespace WOLF
 {
-    public interface IRegistryCollection : IDepotRegistry, IHopperRegistry, IRouteRegistry
+    public interface IRegistryCollection :
+        ICrewRouteRegistry,
+        IDepotRegistry,
+        IHopperRegistry,
+        IRouteRegistry,
+        ITerminalRegistry
     {
     }
 }
