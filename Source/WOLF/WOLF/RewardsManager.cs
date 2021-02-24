@@ -5,8 +5,8 @@ namespace WOLF
     public static class RewardsManager
     {
         private static readonly string FUNDS_ADDED_MESSAGE = "#autoLOC_USI_WOLF_REWARDS_FUNDS_ADDED_MESSAGE";  // "You gained {0} Funds!";
-        private static readonly string REPUTATION_ADDED_MESSAGE = "#autoLOC_USI_WOLF_REWARDS_SCIENCE_ADDED_MESSAGE";  // "You gained {0} Science!";
-        private static readonly string SCIENCE_ADDED_MESSAGE = "#autoLOC_USI_WOLF_REWARDS_REPUTATION_ADDED_MESSAGE";  // "You gained {0} Reputation!";
+        private static readonly string SCIENCE_ADDED_MESSAGE = "#autoLOC_USI_WOLF_REWARDS_SCIENCE_ADDED_MESSAGE";  // "You gained {0} Science!";
+        private static readonly string REPUTATION_ADDED_MESSAGE = "#autoLOC_USI_WOLF_REWARDS_REPUTATION_ADDED_MESSAGE";  // "You gained {0} Reputation!";
 
         static RewardsManager()
         {
