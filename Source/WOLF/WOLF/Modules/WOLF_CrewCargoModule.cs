@@ -19,7 +19,17 @@ namespace WOLF
             groupName = PAW_GROUP_NAME,
             guiActive = true,
             guiActiveEditor = true)]
-        public int Berths = 1;
+        public int EconomyBerths = 2;
+
+        [KSPField(isPersistant = true)]
+        public bool IsLuxury;
+
+        [KSPField(
+            groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
+            groupName = PAW_GROUP_NAME,
+            guiActive = false,
+            guiActiveEditor = false)]
+        public int LuxuryBerths = 1;
 
         [KSPField]
         public string ModuleName;
@@ -32,6 +42,24 @@ namespace WOLF
 
         [KSPField(isPersistant = true)]
         public uint VesselId;
+        #endregion
+
+        #region KSP actions and events
+        [KSPAction]
+        public void LuxuryToggleAction(KSPActionParam param)
+        {
+            LuxuryToggle();
+        }
+
+        [KSPEvent(
+            groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
+            groupName = PAW_GROUP_NAME,
+            guiActive = true,
+            guiActiveEditor = true)]
+        public void LuxuryToggleEvent()
+        {
+            LuxuryToggle();
+        }
         #endregion
 
         public void ClearRoute()
@@ -61,13 +89,13 @@ namespace WOLF
                 "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
                 out var pawGroupDisplayName))
             {
-                Fields[nameof(Berths)].group.displayName = pawGroupDisplayName;
+                Fields[nameof(EconomyBerths)].group.displayName = pawGroupDisplayName;
             }
             if (Localizer.TryGetStringByTag(
                 "#LOC_USI_WOLF_PAW_CrewCargoModule_BerthsDisplayName",
                 out var pawDisplayName))
             {
-                Fields[nameof(Berths)].guiName = pawDisplayName;
+                Fields[nameof(EconomyBerths)].guiName = pawDisplayName;
             }
         }
 
@@ -78,7 +106,13 @@ namespace WOLF
 
         public int GetPayload()
         {
-            return Berths;
+            return EconomyBerths;
+        }
+
+        public void LuxuryToggle()
+        {
+            IsLuxury = !IsLuxury;
+            // TODO - The other things
         }
 
         public override void OnAwake()
@@ -92,9 +126,9 @@ namespace WOLF
         {
             base.OnStart(state);
 
-            if (Berths < 1)
+            if (EconomyBerths < 1)
             {
-                Berths = 1;
+                EconomyBerths = 1;
             }
 
             var missingRouteId = string.IsNullOrEmpty(RouteId);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WOLF
@@ -10,6 +11,12 @@ namespace WOLF
         public static readonly string HOPPERS_NODE_NAME = "HOPPERS";
         public static readonly string ROUTES_NODE_NAME = "ROUTES";
         public static readonly string TERMINALS_NODE_NAME = "TERMINALS";
+        public static readonly char[] ALPHABET = new char[36]
+        {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        };
 
         public bool IsLoaded { get; protected set; } = false;
 
@@ -35,13 +42,13 @@ namespace WOLF
                 "TransportCredits"
             };
 
-
         public ICrewRoute CreateCrewRoute(
             string originBody,
             string originBiome,
             string destinationBody,
             string destinationBiome,
-            int berths,
+            int econonmyBerths,
+            int luxuryBerths,
             double duration)
         {
             // If neither depot exists, this will short-circuit
@@ -49,25 +56,16 @@ namespace WOLF
             GetDepot(originBody, originBiome);
             GetDepot(destinationBody, destinationBiome);
 
-            // If a route already exists, increase its bandwidth
-            var existingRoute = GetCrewRoute(
-                originBody,
-                originBiome,
-                destinationBody,
-                destinationBiome);
-            if (existingRoute != null)
-            {
-                existingRoute.IncreaseBerths(berths, duration);
-                return existingRoute;
-            }
-
+            var flightNumber = GetNewFlightNumber();
             var route = new CrewRoute(
                 originBody,
                 originBiome,
                 destinationBody,
                 destinationBiome,
-                berths,
+                econonmyBerths,
+                luxuryBerths,
                 duration,
+                flightNumber,
                 this);
 
             CrewRoutes.Add(route);
@@ -152,23 +150,28 @@ namespace WOLF
             return terminal.Id;
         }
 
-        public ICrewRoute GetCrewRoute(
-            string originBody,
-            string originBiome,
-            string destinationBody,
-            string destinationBiome)
+        public ICrewRoute GetCrewRoute(string id)
         {
-            return CrewRoutes
-                .Where(r => r.OriginBody == originBody
-                    && r.OriginBiome == originBiome
-                    && r.DestinationBody == destinationBody
-                    && r.DestinationBiome == destinationBiome)
-                .FirstOrDefault();
+            return CrewRoutes.FirstOrDefault(r => r.UniqueId == id);
         }
 
-        public List<ICrewRoute> GetCrewRoutes()
+        public List<ICrewRoute> GetCrewRoutes(double currentTime)
         {
-            return CrewRoutes.ToList() ?? new List<ICrewRoute>();
+            var routes = new List<ICrewRoute>();
+            if (CrewRoutes == null || CrewRoutes.Count < 1)
+            {
+                return routes;
+            }
+            foreach (var route in CrewRoutes)
+            {
+                if (route.FlightStatus == WOLFUI.FlightStatus.Enroute &&
+                    currentTime > 0d)
+                {
+                    route.CheckArrived(currentTime);
+                }
+                routes.Add(route);
+            }
+            return routes;
         }
 
         public IDepot GetDepot(string body, string biome)
@@ -183,6 +186,31 @@ namespace WOLF
             }
 
             return depot;
+        }
+
+        public string GetNewFlightNumber()
+        {
+            // Create a (hopefully) unique flight number
+            var flightNumbers = CrewRoutes.Select(r => r.FlightNumber);
+            var flightNumber = string.Empty;
+            var tries = 0;
+            var rng = new Random();
+            while (tries < 10)
+            {
+                var idx1 = rng.Next(36);
+                var idx2 = rng.Next(36);
+                flightNumber = $"{rng.Next(10)}{ALPHABET[idx1]}{ALPHABET[idx2]}";
+                if (!flightNumbers.Contains(flightNumber))
+                {
+                    return flightNumber;
+                }
+                else
+                {
+                    tries++;
+                }
+            }
+
+            return flightNumber;
         }
 
         public List<IDepot> GetDepots()

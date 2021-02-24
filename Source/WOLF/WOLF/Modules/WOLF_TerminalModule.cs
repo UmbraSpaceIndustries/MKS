@@ -8,7 +8,7 @@ namespace WOLF
     {
         protected const string PAW_GROUP_NAME = "usi-wolf-terminal";
 
-        protected WOLF_TerminalScenario _terminalScenario;
+        protected WOLF_CrewTransferScenario _transferScenario;
 
         #region KSP fields
         [KSPField(isPersistant = true)]
@@ -24,9 +24,11 @@ namespace WOLF
             groupDisplayName = "#LOC_USI_WOLF_PAW_TerminalModule_GroupDisplayName")]
         public void ShowWindowEvent()
         {
-            if (_terminalScenario != null)
+            if (_transferScenario != null)
             {
-                _terminalScenario.ShowWindow();
+                var body = vessel.mainBody.name;
+                var biome = GetVesselBiome(vessel);
+                _transferScenario.ShowWindow(body, biome);
             }
         }
         #endregion
@@ -121,7 +123,7 @@ namespace WOLF
             base.OnStart(state);
 
             // Wire up the scenario module
-            _terminalScenario = FindObjectOfType<WOLF_TerminalScenario>();
+            _transferScenario = FindObjectOfType<WOLF_CrewTransferScenario>();
 
             // Determine if terminal is connected to a depot already
             if (!string.IsNullOrEmpty(TerminalId))

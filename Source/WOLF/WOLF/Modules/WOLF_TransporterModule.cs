@@ -57,7 +57,7 @@ namespace WOLF
             guiActive = true,
             guiActiveEditor = true,
             isPersistant = false)]
-        public int RoutePayload;
+        public string RoutePayload;
 
         [KSPField(
             groupName = PAW_GROUP_NAME,
@@ -214,7 +214,7 @@ namespace WOLF
             }
 
             var routePayload = CalculateRoutePayload();
-            if (routePayload < MINIMUM_PAYLOAD)
+            if (!routePayload.HasMinimumPayload(MINIMUM_PAYLOAD))
             {
                 DisplayMessage(INSUFFICIENT_PAYLOAD_MESSAGE);
                 return;
@@ -228,7 +228,7 @@ namespace WOLF
                     var homeworld = FlightGlobals.GetHomeBodyName();
                     if (destinationBody == homeworld && OriginBody != destinationBody)
                     {
-                        RewardsManager.AddTransportFunds(routePayload);
+                        RewardsManager.AddTransportFunds(routePayload.GetRewards());
                     }
 
                     ResetRoute();
@@ -254,16 +254,16 @@ namespace WOLF
             return Math.Max(Convert.ToInt32(routeCost), 0);
         }
 
-        protected virtual int CalculateRoutePayload(bool verifyRoute = true)
+        protected virtual IRoutePayload CalculateRoutePayload(bool verifyRoute = true)
         {
             if (_cargoModules == null || _cargoModules.Count < 1)
             {
-                return 0;
+                return CargoRoutePayload.Zero;
             }
 
-            return _cargoModules
+            return new CargoRoutePayload(_cargoModules
                 .Where(m => !verifyRoute || m.VerifyRoute(RouteId))
-                .Sum(m => m.GetPayload());
+                .Sum(m => m.GetPayload()));
         }
 
         public override string GetInfo()
@@ -396,7 +396,7 @@ namespace WOLF
             OriginDepotDisplay = string.Empty;
             Fields[nameof(OriginDepotDisplay)].guiActive = false;
             RouteId = string.Empty;
-            RoutePayload = 0;
+            RoutePayload = "0";
             RoutePayloadCost = 0d;
             StartingVesselMass = 0d;
             IsConnectedToOrigin = false;
@@ -437,7 +437,7 @@ namespace WOLF
         protected virtual bool TryNegotiateRoute(
             string destinationBody,
             string destinationBiome,
-            int routePayload)
+            IRoutePayload routePayload)
         {
             var originDepot = _registry.GetDepot(OriginBody, OriginBiome);
             var routeCost = CalculateRouteCost();
@@ -463,12 +463,13 @@ namespace WOLF
                 }
             }
 
+            var cargoRoutePayload = (CargoRoutePayload)routePayload;
             _registry.CreateRoute(
                 OriginBody,
                 OriginBiome,
                 destinationBody,
                 destinationBiome,
-                routePayload);
+                cargoRoutePayload.Payload);
             if (routeCost > 0)
             {
                 originDepot.NegotiateConsumer(new Dictionary<string, int>
@@ -495,22 +496,23 @@ namespace WOLF
 
         protected virtual void UpdatePawItems()
         {
+            var payload = CalculateRoutePayload();
             if (HighLogic.LoadedSceneIsEditor)
             {
                 CacheCargoModules();
-                RoutePayload = _cargoModules.Sum(m => m.GetPayload());
+                RoutePayload = payload.GetDisplayValue();
             }
             else if (IsConnectedToOrigin)
             {
                 RouteCost = CalculateRouteCost();
-                RoutePayload = CalculateRoutePayload();
-                RoutePayloadCost = Math.Round((double)RouteCost / RoutePayload, 2);
+                RoutePayload = payload.GetDisplayValue();
+                RoutePayloadCost = Math.Round(payload.GetRouteCostRatio(RouteCost), 2);
             }
             else
             {
                 RouteCost = 0;
-                RoutePayload = 0;
-                RoutePayloadCost = 0;
+                RoutePayload = "0";
+                RoutePayloadCost = 0d;
             }
         }
     }

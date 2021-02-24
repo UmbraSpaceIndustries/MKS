@@ -50,6 +50,10 @@
       <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\KSP_DEV\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -111,6 +115,7 @@
     <Compile Include="Interfaces\IHopperRegistry.cs" />
     <Compile Include="Interfaces\IRecipeProvider.cs" />
     <Compile Include="Interfaces\IRoute.cs" />
+    <Compile Include="Interfaces\IRoutePayload.cs" />
     <Compile Include="Interfaces\IRouteRegistry.cs" />
     <Compile Include="Interfaces\IRegistryCollection.cs" />
     <Compile Include="Interfaces\ITerminalRegistry.cs" />
@@ -119,6 +124,7 @@
     <Compile Include="Modules\WOLF_CargoModule.cs" />
     <Compile Include="Modules\WOLF_CrewCargoModule.cs" />
     <Compile Include="Modules\WOLF_CrewModule.cs" />
+    <Compile Include="Modules\WOLF_CrewTransferScenario.cs" />
     <Compile Include="Modules\WOLF_CrewTransporterModule.cs" />
     <Compile Include="Modules\WOLF_DepotModule.cs" />
     <Compile Include="Modules\WOLF_HarvesterModule.cs" />
@@ -130,12 +136,12 @@
     <Compile Include="Modules\WOLF_ScenarioModule.cs" />
     <Compile Include="Modules\WOLF_SurveyModule.cs" />
     <Compile Include="Modules\WOLF_TerminalModule.cs" />
-    <Compile Include="Modules\WOLF_TerminalScenario.cs" />
     <Compile Include="Modules\WOLF_TransporterModule.cs" />
     <Compile Include="NegotiationResults.cs" />
     <Compile Include="Depot.cs" />
     <Compile Include="Interfaces\IDepot.cs" />
     <Compile Include="Interfaces\IResourceStream.cs" />
+    <Compile Include="Passenger.cs" />
     <Compile Include="Poof.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="ResourceStream.cs" />

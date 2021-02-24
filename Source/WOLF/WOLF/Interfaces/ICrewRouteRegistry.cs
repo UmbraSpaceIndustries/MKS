@@ -9,14 +9,12 @@ namespace WOLF
             string originBiome,
             string destinationBody,
             string destinationBiome,
-            int berths,
+            int economyBerths,
+            int luxuryBerths,
             double duration);
-        ICrewRoute GetCrewRoute(
-            string originBody,
-            string originBiome,
-            string destinationBody,
-            string destinationBiome);
-        List<ICrewRoute> GetCrewRoutes();
+        ICrewRoute GetCrewRoute(string id);
+        List<ICrewRoute> GetCrewRoutes(double currentTime);
+        string GetNewFlightNumber();
         bool HasCrewRoute(
             string originBody,
             string originBiome,

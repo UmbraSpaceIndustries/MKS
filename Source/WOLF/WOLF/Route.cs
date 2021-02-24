@@ -4,6 +4,38 @@ using System.Linq;
 
 namespace WOLF
 {
+    public struct CargoRoutePayload : IRoutePayload
+    {
+        public int Payload { get; private set; }
+
+        public CargoRoutePayload(int payload)
+        {
+            Payload = payload;
+        }
+
+        public string GetDisplayValue()
+        {
+            return Payload.ToString();
+        }
+
+        public int GetRewards()
+        {
+            return Payload;
+        }
+
+        public double GetRouteCostRatio(int routeCost)
+        {
+            return (double)routeCost / Payload;
+        }
+
+        public bool HasMinimumPayload(int minimum)
+        {
+            return Payload >= minimum;
+        }
+
+        public static CargoRoutePayload Zero => new CargoRoutePayload(0);
+    }
+
     public class Route : IRoute
     {
         public string OriginBody { get; protected set; }

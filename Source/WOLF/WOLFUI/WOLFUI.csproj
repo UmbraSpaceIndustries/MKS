@@ -60,9 +60,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\ITerminalController.cs" />
+    <Compile Include="ActionPanelLabels.cs" />
+    <Compile Include="ArrivalPanel.cs" />
+    <Compile Include="ArrivalWarnings.cs" />
+    <Compile Include="DeparturePanel.cs" />
+    <Compile Include="EnroutePanel.cs" />
+    <Compile Include="FlightMetadata.cs" />
+    <Compile Include="FlightSelector.cs" />
+    <Compile Include="Interfaces\IActionPanel.cs" />
+    <Compile Include="Interfaces\ICrewTransferController.cs" />
+    <Compile Include="KerbalSelector.cs" />
+    <Compile Include="PassengerMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectedFlightPanel.cs" />
+    <Compile Include="StarsPanel.cs" />
+    <Compile Include="ArrivalMetadata.cs" />
     <Compile Include="TerminalWindow.cs" />
+    <Compile Include="WarningMetadata.cs" />
+    <Compile Include="WarningPanel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

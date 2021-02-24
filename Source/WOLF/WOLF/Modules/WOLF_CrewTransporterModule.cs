@@ -1,4 +1,5 @@
 ﻿using KSP.Localization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using USITools;
@@ -11,6 +12,8 @@ namespace WOLF
         protected const float TERMINAL_RANGE = 500f;
 
         protected ICrewRouteRegistry _crewRouteRegistry;
+        protected string _insufficientColonySuppliesMessage
+            = "#LOC_USI_WOLF_CrewTransporterModule_InsufficientColonySuppliesMessage";
         protected string _insufficientHabitationMessage
             = "#LOC_USI_WOLF_CrewTransporterModule_InsufficientHabitationMessage";
         protected string _insufficientLifeSupportMessage
@@ -53,8 +56,8 @@ namespace WOLF
                     TERMINAL_RANGE));
                 return false;
             }
-            var berths = CalculateRoutePayload(false);
-            if (berths < 1)
+            var berths = (CrewRoutePayload)CalculateRoutePayload(false);
+            if (!berths.HasMinimumPayload(1))
             {
                 DisplayMessage(INSUFFICIENT_PAYLOAD_MESSAGE);
                 return false;
@@ -64,47 +67,114 @@ namespace WOLF
             var originBody = vessel.mainBody.name;
             var originBiome = GetVesselBiome();
             var originDepot = _registry.GetDepot(originBody, originBiome);
-            return CheckBerthCost(originDepot, berths * BERTH_COST_MULTIPLIER);
+            return CheckBerthCost(originDepot, berths);
         }
 
-        protected bool CheckBerthCost(IDepot depot, int berthCost)
+        protected bool CheckBerthCost(IDepot depot, CrewRoutePayload routePayload)
         {
-            var originHab = depot.GetResources()
-                .Where(r => r.ResourceName == "Habitation")
-                .FirstOrDefault();
+            var depotResources = depot.GetResources();
+            var economyBerthCost = routePayload.EconomyBerths * BERTH_COST_MULTIPLIER;
+            var luxuryBerthCost = routePayload.LuxuryBerths * BERTH_COST_MULTIPLIER;
+            var totalBerthCost = economyBerthCost + luxuryBerthCost;
+            var originHab = depotResources
+                .FirstOrDefault(r => r.ResourceName == "Habitation");
             if (originHab == null)
             {
                 DisplayMessage(string.Format(
                     _insufficientHabitationMessage,
-                    berthCost));
+                    totalBerthCost));
                 return false;
             }
-            if (originHab.Available < berthCost)
+            if (originHab.Available < totalBerthCost)
             {
                 DisplayMessage(string.Format(
                     _insufficientHabitationMessage,
-                    berthCost - originHab.Available));
+                    totalBerthCost - originHab.Available));
                 return false;
             }
-            var originLifeSupport = depot.GetResources()
-                .Where(r => r.ResourceName == "LifeSupport")
-                .FirstOrDefault();
+            var originLifeSupport = depotResources
+                .FirstOrDefault(r => r.ResourceName == "LifeSupport");
             if (originLifeSupport == null)
             {
                 DisplayMessage(string.Format(
                     _insufficientLifeSupportMessage,
-                    berthCost));
+                    totalBerthCost));
                 return false;
             }
-            if (originLifeSupport.Available < berthCost)
+            if (originLifeSupport.Available < totalBerthCost)
             {
                 DisplayMessage(string.Format(
                     _insufficientLifeSupportMessage,
-                    berthCost - originLifeSupport.Available));
+                    totalBerthCost - originLifeSupport.Available));
                 return false;
             }
-
+            if (luxuryBerthCost > 0)
+            {
+                var originColonySupplies = depotResources
+                    .FirstOrDefault(r => r.ResourceName == "ColonySupplies");
+                if (originColonySupplies == null)
+                {
+                    DisplayMessage(string.Format(
+                        _insufficientColonySuppliesMessage,
+                        luxuryBerthCost));
+                    return false;
+                }
+                if (originColonySupplies.Available < luxuryBerthCost)
+                {
+                    DisplayMessage(string.Format(
+                        _insufficientColonySuppliesMessage,
+                        luxuryBerthCost - originColonySupplies.Available));
+                    return false;
+                }
+            }
             return true;
+        }
+
+        // We'll piggyback on the base class ConnectToDepotEvent to
+        //   handle making the connection on the destination side
+        protected override void ConnectToDepot()
+        {
+            // Check for issues that would prevent deployment
+            var deployCheckResult = CanConnectToDepot();
+            if (!string.IsNullOrEmpty(deployCheckResult))
+            {
+                DisplayMessage(deployCheckResult);
+                return;
+            }
+
+            var destinationBody = vessel.mainBody.name;
+            var destinationBiome = GetVesselBiome();
+            if (destinationBody == OriginBody && destinationBiome == OriginBiome)
+            {
+                DisplayMessage(INVALID_CONNECTION_MESSAGE);
+                return;
+            }
+
+            var routePayload = CalculateRoutePayload();
+            if (!routePayload.HasMinimumPayload(MINIMUM_PAYLOAD))
+            {
+                DisplayMessage(INSUFFICIENT_PAYLOAD_MESSAGE);
+                return;
+            }
+
+            try
+            {
+                if (TryNegotiateRoute(destinationBody, destinationBiome, routePayload))
+                {
+                    // Add rewards
+                    var homeworld = FlightGlobals.GetHomeBodyName();
+                    if (destinationBody == homeworld && OriginBody != destinationBody)
+                    {
+                        RewardsManager.AddTransportFunds(routePayload.GetRewards());
+                    }
+
+                    ResetRoute();
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayMessage(ex.Message);
+            }
         }
 
         protected override void ConnectToOrigin()
@@ -170,7 +240,7 @@ namespace WOLF
         protected override bool TryNegotiateRoute(
             string destinationBody,
             string destinationBiome,
-            int routePayload)
+            IRoutePayload routePayload)
         {
             if (!IsNearTerminal())
             {
@@ -205,8 +275,8 @@ namespace WOLF
             }
 
             // Make sure origin depot has enough hab & life support
-            var berthCost = routePayload * BERTH_COST_MULTIPLIER;
-            if (!CheckBerthCost(originDepot, berthCost))
+            var crewRoutePayload = (CrewRoutePayload)routePayload;
+            if (!CheckBerthCost(originDepot, crewRoutePayload))
             {
                 return false;
             }
@@ -216,12 +286,16 @@ namespace WOLF
             var duration = now - RouteStart;
 
             // Create route and consume route costs
+            var economyBerthCost = crewRoutePayload.EconomyBerths * BERTH_COST_MULTIPLIER;
+            var luxuryBerthCost = crewRoutePayload.LuxuryBerths * BERTH_COST_MULTIPLIER;
+            var totalBerthCost = economyBerthCost + luxuryBerthCost;
             _registry.CreateCrewRoute(
                 OriginBody,
                 OriginBiome,
                 destinationBody,
                 destinationBiome,
-                routePayload,
+                crewRoutePayload.EconomyBerths,
+                crewRoutePayload.LuxuryBerths,
                 duration);
             if (routeCost > 0)
             {
@@ -232,9 +306,16 @@ namespace WOLF
             }
             originDepot.NegotiateConsumer(new Dictionary<string, int>
             {
-                { "Habitation", berthCost },
-                { "LifeSupport", berthCost },
+                { "Habitation", totalBerthCost },
+                { "LifeSupport", totalBerthCost },
             });
+            if (luxuryBerthCost > 0)
+            {
+                originDepot.NegotiateConsumer(new Dictionary<string, int>
+                {
+                    { "ColonySupplies", luxuryBerthCost }
+                });
+            }
 
             if (OriginBody == destinationBody)
             {
