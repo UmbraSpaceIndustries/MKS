@@ -28,7 +28,7 @@ namespace WOLF
         {
             if (Funding.Instance != null)
             {
-                double funds = WOLF_GameParameters.TransportFundsRewardValue * payload;
+                var funds = WOLF_GameParameters.TransportFundsRewardValue * payload;
                 Funding.Instance.AddFunds(funds, TransactionReasons.ContractReward);
                 Messenger.DisplayMessage(string.Format(FUNDS_ADDED_MESSAGE, funds.ToString("F0")));
             }

@@ -7,7 +7,8 @@ using USITools;
 namespace WOLF
 {
     [KSPModule("Hopper")]
-    public class WOLF_HopperModule : USI_Converter, IRecipeProvider
+    public class WOLF_HopperModule
+        : USI_Converter, IRecipeProvider, ICorporeal
     {
         private static string CONNECT_TO_DEPOT_GUI_NAME = "#autoLOC_USI_WOLF_CONNECT_TO_DEPOT_GUI_NAME"; // "Connect to depot.";
         private static string CURRENT_BIOME_GUI_NAME = "#autoLOC_USI_WOLF_CURRENT_BIOME_GUI_NAME"; // "Current biome";
@@ -80,7 +81,7 @@ namespace WOLF
                 return;
             }
             var otherWolfPartModules = vessel.FindPartModulesImplementing<WOLF_AbstractPartModule>();
-            if (otherWolfPartModules.Any())
+            if (otherWolfPartModules.Any(p => !(p is ICorporeal)))
             {
                 Messenger.DisplayMessage(Messenger.INVALID_HOPPER_PART_ATTACHMENT_MESSAGE);
                 return;

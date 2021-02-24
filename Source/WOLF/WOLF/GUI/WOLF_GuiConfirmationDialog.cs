@@ -5,15 +5,13 @@ namespace WOLF
 {
     public class WOLF_GuiConfirmationDialog : Window
     {
-        #region Local static and instance variables
         private static string CONFIRM_CANCEL_ROUTE_MESSAGE = "#autoLOC_USI_WOLF_TRANSPORTER_UI_CONFIRM_CANCEL_ROUTE_MESSAGE"; // "Are you sure you want to cancel this route?";
         private static string YES_BUTTON_TEXT = "#autoLOC_USI_WOLF_TRANSPORTER_UI_YES_MESSAGE"; // "Yes";
         private static string NO_BUTTON_TEXT = "#autoLOC_USI_WOLF_TRANSPORTER_UI_NO_MESSAGE"; // "No";
 
-        private readonly WOLF_AbstractTransporterModule _transporterModule;
-        #endregion
+        private readonly WOLF_TransporterModule _transporterModule;
 
-        public WOLF_GuiConfirmationDialog(WOLF_AbstractTransporterModule transporterModule)
+        public WOLF_GuiConfirmationDialog(WOLF_TransporterModule transporterModule)
             : base("Confirm Route Cancellation", 300, 150)
         {
             Debug.Log("[WOLF] GuiConfirmationDialog created.");

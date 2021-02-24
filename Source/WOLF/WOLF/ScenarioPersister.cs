@@ -1,29 +1,77 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WOLF
 {
     public class ScenarioPersister : IRegistryCollection
     {
+        public static readonly string CREW_ROUTES_NODE_NAME = "CREWROUTES";
         public static readonly string DEPOTS_NODE_NAME = "DEPOTS";
         public static readonly string HOPPERS_NODE_NAME = "HOPPERS";
         public static readonly string ROUTES_NODE_NAME = "ROUTES";
+        public static readonly string TERMINALS_NODE_NAME = "TERMINALS";
+        public static readonly char[] ALPHABET = new char[36]
+        {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        };
 
         public bool IsLoaded { get; protected set; } = false;
 
-        protected List<IDepot> _depots { get; private set; } = new List<IDepot>();
-        protected List<HopperMetadata> _hoppers { get; private set; } = new List<HopperMetadata>();
-        protected List<IRoute> _routes { get; private set; } = new List<IRoute>();
+        protected List<ICrewRoute> CrewRoutes { get; private set; }
+            = new List<ICrewRoute>();
+        protected List<IDepot> Depots { get; private set; }
+            = new List<IDepot>();
+        protected List<HopperMetadata> Hoppers { get; private set; }
+            = new List<HopperMetadata>();
+        protected List<IRoute> Routes { get; private set; }
+            = new List<IRoute>();
+        protected List<TerminalMetadata> Terminals { get; private set; }
+            = new List<TerminalMetadata>();
 
-        public List<string> TransferResourceBlacklist { get; private set; } = new List<string>
+        public List<string> TransferResourceBlacklist { get; private set; }
+            = new List<string>
+            {
+                "Lab",
+                "LifeSupport",
+                "Habitation",
+                "Maintenance",
+                "Power",
+                "TransportCredits"
+            };
+
+        public ICrewRoute CreateCrewRoute(
+            string originBody,
+            string originBiome,
+            string destinationBody,
+            string destinationBiome,
+            int econonmyBerths,
+            int luxuryBerths,
+            double duration)
         {
-            "Lab",
-            "LifeSupport",
-            "Habitation",
-            "Maintenance",
-            "Power",
-            "TransportCredits"
-        };
+            // If neither depot exists, this will short-circuit
+            //  because GetDepot will throw an exception
+            GetDepot(originBody, originBiome);
+            GetDepot(destinationBody, destinationBiome);
+
+            var flightNumber = GetNewFlightNumber();
+            var route = new CrewRoute(
+                originBody,
+                originBiome,
+                destinationBody,
+                destinationBiome,
+                econonmyBerths,
+                luxuryBerths,
+                duration,
+                flightNumber,
+                this);
+
+            CrewRoutes.Add(route);
+
+            return route;
+        }
 
         public IDepot CreateDepot(string body, string biome)
         {
@@ -33,7 +81,7 @@ namespace WOLF
             }
 
             depot = new Depot(body, biome);
-            _depots.Add(depot);
+            Depots.Add(depot);
 
             return depot;
         }
@@ -47,19 +95,29 @@ namespace WOLF
         public string CreateHopper(IDepot depot, IRecipe recipe)
         {
             var hopper = new HopperMetadata(depot, recipe);
-            _hoppers.Add(hopper);
+            Hoppers.Add(hopper);
 
             return hopper.Id;
         }
 
-        public IRoute CreateRoute(string originBody, string originBiome, string destinationBody, string destinationBiome, int payload)
+        public IRoute CreateRoute(
+            string originBody,
+            string originBiome,
+            string destinationBody,
+            string destinationBiome,
+            int payload)
         {
-            // If neither depot exists, this will short-circuit because GetDepot will throw an exception
-            var origin = GetDepot(originBody, originBiome);
-            var destination = GetDepot(destinationBody, destinationBiome);
+            // If neither depot exists, this will short-circuit
+            //  because GetDepot will throw an exception
+            GetDepot(originBody, originBiome);
+            GetDepot(destinationBody, destinationBiome);
 
             // If a route already exists, increase its bandwidth
-            var existingRoute = GetRoute(originBody, originBiome, destinationBody, destinationBiome);
+            var existingRoute = GetRoute(
+                originBody,
+                originBiome,
+                destinationBody,
+                destinationBiome);
             if (existingRoute != null)
             {
                 existingRoute.IncreasePayload(payload);
@@ -74,14 +132,53 @@ namespace WOLF
                 payload,
                 this);
 
-            _routes.Add(route);
+            Routes.Add(route);
 
             return route;
         }
 
+        /// <summary>
+        /// Registers a terminal with a depot.
+        /// </summary>
+        /// <param name="depot"></param>
+        /// <returns>A unique id for the terminal</returns>
+        public string CreateTerminal(IDepot depot)
+        {
+            var terminal = new TerminalMetadata(depot);
+            Terminals.Add(terminal);
+
+            return terminal.Id;
+        }
+
+        public ICrewRoute GetCrewRoute(string id)
+        {
+            return CrewRoutes.FirstOrDefault(r => r.UniqueId == id);
+        }
+
+        public List<ICrewRoute> GetCrewRoutes(double currentTime)
+        {
+            var routes = new List<ICrewRoute>();
+            if (CrewRoutes == null || CrewRoutes.Count < 1)
+            {
+                return routes;
+            }
+            foreach (var route in CrewRoutes)
+            {
+                if (route.FlightStatus == WOLFUI.FlightStatus.Enroute &&
+                    currentTime > 0d)
+                {
+                    route.CheckArrived(currentTime);
+                }
+                routes.Add(route);
+            }
+            return routes;
+        }
+
         public IDepot GetDepot(string body, string biome)
         {
-            var depot = _depots.Where(d => d.Body == body && d.Biome == biome).FirstOrDefault();
+            var depot = Depots
+                .Where(d => d.Body == body && d.Biome == biome).
+                FirstOrDefault();
 
             if (depot == null)
             {
@@ -91,26 +188,44 @@ namespace WOLF
             return depot;
         }
 
-        public bool TryGetDepot(string body, string biome, out IDepot depot)
+        public string GetNewFlightNumber()
         {
-            depot = _depots.Where(d => d.Body == body && d.Biome == biome).FirstOrDefault();
+            // Create a (hopefully) unique flight number
+            var flightNumbers = CrewRoutes.Select(r => r.FlightNumber);
+            var flightNumber = string.Empty;
+            var tries = 0;
+            var rng = new Random();
+            while (tries < 10)
+            {
+                var idx1 = rng.Next(36);
+                var idx2 = rng.Next(36);
+                flightNumber = $"{rng.Next(10)}{ALPHABET[idx1]}{ALPHABET[idx2]}";
+                if (!flightNumbers.Contains(flightNumber))
+                {
+                    return flightNumber;
+                }
+                else
+                {
+                    tries++;
+                }
+            }
 
-            return depot != null;
+            return flightNumber;
         }
 
         public List<IDepot> GetDepots()
         {
-            return _depots.ToList() ?? new List<IDepot>();
+            return Depots.ToList() ?? new List<IDepot>();
         }
 
         public List<HopperMetadata> GetHoppers()
         {
-            return _hoppers.ToList() ?? new List<HopperMetadata>();
+            return Hoppers.ToList() ?? new List<HopperMetadata>();
         }
 
         public IRoute GetRoute(string originBody, string originBiome, string destinationBody, string destinationBiome)
         {
-            return _routes
+            return Routes
                 .Where(r => r.OriginBody == originBody
                     && r.OriginBiome == originBiome
                     && r.DestinationBody == destinationBody
@@ -120,27 +235,57 @@ namespace WOLF
 
         public List<IRoute> GetRoutes()
         {
-            return _routes.ToList() ?? new List<IRoute>();
+            return Routes.ToList() ?? new List<IRoute>();
         }
 
-        public bool HasEstablishedDepot(string body, string biome)
+        public bool HasCrewRoute(
+            string originBody,
+            string originBiome,
+            string destinationBody,
+            string destinationBiome)
         {
-            return _depots.Any(d => d.Body == body && d.Biome == biome && d.IsEstablished);
-        }
-
-        public bool HasRoute(string originBody, string originBiome, string destinationBody, string destinationBiome)
-        {
-            return _routes
+            return CrewRoutes
                 .Any(r => r.OriginBody == originBody
                     && r.OriginBiome == originBiome
                     && r.DestinationBody == destinationBody
                     && r.DestinationBiome == destinationBiome);
         }
 
+        public List<TerminalMetadata> GetTerminals()
+        {
+            return Terminals.ToList() ?? new List<TerminalMetadata>();
+        }
+
+        public bool HasEstablishedDepot(string body, string biome)
+        {
+            return Depots.Any(d => d.Body == body && d.Biome == biome && d.IsEstablished);
+        }
+
+        public bool HasRoute(string originBody, string originBiome, string destinationBody, string destinationBiome)
+        {
+            return Routes
+                .Any(r => r.OriginBody == originBody
+                    && r.OriginBiome == originBiome
+                    && r.DestinationBody == destinationBody
+                    && r.DestinationBiome == destinationBiome);
+        }
+
+        public bool HasTerminal(string id, IDepot depot)
+        {
+            if (Terminals == null || Terminals.Count < 1)
+            {
+                return false;
+            }
+            return Terminals.Any(t => t.Id == id &&
+                t.Body == depot.Body &&
+                t.Biome == depot.Biome);
+        }
+
         public void OnLoad(ConfigNode node)
         {
             IsLoaded = false;
 
+            // Depots need to be loaded first!
             if (node.HasNode(DEPOTS_NODE_NAME))
             {
                 var wolfNode = node.GetNode(DEPOTS_NODE_NAME);
@@ -152,7 +297,18 @@ namespace WOLF
 
                     var depot = new Depot(bodyValue, biomeValue);
                     depot.OnLoad(depotNode);
-                    _depots.Add(depot);
+                    Depots.Add(depot);
+                }
+            }
+            if (node.HasNode(CREW_ROUTES_NODE_NAME))
+            {
+                var wolfNode = node.GetNode(CREW_ROUTES_NODE_NAME);
+                var crewRouteNodes = wolfNode.GetNodes();
+                foreach (var crewRouteNode in crewRouteNodes)
+                {
+                    var route = new CrewRoute(this);
+                    route.OnLoad(crewRouteNode);
+                    CrewRoutes.Add(route);
                 }
             }
             if (node.HasNode(HOPPERS_NODE_NAME))
@@ -163,13 +319,13 @@ namespace WOLF
                 {
                     var bodyValue = hopperNode.GetValue("Body");
                     var biomeValue = hopperNode.GetValue("Biome");
-                    var depot = _depots.FirstOrDefault(d => d.Body == bodyValue && d.Biome == biomeValue);
+                    var depot = Depots.FirstOrDefault(d => d.Body == bodyValue && d.Biome == biomeValue);
 
                     if (depot != null)
                     {
                         var hopper = new HopperMetadata(depot);
                         hopper.OnLoad(hopperNode);
-                        _hoppers.Add(hopper);
+                        Hoppers.Add(hopper);
                     }
                 }
             }
@@ -181,7 +337,18 @@ namespace WOLF
                 {
                     var route = new Route(this);
                     route.OnLoad(routeNode);
-                    _routes.Add(route);
+                    Routes.Add(route);
+                }
+            }
+            if (node.HasNode(TERMINALS_NODE_NAME))
+            {
+                var wolfNode = node.GetNode(TERMINALS_NODE_NAME);
+                var terminalNodes = wolfNode.GetNodes();
+                foreach (var terminalNode in terminalNodes)
+                {
+                    var terminal = new TerminalMetadata();
+                    terminal.OnLoad(terminalNode);
+                    Terminals.Add(terminal);
                 }
             }
 
@@ -190,6 +357,16 @@ namespace WOLF
 
         public void OnSave(ConfigNode node)
         {
+            ConfigNode crewRoutesNode;
+            if (!node.HasNode(CREW_ROUTES_NODE_NAME))
+            {
+                crewRoutesNode = node.AddNode(CREW_ROUTES_NODE_NAME);
+            }
+            else
+            {
+                crewRoutesNode = node.GetNode(CREW_ROUTES_NODE_NAME);
+            }
+
             ConfigNode depotsNode;
             if (!node.HasNode(DEPOTS_NODE_NAME))
             {
@@ -220,30 +397,64 @@ namespace WOLF
                 routesNode = node.GetNode(ROUTES_NODE_NAME);
             }
 
-            foreach (var depot in _depots)
+            ConfigNode terminalsNode;
+            if (!node.HasNode(TERMINALS_NODE_NAME))
+            {
+                terminalsNode = node.AddNode(TERMINALS_NODE_NAME);
+            }
+            else
+            {
+                terminalsNode = node.GetNode(TERMINALS_NODE_NAME);
+            }
+
+            foreach (var crewRoute in CrewRoutes)
+            {
+                crewRoute.OnSave(crewRoutesNode);
+            }
+            foreach (var depot in Depots)
             {
                 depot.OnSave(depotsNode);
             }
-
-            foreach (var hopper in _hoppers)
+            foreach (var hopper in Hoppers)
             {
                 hopper.OnSave(hoppersNode);
             }
-
-            foreach (var route in _routes)
+            foreach (var route in Routes)
             {
                 route.OnSave(routesNode);
+            }
+            foreach (var terminal in Terminals)
+            {
+                terminal.OnSave(terminalsNode);
             }
         }
 
         public void RemoveHopper(string id)
         {
-            var hopper = _hoppers.FirstOrDefault(h => h.Id == id);
+            var hopper = Hoppers.FirstOrDefault(h => h.Id == id);
 
             if (hopper != null)
             {
-                _hoppers.Remove(hopper);
+                Hoppers.Remove(hopper);
             }
+        }
+
+        public void RemoveTerminal(string id)
+        {
+            var terminal = Terminals.FirstOrDefault(t => t.Id == id);
+            if (terminal != null)
+            {
+                Terminals.Remove(terminal);
+            }
+        }
+
+        public bool TryGetDepot(string body, string biome, out IDepot depot)
+        {
+            depot = Depots
+                .Where(d => d.Body == body && d.Biome == biome)
+                .FirstOrDefault();
+
+            return depot != null;
         }
     }
 }
