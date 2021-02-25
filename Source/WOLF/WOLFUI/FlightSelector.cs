@@ -13,7 +13,6 @@ namespace WOLFUI
     [RequireComponent(typeof(Toggle))]
     public class FlightSelector : MonoBehaviour
     {
-        private FlightMetadata _flight;
         private FlightSelectorLabels _labels;
         private TerminalWindow _window;
 
@@ -48,9 +47,14 @@ namespace WOLFUI
         [SerializeField]
         private Text ArrivalLabel;
 
+        [SerializeField]
+        private Toggle Toggle;
+
 #pragma warning restore 0649
 #pragma warning restore IDE0044
         #endregion
+
+        public FlightMetadata Flight { get; private set; }
 
         public void Initialize(TerminalWindow window, FlightSelectorLabels labels)
         {
@@ -65,16 +69,20 @@ namespace WOLFUI
             {
                 ArrivalHeaderLabel.text = labels.ArrivalHeaderLabel;
             }
+            if (Toggle != null)
+            {
+                Toggle.group = window.FlightsListToggleGroup;
+            }
         }
 
         public void OnValueChanged(bool isOn)
         {
-            _window.FlightSelected(_flight, isOn);
+            _window.FlightSelected(Flight, isOn);
         }
 
         public void ShowFlight(FlightMetadata flight)
         {
-            _flight = flight;
+            Flight = flight;
 
             if (StatusIcon != null)
             {

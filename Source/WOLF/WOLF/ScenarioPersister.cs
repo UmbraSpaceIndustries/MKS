@@ -11,12 +11,12 @@ namespace WOLF
         public static readonly string HOPPERS_NODE_NAME = "HOPPERS";
         public static readonly string ROUTES_NODE_NAME = "ROUTES";
         public static readonly string TERMINALS_NODE_NAME = "TERMINALS";
-        public static readonly char[] ALPHABET = new char[36]
+        public static readonly char[] ALPHABET = new char[32]
         {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
-        };
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+            'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '2', '3', '4', '5', '6', '7', '8', '9'
+        };  // ambiguous characters excluded on purpose (i.e. 1, I, 0, O)
 
         public bool IsLoaded { get; protected set; } = false;
 
@@ -197,8 +197,8 @@ namespace WOLF
             var rng = new Random();
             while (tries < 10)
             {
-                var idx1 = rng.Next(36);
-                var idx2 = rng.Next(36);
+                var idx1 = rng.Next(32);
+                var idx2 = rng.Next(32);
                 flightNumber = $"{rng.Next(10)}{ALPHABET[idx1]}{ALPHABET[idx2]}";
                 if (!flightNumbers.Contains(flightNumber))
                 {

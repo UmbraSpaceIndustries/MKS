@@ -667,6 +667,10 @@ namespace WOLF
                                 _window.ShowPassengers(passengers);
                             }
                         }
+                        else
+                        {
+                            _window.ShowAlert(SelectedFlightPanelLabels.NoKerbalsToBoardMessage);
+                        }
                     }
                     else
                     {

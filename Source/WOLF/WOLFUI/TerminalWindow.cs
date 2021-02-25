@@ -17,6 +17,10 @@ namespace WOLFUI
         private ICrewTransferController _controller;
         private readonly Dictionary<string, List<string>> _departures
             = new Dictionary<string, List<string>>();
+        private string _filterArrivalBody;
+        private string _filterArrivalBiome;
+        private string _filterDepartureBody;
+        private string _filterDepartureBiome;
         private readonly Dictionary<string, FlightSelector> _flights
             = new Dictionary<string, FlightSelector>();
         private Action _onCloseCallback;
@@ -56,6 +60,9 @@ namespace WOLFUI
 
         [SerializeField]
         private Transform FlightsList;
+
+        [SerializeField]
+        public ToggleGroup FlightsListToggleGroup;
 
         [SerializeField]
         private SelectedFlightPanel SelectedFlightPanel;
@@ -258,6 +265,114 @@ namespace WOLFUI
             HidePanels();
         }
 
+        public void SelectArrivalBiomeFilter(int idx)
+        {
+            if (ArrivalBiomeDropdown.value != idx)
+            {
+                ArrivalBiomeDropdown.SetValueWithoutNotify(idx);
+            }
+            if (idx < 1)
+            {
+                _filterArrivalBiome = null;
+            }
+            else
+            {
+                _filterArrivalBiome = ArrivalBiomeDropdown.options[idx].text;
+            }
+        }
+
+        public void SelectArrivalBodyFilter(int idx)
+        {
+            if (ArrivalBodyDropdown.value != idx)
+            {
+                if (idx < 1)
+                {
+                    _filterArrivalBody = null;
+                    ArrivalBodyDropdown.SetValueWithoutNotify(0);
+                    ArrivalBiomeDropdown.ClearOptions();
+                    ArrivalBiomeDropdown.options.Add(new Dropdown.OptionData
+                    {
+                        text = "Select a biome...",
+                    });
+                }
+                else
+                {
+
+                    ArrivalBodyDropdown.SetValueWithoutNotify(idx);
+                    ArrivalBodyDropdown.RefreshShownValue();
+                    _filterArrivalBody = ArrivalBodyDropdown.options[idx].text;
+                    var biomes = _arrivals[_filterArrivalBody];
+                    ArrivalBiomeDropdown.ClearOptions();
+                    ArrivalBiomeDropdown.options.Add(new Dropdown.OptionData
+                    {
+                        text = "Select a biome...",
+                    });
+                    foreach (var biome in biomes)
+                    {
+                        ArrivalBiomeDropdown.options.Add(new Dropdown.OptionData
+                        {
+                            text = biome,
+                        });
+                    }
+                }
+                SelectArrivalBiomeFilter(0);
+            }
+        }
+
+        public void SelectDepartureBiomeFilter(int idx)
+        {
+            if (DepartureBiomeDropdown.value != idx)
+            {
+                DepartureBiomeDropdown.SetValueWithoutNotify(idx);
+            }
+            if (idx < 1)
+            {
+                _filterDepartureBiome = null;
+            }
+            else
+            {
+                _filterDepartureBiome = DepartureBiomeDropdown.options[idx].text;
+            }
+        }
+
+        public void SelectDepartureBodyFilter(int idx)
+        {
+            if (DepartureBodyDropdown.value != idx)
+            {
+                if (idx < 1)
+                {
+                    _filterDepartureBody = null;
+                    DepartureBodyDropdown.SetValueWithoutNotify(0);
+                    DepartureBiomeDropdown.ClearOptions();
+                    DepartureBiomeDropdown.options.Add(new Dropdown.OptionData
+                    {
+                        text = "Select a biome...",
+                    });
+                }
+                else
+                {
+
+                    DepartureBodyDropdown.SetValueWithoutNotify(idx);
+                    DepartureBodyDropdown.RefreshShownValue();
+                    _filterDepartureBody = DepartureBodyDropdown.options[idx].text;
+                    var biomes = _arrivals[_filterDepartureBody];
+                    DepartureBiomeDropdown.ClearOptions();
+                    DepartureBiomeDropdown.options.Add(new Dropdown.OptionData
+                    {
+                        text = "Select a biome...",
+                    });
+                    foreach (var biome in biomes)
+                    {
+                        DepartureBiomeDropdown.options.Add(new Dropdown.OptionData
+                        {
+                            text = biome,
+                        });
+                    }
+                }
+                SelectDepartureBiomeFilter(0);
+            }
+        }
+
         public void ShowAlert(string message)
         {
             if (AlertText != null)
@@ -369,7 +484,24 @@ namespace WOLFUI
                         }
                     }
                 }
-                // TODO - Filter displayed flights by dropdown selections
+                // Toggle panels based on filtering options
+                foreach (var panel in _flights.Values)
+                {
+                    var isArrivalBody = string.IsNullOrEmpty(_filterArrivalBody) ||
+                        panel.Flight.ArrivalBody == _filterArrivalBody;
+                    var isArrivalBiome = string.IsNullOrEmpty(_filterArrivalBiome) ||
+                        panel.Flight.ArrivalBiome == _filterArrivalBiome;
+                    var isDepartureBody = string.IsNullOrEmpty(_filterDepartureBody) ||
+                        panel.Flight.DepartureBody == _filterDepartureBody;
+                    var isDepartureBiome = string.IsNullOrEmpty(_filterDepartureBiome) ||
+                        panel.Flight.DepartureBiome == _filterDepartureBiome;
+                    var isOn = isArrivalBody && isArrivalBiome && isDepartureBody && isDepartureBiome;
+                    if (_selectedFlight != null && _selectedFlight.UniqueId == panel.Flight.UniqueId && !isOn)
+                    {
+                        FlightSelected(_selectedFlight, false);
+                    }
+                    ToggleFlightPanel(panel, isOn);
+                }
             }
         }
 
@@ -425,11 +557,120 @@ namespace WOLFUI
             {
                 gameObject.SetActive(true);
             }
+            if (!string.IsNullOrEmpty(body))
+            {
+                var idx = ArrivalBodyDropdown.options
+                    .FindIndex(o => o.text == body);
+                if (idx > 0 && ArrivalBodyDropdown.value != idx)
+                {
+                    SelectArrivalBodyFilter(idx);
+                }
+                idx = DepartureBodyDropdown.options
+                    .FindIndex(o => o.text == body);
+                if (idx > 0 && DepartureBodyDropdown.value != idx)
+                {
+                    SelectDepartureBodyFilter(idx);
+                }
+            }
+            if (!string.IsNullOrEmpty(biome))
+            {
+                var idx = ArrivalBiomeDropdown.options
+                    .FindIndex(o => o.text == biome);
+                if (idx > 0 && ArrivalBiomeDropdown.value != idx)
+                {
+                    SelectArrivalBiomeFilter(idx);
+                }
+                idx = DepartureBiomeDropdown.options
+                    .FindIndex(o => o.text == biome);
+                if (idx > 0 && DepartureBiomeDropdown.value != idx)
+                {
+                    SelectDepartureBodyFilter(idx);
+                }
+            }
+        }
+
+        private void ToggleFlightPanel(FlightSelector panel, bool isOn)
+        {
+            if (isOn && !panel.gameObject.activeSelf)
+            {
+                panel.gameObject.SetActive(true);
+            }
+            else if (!isOn && panel.gameObject.activeSelf)
+            {
+                panel.gameObject.SetActive(false);
+            }
         }
 
         private void UpdateDropdowns()
         {
-
+            if (_departures.Count > 0)
+            {
+                foreach (var origin in _departures)
+                {
+                    var body = origin.Key;
+                    var bodyOption = DepartureBodyDropdown.options
+                        .Find(o => o.text == body);
+                    if (bodyOption == null)
+                    {
+                        DepartureBodyDropdown.options.Add(new Dropdown.OptionData
+                        {
+                            text = body,
+                        });
+                    }
+                    var selectedBodyIdx = DepartureBodyDropdown.value;
+                    if (selectedBodyIdx > 0)
+                    {
+                        var selectedBody = DepartureBodyDropdown.options[selectedBodyIdx].text;
+                        if (selectedBody == body)
+                        {
+                            foreach (var biome in origin.Value)
+                            {
+                                var biomeOption = DepartureBiomeDropdown.options
+                                    .Find(o => o.text == biome);
+                                if (biomeOption == null)
+                                {
+                                    DepartureBiomeDropdown.options.Add(new Dropdown.OptionData
+                                    {
+                                        text = biome,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (_arrivals.Count > 0)
+            {
+                foreach (var destination in _arrivals)
+                {
+                    var body = destination.Key;
+                    var bodyOption = ArrivalBodyDropdown.options
+                        .Find(o => o.text == body);
+                    if (bodyOption == null)
+                    {
+                        ArrivalBodyDropdown.options.Add(new Dropdown.OptionData
+                        {
+                            text = body,
+                        });
+                    }
+                    var selectedBodyIdx = ArrivalBodyDropdown.value;
+                    if (selectedBodyIdx > 0)
+                    {
+                        foreach (var biome in destination.Value)
+                        {
+                            var biomeOption = ArrivalBiomeDropdown.options
+                                .Find(o => o.text == biome);
+                            if (biomeOption == null)
+                            {
+                                ArrivalBiomeDropdown.options.Add(new Dropdown.OptionData
+                                {
+                                    text = biome,
+                                });
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
