@@ -122,6 +122,7 @@
     <Compile Include="Messenger.cs" />
     <Compile Include="Modules\WOLF_AbstractPartModule.cs" />
     <Compile Include="Modules\WOLF_CargoModule.cs" />
+    <Compile Include="Modules\WOLF_ConnectorModule.cs" />
     <Compile Include="Modules\WOLF_CrewCargoModule.cs" />
     <Compile Include="Modules\WOLF_CrewModule.cs" />
     <Compile Include="Modules\WOLF_CrewTransferScenario.cs" />

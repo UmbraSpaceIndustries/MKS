@@ -2,7 +2,7 @@
 using System.Linq;
 
 using UnityEngine;
-using USITools.UITools;
+using USITools.UI;
 
 namespace KolonyTools
 {

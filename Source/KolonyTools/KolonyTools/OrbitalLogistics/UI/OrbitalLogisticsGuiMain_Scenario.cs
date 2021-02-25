@@ -1,7 +1,7 @@
 ﻿using System;
 
 using UnityEngine;
-using USITools.UITools;
+using USITools.UI;
 
 namespace KolonyTools
 {
