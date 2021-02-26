@@ -43,6 +43,24 @@ namespace WOLF
             }
         }
 
+        protected override IRoutePayload CalculateRoutePayload(bool verifyRoute = true)
+        {
+            if (_cargoModules == null || _cargoModules.Count < 1)
+            {
+                return CrewRoutePayload.Zero;
+            }
+
+            var cargoModules = _cargoModules
+                .Where(m => !verifyRoute || m.VerifyRoute(RouteId));
+
+            var berths = cargoModules
+                .Select(m => (CrewPayload)m.GetPayload());
+            var economyBerths = berths.Sum(b => b.EconomyBerths);
+            var luxuryBerths = berths.Sum(b => b.LuxuryBerths);
+
+            return new CrewRoutePayload(economyBerths, luxuryBerths);
+        }
+
         protected override bool CanConnectToOrigin()
         {
             if (!base.CanConnectToOrigin())

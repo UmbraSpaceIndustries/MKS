@@ -148,49 +148,36 @@ namespace WOLF
             return true;
         }
 
+        protected virtual int CalculateRouteCost()
+        {
+            var massDelta = StartingVesselMass - vessel.totalMass;
+            if (massDelta < 0)
+                return 0;
+
+            // Make sure routes that expended any fuel cost at least 1 TCred
+            if (massDelta < 1d && massDelta > ROUTE_ZERO_COST_TOLERANCE)
+                massDelta = 1d;
+
+            var routeCost = Math.Round(massDelta * ROUTE_COST_MULTIPLIER, MidpointRounding.AwayFromZero);
+            return Math.Max(Convert.ToInt32(routeCost), 0);
+        }
+
+        protected virtual IRoutePayload CalculateRoutePayload(bool verifyRoute = true)
+        {
+            if (_cargoModules == null || _cargoModules.Count < 1)
+            {
+                return CargoRoutePayload.Zero;
+            }
+
+            return new CargoRoutePayload(_cargoModules
+                .Where(m => !verifyRoute || m.VerifyRoute(RouteId))
+                .Sum(m => ((CargoPayload)m.GetPayload()).Payload));
+        }
+
         public void ConfirmCancelRoute()
         {
             ResetRoute();
             Messenger.DisplayMessage(ROUTE_CANCELLED_MESSAGE);
-        }
-
-        protected virtual void ConnectToOrigin()
-        {
-            if (IsConnectedToOrigin)
-            {
-                DisplayMessage(ROUTE_IN_PROGRESS_MESSAGE);
-                return;
-            }
-
-            // Check for issues that would prevent deployment
-            if (!CanConnectToOrigin())
-            {
-                return;
-            }
-
-            CacheCargoModules();
-            if (_cargoModules == null || _cargoModules.Count < 1)
-            {
-                DisplayMessage(INSUFFICIENT_PAYLOAD_MESSAGE);
-                return;
-            }
-
-            RouteId = Guid.NewGuid().ToString("N");
-            foreach (var module in _cargoModules)
-            {
-                module.StartRoute(RouteId);
-            }
-
-            OriginBody = vessel.mainBody.name;
-            OriginBiome = GetVesselBiome();
-            StartingVesselMass = vessel.totalMass;
-            IsConnectedToOrigin = true;
-
-            ShowOriginDepot();
-            UpdatePawItems();
-            TogglePawItems();
-
-            Messenger.DisplayMessage(ROUTE_STARTED_MESSAGE);
         }
 
         // We'll piggyback on the base class ConnectToDepotEvent to
@@ -240,30 +227,43 @@ namespace WOLF
             }
         }
 
-        protected virtual int CalculateRouteCost()
+        protected virtual void ConnectToOrigin()
         {
-            var massDelta = StartingVesselMass - vessel.totalMass;
-            if (massDelta < 0)
-                return 0;
-
-            // Make sure routes that expended any fuel cost at least 1 TCred
-            if (massDelta < 1d && massDelta > ROUTE_ZERO_COST_TOLERANCE)
-                massDelta = 1d;
-
-            var routeCost = Math.Round(massDelta * ROUTE_COST_MULTIPLIER, MidpointRounding.AwayFromZero);
-            return Math.Max(Convert.ToInt32(routeCost), 0);
-        }
-
-        protected virtual IRoutePayload CalculateRoutePayload(bool verifyRoute = true)
-        {
-            if (_cargoModules == null || _cargoModules.Count < 1)
+            if (IsConnectedToOrigin)
             {
-                return CargoRoutePayload.Zero;
+                DisplayMessage(ROUTE_IN_PROGRESS_MESSAGE);
+                return;
             }
 
-            return new CargoRoutePayload(_cargoModules
-                .Where(m => !verifyRoute || m.VerifyRoute(RouteId))
-                .Sum(m => m.GetPayload()));
+            // Check for issues that would prevent deployment
+            if (!CanConnectToOrigin())
+            {
+                return;
+            }
+
+            CacheCargoModules();
+            if (_cargoModules == null || _cargoModules.Count < 1)
+            {
+                DisplayMessage(INSUFFICIENT_PAYLOAD_MESSAGE);
+                return;
+            }
+
+            RouteId = Guid.NewGuid().ToString("N");
+            foreach (var module in _cargoModules)
+            {
+                module.StartRoute(RouteId);
+            }
+
+            OriginBody = vessel.mainBody.name;
+            OriginBiome = GetVesselBiome();
+            StartingVesselMass = vessel.totalMass;
+            IsConnectedToOrigin = true;
+
+            ShowOriginDepot();
+            UpdatePawItems();
+            TogglePawItems();
+
+            Messenger.DisplayMessage(ROUTE_STARTED_MESSAGE);
         }
 
         public override string GetInfo()
@@ -365,14 +365,6 @@ namespace WOLF
             UpdatePawItems();
         }
 
-        void OnGUI()
-        {
-            if (_confirmationDialog.IsVisible())
-            {
-                _confirmationDialog.DrawWindow();
-            }
-        }
-
         public override void OnAwake()
         {
             base.OnAwake();
@@ -387,6 +379,14 @@ namespace WOLF
             CacheCargoModules();
             TogglePawItems();
             ShowOriginDepot();
+        }
+
+        void OnGUI()
+        {
+            if (_confirmationDialog.IsVisible())
+            {
+                _confirmationDialog.DrawWindow();
+            }
         }
 
         protected virtual void ResetRoute()

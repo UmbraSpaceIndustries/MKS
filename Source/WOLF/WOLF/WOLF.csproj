@@ -143,6 +143,7 @@
     <Compile Include="Interfaces\IDepot.cs" />
     <Compile Include="Interfaces\IResourceStream.cs" />
     <Compile Include="Passenger.cs" />
+    <Compile Include="Payloads.cs" />
     <Compile Include="Poof.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="ResourceStream.cs" />

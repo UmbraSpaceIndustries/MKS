@@ -12,13 +12,16 @@ namespace WOLF
         protected string _partInfoDetails = "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Details";
         protected string _partInfoSummary = "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Summary";
         protected string _moduleName = "#LOC_USI_WOLF_CrewCargoModuleName";
+        protected string _switchToEconomyLabel = "#LOC_USI_WOLF_PAW_CrewCargoModule_SwitchToEconomyLabel";
+        protected string _switchToLuxuryLabel = "#LOC_USI_WOLF_PAW_CrewCargoModule_SwitchToLuxuryLabel";
 
         #region KSP fields
         [KSPField(
             groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
             groupName = PAW_GROUP_NAME,
             guiActive = true,
-            guiActiveEditor = true)]
+            guiActiveEditor = true,
+            guiName = "#LOC_USI_WOLF_PAW_CrewCargoModule_EconomyBerthsDisplayName")]
         public int EconomyBerths = 2;
 
         [KSPField(isPersistant = true)]
@@ -28,7 +31,8 @@ namespace WOLF
             groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
             groupName = PAW_GROUP_NAME,
             guiActive = false,
-            guiActiveEditor = false)]
+            guiActiveEditor = false,
+            guiName = "#LOC_USI_WOLF_PAW_CrewCargoModule_LuxuryBerthsDisplayName")]
         public int LuxuryBerths = 1;
 
         [KSPField]
@@ -45,20 +49,15 @@ namespace WOLF
         #endregion
 
         #region KSP actions and events
-        [KSPAction]
-        public void LuxuryToggleAction(KSPActionParam param)
-        {
-            LuxuryToggle();
-        }
-
         [KSPEvent(
             groupDisplayName = "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
             groupName = PAW_GROUP_NAME,
             guiActive = true,
-            guiActiveEditor = true)]
-        public void LuxuryToggleEvent()
+            guiActiveEditor = true,
+            guiName = "#LOC_USI_WOLF_PAW_CrewCargoModule_SwitchToEconomyLabel")]
+        public void ToggleBerthTypeEvent()
         {
-            LuxuryToggle();
+            ToggleBerthType();
         }
         #endregion
 
@@ -74,7 +73,7 @@ namespace WOLF
             builder
                 .AppendLine(PartInfo ?? _partInfoSummary)
                 .AppendLine()
-                .AppendFormat(_partInfoDetails, GetPayload());
+                .AppendFormat(_partInfoDetails, EconomyBerths, LuxuryBerths);
 
             return builder.ToString();
         }
@@ -84,6 +83,12 @@ namespace WOLF
             Localizer.TryGetStringByTag(
                 "#LOC_USI_WOLF_CrewCargoCrate_PartInfo_Details",
                 out _partInfoDetails);
+            Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_PAW_CrewCargoModule_SwitchToEconomyLabel",
+                out _switchToEconomyLabel);
+            Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_PAW_CrewCargoModule_SwitchToLuxuryLabel",
+                out _switchToLuxuryLabel);
 
             if (Localizer.TryGetStringByTag(
                 "#LOC_USI_WOLF_PAW_CrewCargoModule_GroupDisplayName",
@@ -104,15 +109,15 @@ namespace WOLF
             return ModuleName ?? _moduleName;
         }
 
-        public int GetPayload()
+        public IPayload GetPayload()
         {
-            return EconomyBerths;
+            return new CrewPayload(EconomyBerths, LuxuryBerths);
         }
 
-        public void LuxuryToggle()
+        public void ToggleBerthType()
         {
             IsLuxury = !IsLuxury;
-            // TODO - The other things
+            UpdateLabels();
         }
 
         public override void OnAwake()
@@ -126,10 +131,16 @@ namespace WOLF
         {
             base.OnStart(state);
 
-            if (EconomyBerths < 1)
+            if (EconomyBerths < 2)
             {
-                EconomyBerths = 1;
+                EconomyBerths = 2;
             }
+            if (LuxuryBerths < 1)
+            {
+                LuxuryBerths = 1;
+            }
+
+            UpdateLabels();
 
             var missingRouteId = string.IsNullOrEmpty(RouteId);
             var missingVesselId = VesselId == 0;
@@ -155,6 +166,20 @@ namespace WOLF
 
             RouteId = routeId;
             VesselId = vessel.persistentId;
+        }
+
+        private void UpdateLabels()
+        {
+            Fields[nameof(EconomyBerths)].guiActive = !IsLuxury;
+            Fields[nameof(EconomyBerths)].guiActiveEditor = !IsLuxury;
+            Fields[nameof(LuxuryBerths)].guiActive = IsLuxury;
+            Fields[nameof(LuxuryBerths)].guiActiveEditor = IsLuxury;
+
+            Events[nameof(ToggleBerthTypeEvent)].guiName = IsLuxury ?
+                _switchToEconomyLabel :
+                _switchToLuxuryLabel;
+
+            MonoUtilities.RefreshPartContextWindow(part);
         }
 
         public bool VerifyRoute(string routeId)
