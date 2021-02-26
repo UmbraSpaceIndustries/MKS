@@ -111,7 +111,9 @@ namespace WOLF
 
         public IPayload GetPayload()
         {
-            return new CrewPayload(EconomyBerths, LuxuryBerths);
+            var economyBerths = IsLuxury ? 0 : EconomyBerths;
+            var luxuryBerths = IsLuxury ? LuxuryBerths : 0;
+            return new CrewPayload(economyBerths, luxuryBerths);
         }
 
         public void ToggleBerthType()
