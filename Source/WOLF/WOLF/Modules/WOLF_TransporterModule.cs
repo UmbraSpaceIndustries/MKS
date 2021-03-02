@@ -271,8 +271,10 @@ namespace WOLF
             return PartInfo;
         }
 
-        protected virtual void GetLocalizedTextValues()
+        protected override void GetLocalizedTextValues()
         {
+            base.GetLocalizedTextValues();
+
             if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_TRASNPORTER_UI_CONFIRMATION_DIALOG_WINDOW_TITLE", out string confirmationDialogTitle))
             {
                 _confirmationDialog.WindowTitle = confirmationDialogTitle;
@@ -363,13 +365,6 @@ namespace WOLF
             base.LazyUpdate();
 
             UpdatePawItems();
-        }
-
-        public override void OnAwake()
-        {
-            base.OnAwake();
-
-            GetLocalizedTextValues();
         }
 
         public override void OnStart(StartState state)
