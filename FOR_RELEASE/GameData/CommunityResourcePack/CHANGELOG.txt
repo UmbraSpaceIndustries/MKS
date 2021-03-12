@@ -1,6 +1,9 @@
 1.5.0 - TBD
 ------------------
 Updated density and volume of Glykerol
+Karborundum is now on Moho
+Karborundum exospheric band moved to be in line with (roughly) Moho's orbit
+Oceanic Karborundum on Eve
 
 1.4.2 - 2020.12.20
 ------------------
