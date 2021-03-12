@@ -65,7 +65,6 @@ namespace WOLF
             var crewModule = vessel.vesselModules
                 .Where(m => m is WOLF_CrewModule)
                 .FirstOrDefault() as WOLF_CrewModule;
-            IRecipe crewRecipe;
             if (crewModule == null)
             {
                 DisplayMessage("BUG: Could not find crew module.");
@@ -76,11 +75,9 @@ namespace WOLF
                 DisplayMessage(CREW_NOT_ELIGIBLE_MESSAGE);
                 return;
             }
-            else
-            {
-                crewRecipe = crewModule.GetCrewRecipe();
-                recipes.Add(crewRecipe);
-            }
+
+            var crewRecipe = crewModule.GetCrewRecipe();
+            recipes.Add(crewRecipe);
 
             // Negotiate recipes with the depot
             var body = vessel.mainBody.name;
@@ -93,7 +90,10 @@ namespace WOLF
                 var failureResult = result as FailedNegotiationResult;
                 foreach (var missingResource in failureResult.MissingResources)
                 {
-                    DisplayMessage(string.Format(Messenger.MISSING_RESOURCE_MESSAGE, missingResource.Value, missingResource.Key));
+                    DisplayMessage(string.Format(
+                        Messenger.MISSING_RESOURCE_MESSAGE,
+                        missingResource.Value,
+                        missingResource.Key));
                 }
                 return;
             }
@@ -115,16 +115,20 @@ namespace WOLF
             Poof.GoPoof(vessel);
         }
 
-        public override void OnStart(StartState state)
+        protected override void GetLocalizedTextValues()
         {
-            base.OnStart(state);
+            base.GetLocalizedTextValues();
 
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_CREW_NOT_ELIGIBLE_MESSAGE", out string crewNotEligibleMessage))
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_CREW_NOT_ELIGIBLE_MESSAGE",
+                out string crewNotEligibleMessage))
             {
                 CREW_NOT_ELIGIBLE_MESSAGE = crewNotEligibleMessage;
             }
 
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_CONNECT_TO_DEPOT_GUI_NAME", out string connectGuiName))
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_CONNECT_TO_DEPOT_GUI_NAME",
+                out string connectGuiName))
             {
                 CONNECT_TO_DEPOT_GUI_NAME = connectGuiName;
             }

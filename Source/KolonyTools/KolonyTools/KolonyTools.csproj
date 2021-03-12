@@ -139,8 +139,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpaceAcademy.cs" />
     <None Include="StationManager\StationManager.old" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="OrbitalLogistics\Helpers\UI\Window.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
