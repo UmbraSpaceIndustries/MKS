@@ -48,7 +48,7 @@ namespace WOLF
             builder
                 .AppendLine(PartInfo ?? _partInfoSummary)
                 .AppendLine()
-                .AppendFormat(_partInfoDetails, GetPayload());
+                .AppendFormat(_partInfoDetails, Payload);
 
             return builder.ToString();
         }
@@ -72,9 +72,9 @@ namespace WOLF
             return ModuleName ?? _moduleName;
         }
 
-        public int GetPayload()
+        public IPayload GetPayload()
         {
-            return Payload;
+            return new CargoPayload(Payload);
         }
 
         public override void OnAwake()

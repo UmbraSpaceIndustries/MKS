@@ -116,6 +116,22 @@ namespace WOLF
             return info.ToString();
         }
 
+        protected virtual void GetLocalizedTextValues()
+        {
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_NEEDS",
+                out string needsText))
+            {
+                NEEDS_TEXT = needsText;
+            }
+            if (Localizer.TryGetStringByTag(
+                "#autoLOC_USI_WOLF_PROVIDES",
+                out string providesText))
+            {
+                PROVIDES_TEXT = providesText;
+            }
+        }
+
         public override string GetModuleDisplayName()
         {
             return ModuleName ?? _moduleName;
@@ -197,14 +213,7 @@ namespace WOLF
         {
             base.OnAwake();
 
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_NEEDS", out string needsText))
-            {
-                NEEDS_TEXT = needsText;
-            }
-            if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_PROVIDES", out string providesText))
-            {
-                PROVIDES_TEXT = providesText;
-            }
+            GetLocalizedTextValues();
         }
 
         public override void OnStart(StartState state)

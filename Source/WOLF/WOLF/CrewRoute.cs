@@ -18,7 +18,7 @@ namespace WOLF
 
         public string GetDisplayValue()
         {
-            return $"Econ:{EconomyBerths} / Lux:{LuxuryBerths}";
+            return $"Econ: {EconomyBerths} / Lux: {LuxuryBerths}";
         }
 
         public int GetRewards()
