@@ -1,5 +1,0 @@
-0.7.17 - 2020.12.20
-------------------
-KSP 1.11 Compatibility
-Converted Biplane cockpit into a crewed command seat
-Moved legacy biplane parts to the legacy parts folder - nab these if you need them.

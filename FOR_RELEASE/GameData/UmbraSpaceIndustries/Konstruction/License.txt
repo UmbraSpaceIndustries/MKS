@@ -1,5 +1,0 @@
-(c) 2016, Robert Palmer
-
-Umbra Space Industries(tm), nor the name of this project may be used in a derivative work without permission.
-
-All configuration files, code (Konstruction.dll), and assets, including Models (*.mu) and Textures *.png/*.dds) are All Rights Reserved.  Distribution or listing of third parties (including but not limited to CKAN) is expressly forbidden.  If you wish to use any of these assets in your project, just ask nicely :)

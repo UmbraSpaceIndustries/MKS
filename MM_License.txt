@@ -1,6 +1,0 @@
-Module Manager is released under as CC license (see license.txt) with the following caveats per ialdabaoth:
-
-1. You credit me [ialdabaoth] as the original creator that your code is based on
-2. You make it ABSOLUTELY CLEAR that your code is not the original ModuleManager, and that any problems that people have with your fork should be taken up with YOU, not me [ialdabaoth].  
-
-NOTE:  This distribution includes an unaltered version of Module Manager.  The license notes above are only included for completeness.
