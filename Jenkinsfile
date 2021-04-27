@@ -138,7 +138,7 @@ pipeline {
           }
           New-Item -Path . -Name "artifacts" -ItemType Directory -Force
           Copy-Item -Path ./FOR_RELEASE/* -Destination ./artifacts -Recurse
-          Copy-Item -Path ./*.txt -Destination ./artifacts/GameData/UmbraSpaceIndustries/MKS
+          Copy-Item -Path ./*.txt -Destination ./artifacts
 
           Write-Output "Pulling in cached dependencies..."
           $DriveRoot = Split-Path -Path $env:WORKSPACE -Qualifier
