@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\..\KSP_DEV\GameData\UmbraSpaceIndustries\MKS\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -145,12 +145,6 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' != 'Unix'">"D:\Games\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent />
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
 Other similar extension points exist, see Microsoft.Common.targets.
 <Target Name="BeforeBuild">
