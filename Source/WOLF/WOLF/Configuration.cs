@@ -30,7 +30,8 @@ namespace WOLF
 
         public static readonly List<string> DefaultAssembledResources = new List<string>
         {
-            "Machinery", "Maintenance", "MaterialKits", "SpecializedParts", "TransportCredits"
+            "Alloys", "Electronics", "Machinery", "Maintenance", "MaterialKits",
+            "Prototypes", "Robotics", "SpecializedParts", "Synthetics", "TransportCredits"
         };
 
         public static readonly List<string> DefaultLifeSupportResources = new List<string>
