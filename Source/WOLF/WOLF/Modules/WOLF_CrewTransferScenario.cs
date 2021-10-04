@@ -19,6 +19,13 @@ namespace WOLF
     public class WOLF_CrewTransferScenario : ScenarioModule, ICrewTransferController
     {
         private const float TERMINAL_RANGE = 500f;
+        private static readonly List<PrefabDefinition> _prefabDefs = new List<PrefabDefinition>
+        {
+            new PrefabDefinition<FlightSelector>(PrefabType.Prefab),
+            new PrefabDefinition<KerbalSelector>(PrefabType.Prefab),
+            new PrefabDefinition<WarningPanel>(PrefabType.Prefab),
+            new PrefabDefinition<TerminalWindow>(PrefabType.Window),
+        };
 
         private readonly ArrivalWarnings _arrivalWarnings = new ArrivalWarnings();
         private readonly Dictionary<string, WarningMetadata> _activeWarnings
@@ -729,7 +736,10 @@ namespace WOLF
             base.OnAwake();
 
             GetLocalizedTextValues();
+        }
 
+        private void Start()
+        {
             var wolfScenario = FindObjectOfType<WOLF_ScenarioModule>();
             _wolf = wolfScenario.ServiceManager.GetService<IRegistryCollection>();
 
@@ -738,30 +748,16 @@ namespace WOLF
             {
                 var serviceManager = usiTools.ServiceManager;
                 var windowManager = serviceManager.GetService<WindowManager>();
+                var prefabManager = serviceManager.GetService<PrefabManager>();
 
                 try
                 {
-                    // Setup UI prefabs
+                    // Load and register UI prefabs
                     var filepath = Path.Combine(KSPUtil.ApplicationRootPath,
                         "GameData/UmbraSpaceIndustries/WOLF/Assets/UI/CrewTransferWindow.prefabs");
-                    var prefabs = AssetBundle.LoadFromFile(filepath);
-                    var flightSelectorPrefab = prefabs.LoadAsset<GameObject>("FlightSelector");
-                    var kerbalSelectorPrefab = prefabs.LoadAsset<GameObject>("KerbalSelector");
-                    var terminalWindowPrefab = prefabs.LoadAsset<GameObject>("TerminalWindow");
-                    var warningPanelPrefab = prefabs.LoadAsset<GameObject>("WarningPanel");
-
-                    // Register prefabs with window manager
-                    windowManager
-                        .RegisterPrefab<FlightSelector>(flightSelectorPrefab)
-                        .RegisterPrefab<KerbalSelector>(kerbalSelectorPrefab)
-                        .RegisterPrefab<WarningPanel>(warningPanelPrefab)
-                        .RegisterWindow<TerminalWindow>(terminalWindowPrefab);
+                    prefabManager.LoadAssetBundle(filepath, _prefabDefs);
                 }
                 catch (ServiceAlreadyRegisteredException) { }
-                catch (NullReferenceException)
-                {
-                    // TODO - Create an asset bundle loader service in USITools
-                }
                 catch (Exception ex)
                 {
                     Debug.LogError($"[WOLF] {ClassName}: {ex.Message}");
