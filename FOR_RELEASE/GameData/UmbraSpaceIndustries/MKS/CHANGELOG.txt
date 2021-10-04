@@ -1,4 +1,4 @@
-1.5.0 - TBD
+112.0 - 2021.09.19
 ------------------
 Added stock inventory storage to the Salamander and Scout-II
 All Ranger parts may now be stored in the stock inventory system.  
