@@ -207,6 +207,9 @@ namespace WOLF
             base.GetLocalizedTextValues();
 
             Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_CrewTransporterModule_InsufficientColonySuppliesMessage",
+                out _insufficientColonySuppliesMessage);
+            Localizer.TryGetStringByTag(
                 "#LOC_USI_WOLF_CrewTransporterModule_InsufficientHabitationMessage",
                 out _insufficientHabitationMessage);
             Localizer.TryGetStringByTag(
