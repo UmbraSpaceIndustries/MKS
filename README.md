@@ -21,13 +21,6 @@ NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only p
 * [Firespitter Core](https://forum.kerbalspaceprogram.com/index.php?/topic/22583-firespitter-propeller-plane-and-helicopter-parts-v71-may-5th-for-ksp-10/&)
 * [Community Resource Pack](https://forum.kerbalspaceprogram.com/index.php?/topic/83007-13-community-resource-pack/)
 * [Community Category Kit](https://forum.kerbalspaceprogram.com/index.php?/topic/149840-discussion-community-category-kit/)
-* [Ground Construction (core)](https://forum.kerbalspaceprogram.com/index.php?/topic/154167-143-ground-construction-2/)
-
-### Recommended mods
-(These are absolutely not required, but have aspects that make gameplay easier)
-
-* [KAS](http://forum.kerbalspaceprogram.com/threads/92514) (for linking up MKS modules and anchoring to the surface)
-* [Infernal Robotics](https://forum.kerbalspaceprogram.com/index.php?/topic/170898-wip-infernal-robotics-next/) (for assembling bases)
 
 ### Compatible with
 
@@ -35,9 +28,9 @@ NOTE:  For Life Support Mods (USI, TAC, or Snacks!) it is recommended you only p
 
 ### FAQ, Documentation, Issues and Pull Requests
 
-Here you can find the [FAQs](https://github.com/BobPalmer/MKS/wiki/FAQ)
+Here you can find the [FAQs](https://github.com/UmbraSpaceIndustries/MKS/wiki/FAQ)
 
-There are also [Tutorials](https://github.com/BobPalmer/MKS/wiki/Tutorials)
+There are also [Tutorials](https://github.com/UmbraSpaceIndustries/MKS/wiki/Tutorials)
 
 You can also use GitHub issues to report bugs and provide suggestions, etc.
 
@@ -49,4 +42,3 @@ You can download the current version of MKS from [the USI Catalog Page](https://
 
 ### Other Contributors and Thanks!
 * PrivateFlip/Cyrik (Orbital Logistics code)
-

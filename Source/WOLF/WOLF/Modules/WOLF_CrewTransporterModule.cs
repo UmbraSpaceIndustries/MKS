@@ -207,6 +207,9 @@ namespace WOLF
             base.GetLocalizedTextValues();
 
             Localizer.TryGetStringByTag(
+                "#LOC_USI_WOLF_CrewTransporterModule_InsufficientColonySuppliesMessage",
+                out _insufficientColonySuppliesMessage);
+            Localizer.TryGetStringByTag(
                 "#LOC_USI_WOLF_CrewTransporterModule_InsufficientHabitationMessage",
                 out _insufficientHabitationMessage);
             Localizer.TryGetStringByTag(
@@ -247,8 +250,14 @@ namespace WOLF
                 vessel,
                 false,
                 false);
+            var body = vessel.mainBody.name;
+            var biome = GetVesselBiome();
 
-            return partModules != null && partModules.Any(m => m.IsConnectedToDepot);
+            return partModules != null && partModules.Any(m =>
+                m.IsConnectedToDepot &&
+                m.Depot != null &&
+                m.Depot.Body == body &&
+                m.Depot.Biome == biome);
         }
 
         protected override bool TryNegotiateRoute(

@@ -8,7 +8,7 @@ namespace WOLF.Tests.Unit.Mocks
         /// <summary>
         /// Exposes the depot list for testing.
         /// </summary>
-        public List<IDepot> Depots
+        public new List<IDepot> Depots
         {
             get { return base.Depots; }
         }
@@ -16,7 +16,7 @@ namespace WOLF.Tests.Unit.Mocks
         /// <summary>
         /// Exposes the route list for testing.
         /// </summary>
-        public List<TestRoute> Routes => Routes.Select(r => new TestRoute(
+        public new List<TestRoute> Routes => base.Routes.Select(r => new TestRoute(
                 r.OriginBody,
                 r.OriginBiome,
                 r.DestinationBody,
