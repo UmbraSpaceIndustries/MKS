@@ -11,6 +11,13 @@ namespace WOLF
         public string RefinedResourcesFilter { get; set; }
         public string AssembledResourcesFilter { get; set; }
         public string LifeSupportResourcesFilter { get; set; }
+        public int CrewRequiredLifeSupport { get; set; }
+        public int CrewRequiredHabitation { get; set; }
+        public int CrewCO2Output { get; set; }
+        public int CrewMulchOutput { get; set; }
+        public int CrewWasteWaterOutput { get; set; }
+        public int CrewMinimumEffectiveStars { get; set; }
+        public int CrewStarMultiplier { get; set; }
     }
 
     public class Configuration
@@ -40,12 +47,28 @@ namespace WOLF
             "Oxygen", "Power", "WasteWater", "Water"
         };
 
+        public static readonly int DefaultCrewRequiredLifeSupport = 1;
+        public static readonly int DefaultCrewRequiredHabitation = 1;
+        public static readonly int DefaultCrewCO2Output = 0;
+        public static readonly int DefaultCrewMulchOutput = 0;
+        public static readonly int DefaultCrewWasteWaterOutput = 0;
+        public static readonly int DefaultCrewMinimumEffectiveStars = 1;
+        public static readonly int DefaultCrewStarMultiplier = 2;
+
         private List<string> _allowedHarvestableResources;
         private List<string> _allowedHarvestableResourcesOnHomeworld;
         private List<string> _blacklistedHomeworldResources;
         private List<string> _refinedResourcesFilter;
         private List<string> _assembledResourcesFilter;
         private List<string> _lifeSupportResourcesFilter;
+
+        private int _crewRequiredLifeSupport = -1;
+        private int _crewRequiredHabitation = -1;
+        private int _crewCO2Output = -1;
+        private int _crewMulchOutput = -1;
+        private int _crewWasteWaterOutput = -1;
+        private int _crewMinimumEffectiveStars = -1;
+        private int _crewStarMultiplier = -1;
 
         public List<string> AllowedHarvestableResources
         {
@@ -111,6 +134,90 @@ namespace WOLF
                 }
 
                 return _lifeSupportResourcesFilter;
+            }
+        }
+
+        public int CrewRequiredLifeSupport
+        {
+            get
+            {
+                if (_crewRequiredLifeSupport < 0)
+                {
+                    _crewRequiredLifeSupport = DefaultCrewRequiredLifeSupport;
+                }
+                return _crewRequiredLifeSupport;
+            }
+        }
+
+        public int CrewRequiredHabitation
+        {
+            get
+            {
+                if (_crewRequiredHabitation < 0)
+                {
+                    _crewRequiredHabitation = DefaultCrewRequiredHabitation;
+                }
+                return _crewRequiredHabitation;
+            }
+        }
+
+        public int CrewCO2Output
+        {
+            get
+            {
+                if (_crewCO2Output < 0)
+                {
+                    _crewCO2Output = DefaultCrewCO2Output;
+                }
+                return _crewCO2Output;
+            }
+        }
+
+        public int CrewMulchOutput
+        {
+            get
+            {
+                if (_crewMulchOutput < 0)
+                {
+                    _crewMulchOutput = DefaultCrewMulchOutput;
+                }
+                return _crewMulchOutput;
+            }
+        }
+
+        public int CrewWasteWaterOutput
+        {
+            get
+            {
+                if (_crewWasteWaterOutput < 0)
+                {
+                    _crewWasteWaterOutput = DefaultCrewWasteWaterOutput;
+                }
+                return _crewWasteWaterOutput;
+            }
+        }
+
+        public int CrewMinimumEffectiveStars
+        {
+            get
+            {
+                if (_crewMinimumEffectiveStars < 0)
+                {
+                    _crewMinimumEffectiveStars = DefaultCrewMinimumEffectiveStars;
+                }
+                return _crewMinimumEffectiveStars;
+            }
+        }
+
+        public int CrewStarMultiplier
+        {
+            get
+            {
+                if (_crewStarMultiplier < 0)
+                {
+                    _crewStarMultiplier = DefaultCrewStarMultiplier;
+                }
+                return _crewStarMultiplier;
             }
         }
 
@@ -214,6 +321,41 @@ namespace WOLF
         public void SetRefinedResourcesFilter(string resourceList)
         {
             _refinedResourcesFilter = ParseHarvestableResources(resourceList);
+        }
+
+        public void SetCrewRequiredLifeSupport(int lifeSupport)
+        {
+            _crewRequiredLifeSupport = lifeSupport;
+        }
+
+        public void SetCrewRequiredHabitation(int habitation)
+        {
+            _crewRequiredHabitation = habitation;
+        }
+
+        public void SetCrewCO2Output(int co2Output)
+        {
+            _crewCO2Output = co2Output;
+        }
+
+        public void SetCrewMulchOutput(int mulchOutput)
+        {
+            _crewMulchOutput = mulchOutput;
+        }
+
+        public void SetCrewWasteWaterOutput(int wasteWaterOutput)
+        {
+            _crewWasteWaterOutput = wasteWaterOutput;
+        }
+
+        public void SetCrewMinimumEffectiveStars(int minimumEffectiveStars)
+        {
+            _crewMinimumEffectiveStars = minimumEffectiveStars;
+        }
+
+        public void SetCrewStarMultiplier(int resourceMultiplier)
+        {
+            _crewStarMultiplier = resourceMultiplier;
         }
     }
 }

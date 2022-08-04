@@ -25,6 +25,13 @@ namespace WOLF
             var assembledResourcesFilter = new List<string>();
             var lifeSupportResourcesFilter = new List<string>();
             var refinedResourcesFilter = new List<string>();
+            var crewRequiredLifeSupport = 1;
+            var crewRequiredHabitation = 1;
+            var crewCO2Output = 0;
+            var crewMulchOutput = 0;
+            var crewWasteWaterOutput = 0;
+            var crewMinimumEffectiveStars = 1;
+            var crewStarMultiplier = 2;
 
             foreach (var node in configNodes)
             {
@@ -34,6 +41,36 @@ namespace WOLF
                 var assembledResources = Configuration.ParseHarvestableResources(configFromFile.AssembledResourcesFilter);
                 var lifeSupportResources = Configuration.ParseHarvestableResources(configFromFile.LifeSupportResourcesFilter);
                 var refinedResources = Configuration.ParseHarvestableResources(configFromFile.RefinedResourcesFilter);
+
+                int newValue;
+                if (node.HasValue("CrewRequiredLifeSupport") && int.TryParse(node.GetValue("CrewRequiredLifeSupport"), out newValue))
+                {
+                    crewRequiredLifeSupport = newValue;
+                }
+                if (node.HasValue("CrewRequiredHabitation") && int.TryParse(node.GetValue("CrewRequiredHabitation"), out newValue))
+                {
+                    crewRequiredHabitation = newValue;
+                }
+                if (node.HasValue("CrewCO2Output") && int.TryParse(node.GetValue("CrewCO2Output"), out newValue))
+                {
+                    crewCO2Output = newValue;
+                }
+                if (node.HasValue("CrewMulchOutput") && int.TryParse(node.GetValue("CrewMulchOutput"), out newValue))
+                {
+                    crewMulchOutput = newValue;
+                }
+                if (node.HasValue("CrewWasteWaterOutput") && int.TryParse(node.GetValue("CrewWasteWaterOutput"), out newValue))
+                {
+                    crewWasteWaterOutput = newValue;
+                }
+                if (node.HasValue("CrewMinimumEffectiveStars") && int.TryParse(node.GetValue("CrewMinimumEffectiveStars"), out newValue))
+                {
+                    crewMinimumEffectiveStars = newValue;
+                }
+                if (node.HasValue("CrewStarMultiplier") && int.TryParse(node.GetValue("CrewStarMultiplier"), out newValue))
+                {
+                    crewStarMultiplier = newValue;
+                }
 
                 allowedResources.AddRange(harvestableResources);
                 blacklistedResources.AddRange(blacklist);
@@ -48,6 +85,13 @@ namespace WOLF
             config.SetAssembledResourcesFilter(assembledResourcesFilter);
             config.SetLifeSupportResourcesFilter(lifeSupportResourcesFilter);
             config.SetRefinedResourcesFilter(refinedResourcesFilter);
+            config.SetCrewRequiredLifeSupport(crewRequiredLifeSupport);
+            config.SetCrewRequiredHabitation(crewRequiredHabitation);
+            config.SetCrewCO2Output(crewCO2Output);
+            config.SetCrewMulchOutput(crewMulchOutput);
+            config.SetCrewWasteWaterOutput(crewWasteWaterOutput);
+            config.SetCrewMinimumEffectiveStars(crewMinimumEffectiveStars);
+            config.SetCrewStarMultiplier(crewStarMultiplier);
 
             return config;
         }
