@@ -4,11 +4,8 @@ namespace WOLF
 {
     public class WOLF_CrewModule : VesselModule
     {
-        private static readonly int REQUIRED_LIFE_SUPPORT = 1;
-        private static readonly int REQUIRED_HABITATION = 1;
-        private static readonly int CO2_OUTPUT = 0;
-        private static readonly int MULCH_OUTPUT = 0;
-        private static readonly int WASTEWATER_OUTPUT = 0;
+        protected static WOLF_ScenarioModule _scenario;
+
         private static readonly string RESOURCE_NAME_LIFESUPPORT = "LifeSupport";
         private static readonly string RESOURCE_NAME_HABITATION = "Habitation";
         private static readonly string RESOURCE_NAME_CO2 = "CarbonDioxide";
@@ -16,7 +13,6 @@ namespace WOLF
         private static readonly string RESOURCE_NAME_WASTEWATER = "WasteWater";
 
         public static readonly string CREW_RESOURCE_SUFFIX = "CrewPoint";
-        public static readonly int CREW_RESOURCE_MULTIPLIER = 2;
 
         public IRecipe GetCrewRecipe()
         {
@@ -27,7 +23,7 @@ namespace WOLF
         {
             if (roster.Count < 1)
                 return new Recipe();
-
+            _scenario = FindObjectOfType<WOLF_ScenarioModule>();
             var inputs = new Dictionary<string, int>
             {
                 { RESOURCE_NAME_LIFESUPPORT, 0 },
@@ -41,18 +37,18 @@ namespace WOLF
             };
             foreach (var kerbal in roster)
             {
-                inputs[RESOURCE_NAME_LIFESUPPORT] += REQUIRED_LIFE_SUPPORT;
-                inputs[RESOURCE_NAME_HABITATION] += REQUIRED_HABITATION;
+                inputs[RESOURCE_NAME_LIFESUPPORT] += _scenario.Configuration.CrewRequiredLifeSupport;
+                inputs[RESOURCE_NAME_HABITATION] += _scenario.Configuration.CrewRequiredHabitation;
 
-                outputs[RESOURCE_NAME_CO2] += CO2_OUTPUT;
-                outputs[RESOURCE_NAME_MULCH] += MULCH_OUTPUT;
-                outputs[RESOURCE_NAME_WASTEWATER] += WASTEWATER_OUTPUT;
+                outputs[RESOURCE_NAME_CO2] += _scenario.Configuration.CrewCO2Output;
+                outputs[RESOURCE_NAME_MULCH] += _scenario.Configuration.CrewMulchOutput;
+                outputs[RESOURCE_NAME_WASTEWATER] += _scenario.Configuration.CrewWasteWaterOutput;
 
                 var resourceName = kerbal.trait + CREW_RESOURCE_SUFFIX;
-                var stars = kerbal.experienceLevel * CREW_RESOURCE_MULTIPLIER;
-                if (stars < 1)
+                var stars = kerbal.experienceLevel * _scenario.Configuration.CrewStarMultiplier;
+                if (stars < _scenario.Configuration.CrewMinimumEffectiveStars)
                 {
-                    stars = 1;
+                    stars = _scenario.Configuration.CrewMinimumEffectiveStars;
                 }
                 if (!outputs.ContainsKey(resourceName))
                 {
