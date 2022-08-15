@@ -48,7 +48,7 @@ namespace WOLF
                 var endingReputation = Reputation.Instance.reputation;
                 if (endingReputation + 0.0001f < startingReputation)
                 {
-                    Reputation.Instance.AddReputation(startingReputation - endingReputation, TransactionReasons.None);
+                    Reputation.Instance.SetReputation(startingReputation, TransactionReasons.None);
                 }
             }
         }
