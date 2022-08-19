@@ -27,9 +27,11 @@ namespace WOLF
                 //https://kerbalspaceprogram.com/api/class_fine_print_1_1_utilities_1_1_system_utilities.html#afd1eea0118d0c37dacd3ea696b125ff2
                 SystemUtilities.ExpungeKerbal(kerbal);
             }
-            foreach (var part in vessel.parts.ToArray())
+
+            var parts = vessel.parts.ToArray();
+            for (var i = parts.Length - 1; i >= 0; i--)
             {
-                part.Die();
+                parts[i].Die();
             }
 
             vessel.Die();
