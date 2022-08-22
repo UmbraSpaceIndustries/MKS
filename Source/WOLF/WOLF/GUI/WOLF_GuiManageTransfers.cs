@@ -330,19 +330,38 @@ namespace WOLF
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(UIHelper.deleteSymbol, UIHelper.buttonStyle, GUILayout.Width(22), GUILayout.Height(22)))
                     {
-                        var result = _selectedRoute.RemoveResource(resource.Key, resource.Value);
-                        if (result is BrokenNegotiationResult)
+                        var amount = resource.Value;
+                        foreach (var destinationResource in _selectedRoute.DestinationDepot.GetResources())
                         {
-                            foreach (var brokenResource in (result as BrokenNegotiationResult).BrokenDependencies)
+                            if (destinationResource.ResourceName == resource.Key)
                             {
-                                Messenger.DisplayMessage(string.Format(CANNOT_CANCEL_TRANSFER_MESSAGE, brokenResource));
+                                if (destinationResource.Incoming - destinationResource.Outgoing < amount)
+                                {
+                                    amount = destinationResource.Incoming - destinationResource.Outgoing;
+                                }
+                                break;
                             }
                         }
-                        else if (result is FailedNegotiationResult)
+                        if (amount <= 0)
                         {
-                            foreach (var missingResource in (result as FailedNegotiationResult).MissingResources)
+                            Messenger.DisplayMessage(string.Format(CANNOT_CANCEL_TRANSFER_MESSAGE, resource.Key));
+                        }
+                        else
+                        {
+                            var result = _selectedRoute.RemoveResource(resource.Key, amount);
+                            if (result is BrokenNegotiationResult)
                             {
-                                Messenger.DisplayMessage(string.Format("Could not add {0} back to origin depot. This is probably a bug.", missingResource.Key));
+                                foreach (var brokenResource in (result as BrokenNegotiationResult).BrokenDependencies)
+                                {
+                                    Messenger.DisplayMessage(string.Format(CANNOT_CANCEL_TRANSFER_MESSAGE, brokenResource));
+                                }
+                            }
+                            else if (result is FailedNegotiationResult)
+                            {
+                                foreach (var missingResource in (result as FailedNegotiationResult).MissingResources)
+                                {
+                                    Messenger.DisplayMessage(string.Format("Could not add {0} back to origin depot. This is probably a bug.", missingResource.Key));
+                                }
                             }
                         }
                     }
