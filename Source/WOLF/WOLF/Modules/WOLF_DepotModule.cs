@@ -16,6 +16,7 @@ namespace WOLF
         private static string SUCCESSFUL_DEPLOYMENT_MESSAGE = "#autoLOC_USI_WOLF_DEPOT_SUCCESSFUL_DEPLOYMENT_MESSAGE"; // "Your depot has been established at {0} on {1}!";
         private static string SUCCESSFUL_SURVEY_MESSAGE = "#autoLOC_USI_WOLF_DEPOT_SUCCESSFUL_SURVEY_MESSAGE"; // "Survey completed at {0} on {1}!";
         private static string SURVEY_ALREADY_COMPLETED_MESSAGE = "#autoLOC_USI_WOLF_DEPOT_SURVEY_ALREADY_COMPLETE_MESSAGE"; // "A survey has already been completed in this biome!";
+        private static string CONVERTERS_ABANDONED_DURING_DEPOT_CREATION_MESSAGE = "#autoLOC_USI_WOLF_CONVERTERS_ABANDONED_DURING_DEPOT_CREATION_MESSAGE"; // "Converter Modules abandoned during depot creation.";
 
         private static readonly HarvestTypes[] DEFAULT_HARVEST_TYPES = new HarvestTypes[] { HarvestTypes.Atmospheric, HarvestTypes.Planetary };
         private static readonly HarvestTypes[] OCEANIC_HARVEST_TYPES = new HarvestTypes[] { HarvestTypes.Atmospheric, HarvestTypes.Oceanic, HarvestTypes.Planetary };
@@ -88,6 +89,7 @@ namespace WOLF
             }
 
             bool depotAlreadyExists = _registry.TryGetDepot(body, biome, out IDepot depot);
+            List<WOLF_ConverterModule> otherWolfConverterModules = null;
 
             if (isSurvey)
             {
@@ -104,17 +106,20 @@ namespace WOLF
                     DisplayMessage(DEPOT_ALREADY_ESTABLISHED_MESSAGE);
                     return;
                 }
-                var otherWolfPartModules = vessel
-                    .FindPartModulesImplementing<WOLF_AbstractPartModule>()
+                var otherWolfDepotModules = vessel
+                    .FindPartModulesImplementing<WOLF_DepotModule>()
                     .Where(p => p != this);
+                var otherWolfHopperModules = vessel.FindPartModulesImplementing<WOLF_HopperModule>();
+                var otherWolfTerminalModules = vessel.FindPartModulesImplementing<WOLF_TerminalModule>();
                 var otherWolfHoppers = vessel.FindPartModulesImplementing<WOLF_HopperModule>();
-                if (otherWolfPartModules.Any() || otherWolfHoppers.Any())
+                if (otherWolfDepotModules.Any() || otherWolfHopperModules.Any() || otherWolfTerminalModules.Any())
                 {
                     DisplayMessage(Messenger.INVALID_DEPOT_PART_ATTACHMENT_MESSAGE);
                     return;
                 }
+                otherWolfConverterModules = vessel.FindPartModulesImplementing<WOLF_ConverterModule>();
                 var crew = vessel.GetVesselCrew();
-                if (crew != null && crew.Count > 0)
+                if (crew != null && crew.Count > 0 && !otherWolfConverterModules.Any())
                 {
                     DisplayMessage(CANNOT_ADD_CREW_MESSAGE);
                     return;
@@ -160,6 +165,16 @@ namespace WOLF
                 depot.NegotiateConsumer(WolfRecipe.InputIngredients);
 
                 DisplayMessage(string.Format(SUCCESSFUL_DEPLOYMENT_MESSAGE, biome, body));
+
+                if (otherWolfConverterModules.Any())
+                {
+                    WOLF_ConverterModule converterModule = otherWolfConverterModules.First();
+                    var success = converterModule.ConnectToDepotDirectlyAfterDepotCreation();
+                    if (!success)
+                    {
+                        DisplayMessage(CONVERTERS_ABANDONED_DURING_DEPOT_CREATION_MESSAGE);
+                    }
+                }
                 Poof.GoPoof(vessel);
 
                 // Add rewards
@@ -205,6 +220,10 @@ namespace WOLF
             if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_DEPOT_SURVEY_ALREADY_COMPLETE_MESSAGE", out string surveyCompletedMessage))
             {
                 SURVEY_ALREADY_COMPLETED_MESSAGE = surveyCompletedMessage;
+            }
+            if (Localizer.TryGetStringByTag("#CONVERTERS_ABANDONED_DURING_DEPOT_CREATION_MESSAGE", out string convertersAbandonedMessage))
+            {
+                CONVERTERS_ABANDONED_DURING_DEPOT_CREATION_MESSAGE = convertersAbandonedMessage;
             }
 
             if (Localizer.TryGetStringByTag("#autoLOC_USI_WOLF_ESTABLISH_DEPOT_GUI_NAME", out string establishGuiName))

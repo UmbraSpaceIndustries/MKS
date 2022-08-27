@@ -12,7 +12,7 @@ namespace WOLF
         /// Checks for issues that would prevent connecting to a depot.
         /// </summary>
         /// <returns>A message if there was an error, otherwise empty string.</returns>
-        protected string CanConnectToDepot()
+        protected string CanConnectToDepot(bool duringDepotCreation = false)
         {
             var body = vessel.mainBody.name;
             var biome = GetVesselBiome();
@@ -31,7 +31,7 @@ namespace WOLF
             }
             var otherDepotModules = vessel.FindPartModulesImplementing<WOLF_DepotModule>()
                 .Where(p => !(p is WOLF_SurveyModule));
-            if (otherDepotModules.Any())
+            if (otherDepotModules.Any() && !duringDepotCreation)
             {
                 return Messenger.INVALID_DEPOT_PART_ATTACHMENT_MESSAGE;
             }
@@ -44,14 +44,33 @@ namespace WOLF
             return string.Empty;
         }
 
+        public bool ConnectToDepotDirectlyAfterDepotCreation()
+        {
+            var deployCheckResult = CanConnectToDepot(true);
+            var success = ConnectToDepotWorker(deployCheckResult);
+            return success;
+        }
+
         protected override void ConnectToDepot()
         {
             // Check for issues that would prevent deployment
             var deployCheckResult = CanConnectToDepot();
+            var success = ConnectToDepotWorker(deployCheckResult);
+
+            if (success)
+            {
+                Poof.GoPoof(vessel);
+            }
+        }
+
+        /// <returns>A boolean indicating, if the act of connecting was successful.</returns>
+        private bool ConnectToDepotWorker(string deployCheckResult)
+        {
+
             if (!string.IsNullOrEmpty(deployCheckResult))
             {
                 DisplayMessage(deployCheckResult);
-                return;
+                return false;
             }
 
             // Get recipes from all attached WOLF PartModules
@@ -68,12 +87,12 @@ namespace WOLF
             if (crewModule == null)
             {
                 DisplayMessage("BUG: Could not find crew module.");
-                return;
+                return false;
             }
             else if (!crewModule.IsCrewEligible())
             {
                 DisplayMessage(CREW_NOT_ELIGIBLE_MESSAGE);
-                return;
+                return false;
             }
 
             var crewRecipe = crewModule.GetCrewRecipe();
@@ -95,7 +114,7 @@ namespace WOLF
                         missingResource.Value,
                         missingResource.Key));
                 }
-                return;
+                return false;
             }
 
             DisplayMessage(string.Format(Messenger.SUCCESSFUL_DEPLOYMENT_MESSAGE, body));
@@ -111,8 +130,7 @@ namespace WOLF
                     RewardsManager.AddReputation(totalCrewPoints, vessel.mainBody.isHomeWorld);
                 }
             }
-
-            Poof.GoPoof(vessel);
+            return true;
         }
 
         protected override void GetLocalizedTextValues()
