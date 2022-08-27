@@ -36,7 +36,8 @@ namespace WOLF
                 return Messenger.INVALID_DEPOT_PART_ATTACHMENT_MESSAGE;
             }
             var otherHopperModules = vessel.FindPartModulesImplementing<WOLF_HopperModule>();
-            if (otherHopperModules.Any())
+            var otherTerminalModules = vessel.FindPartModulesImplementing<WOLF_TerminalModule>();
+            if (otherHopperModules.Any() || otherTerminalModules.Any())
             {
                 return Messenger.INVALID_HOPPER_PART_ATTACHMENT_MESSAGE;
             }
