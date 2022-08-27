@@ -5,7 +5,7 @@ namespace WOLF
     public static class Messenger
     {
         public static string INVALID_DEPOT_PART_ATTACHMENT_MESSAGE = "#autoLOC_USI_WOLF_INVALID_DEPOT_PART_ATTACHMENT_MESSAGE"; // "Depots must be detached from other WOLF parts before deployment.";
-        public static string INVALID_HOPPER_PART_ATTACHMENT_MESSAGE = "#autoLOC_USI_WOLF_INVALID_HOPPER_PART_ATTACHMENT_MESSAGE"; // "Hoppers must be detached from other WOLF parts before deployment.";
+        public static string INVALID_HOPPER_PART_ATTACHMENT_MESSAGE = "#autoLOC_USI_WOLF_INVALID_HOPPER_PART_ATTACHMENT_MESSAGE"; // "Physical WOLF-connected parts (like hoppers and terminals) must be detached from other WOLF parts (like depots and converters) before deployment.";
         public static string INVALID_SITUATION_MESSAGE = "#autoLOC_USI_WOLF_INVALID_SITUATION_MESSAGE"; // "Your vessel must be landed or orbiting in order to connect to a depot.";
         public static string INVALID_ORBIT_SITUATION_MESSAGE = "#autoLOC_USI_WOLF_INVALID_ORBIT_SITUATION_MESSAGE"; // "Your vessel must be in a low orbit with eccentricity below 0.1 to connect to a orbital depot.";
         public static string MISSING_DEPOT_MESSAGE = "#autoLOC_USI_WOLF_MISSING_DEPOT_MESSAGE"; // "You must establish a depot in this biome first!";
